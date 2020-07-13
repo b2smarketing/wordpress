@@ -1,0 +1,33 @@
+.c-logo {
+    width: 105px;
+    .c-contatos & {
+        width: 145px;
+    }
+    cursor: pointer;
+    transition: .2s ease;
+    user-select: none;
+    &__dae path, &__americana path {
+        fill: $white;
+        transition: .2s ease;
+        .c-contatos & {
+            fill: $blue;
+        }
+    }
+    &:hover {
+        transform: translateY(-1px);
+        .c-logo__dae path {
+            fill: $blue;
+            .c-contatos & {
+                fill: lighten($color: $blue, $amount: 10);
+            }
+        }
+    }
+    @include media-breakpoint-down(sm) {
+        width: 75px;
+        .c-contatos & {
+            width: 75px;
+            margin-bottom: 1em;
+
+        }
+    }
+}

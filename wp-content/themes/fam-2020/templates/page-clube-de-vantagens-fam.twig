@@ -1,0 +1,29 @@
+{% extends 'layout/base.twig' %}
+
+{% block body %}
+    <div class="list-eventos page list-parceiros">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="page-title">Clube de Vantagens FAM</h1>
+                    <p class="page-desc">Confira os parceiros da Faculdade de americana, aproveite os descontos!</p>
+                </div>
+            </div>
+            <div class="row c-article-box">
+            {% for parceiro in parceiros %}
+                <a href="{{ parceiro.link }}">
+                    <article class="evento col-md-3 c-article">
+                        <div class="row c-article-inside">
+                            <div class="c-article__thumb square" style="background-image: url('{{ parceiro.thumbnail.src }}')"></div>
+                            <div class="col-md-12 legenda c-article__content">
+                                <strong class="title c-article__title">{{ parceiro.title }}</strong>
+                                <a class="cta c-article__ver-mais" href="{{ parceiro.link }}">Ver Mais</a>
+                            </div>
+                        </div>
+                    </article>
+                </a>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

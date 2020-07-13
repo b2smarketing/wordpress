@@ -1,0 +1,202 @@
+html {
+    font-size: 16px;
+    background-color: #292962 !important;
+    background-image: url(../img/patternx.png) !important;
+    background-size: contain !important;
+    background-repeat: no-repeat !important;
+}
+
+body {
+    background-color: transparent !important;
+    background-image: none !important;
+}
+
+.headerx {
+    background: #fff200 !important;
+    margin-top: -32px;
+    height: 110px;
+    padding-top: 15px;
+}
+
+#selectx {
+    margin-top: -210px;color: #ffffff;font-size: 16px;font-weight: bold;font-family: Arial;font-style: italic;text-align: right !important;padding-right: 20px; margin-bottom: 140px; float: right; width: 410px;
+}
+
+.tecnico {
+    color: #004a85; font-size: 12px; padding-right: 20px; margin-bottom: 20px;
+}
+
+.duracao {
+    color: #004a85; font-size: 12px; padding-left: 30px; margin-bottom: 20px;
+}
+
+.presencial {
+    color: #004a85; font-size: 12px; margin-bottom: 20px; padding-right: 26px;
+}
+
+.noturno {
+    color: #004a85; font-size: 12px; padding-left: 34px; margin-bottom: 20px;
+}
+
+.rowx {
+    padding-top: 10px; width: 100%;
+}
+
+.preencher {
+    color: #fff; font-size: 30px; font-weight: bold; font-family: Arial; 
+}
+
+.escolheu {
+    color: #f9e113; font-size: 30px; font-family: Arial;
+}
+
+.l-header__chamada {
+    display: block;
+    width: 300px;
+    max-width: 100%;
+    margin: 0 auto !important;
+    margin-left: 130px !important;
+}
+
+
+.c-form__input, .c-form__select, .c-form__textarea {
+    background: #46b6e4 !important;
+    border-radius: 0px !important;
+
+}
+
+.c-form__btn {
+    background: #46b6e4 !important;
+}
+
+.fa {
+  padding: 20px;
+  font-size: 30px;
+  width: 50px;
+  text-align: center;
+  text-decoration: none;
+  margin: 5px 2px;
+}
+
+.fa:hover {
+    opacity: 0.7;
+}
+
+.fa-facebook {
+  background: #3B5998;
+  color: white;
+}
+
+.fa-instagram {
+  background: #125688;
+  color: white;
+}
+
+.fa-skype {
+  background: #00aff0;
+  color: white;
+}
+
+.branq {
+    color: #fff; background-color: #ffffff; height: 66px; border-radius: 10px; margin: 0px !important
+}
+
+.tube {
+width: 80%;
+height: 400px;
+}
+
+.listx {
+height: 50px; padding-left: 15px; font-size: 16px;
+}
+
+.titux {
+    margin-top: -64px;color: #ffffff;font-size: 30px;font-weight: bold;font-family: Arial;font-style: italic;text-align: right !important;padding-right: 20px;
+}
+
+.frasex {
+    position: absolute; top: 250px; margin-left: 460px !important; width: 300px;
+}
+
+.inicioa {
+    color: #f9e113; font-size: 40px; font-weight: bold; font-family: Arial; font-style: italic;
+}
+
+
+@media (max-width: 600px) {
+
+.tecnico {
+    color: #004a85; font-size: 12px; padding-right: 0px;
+}
+
+.duracao {
+    color: #004a85; font-size: 12px; padding-left: 0px;
+}
+
+.presencial {
+    color: #004a85; font-size: 12px; margin-bottom: 20px; padding-right: 0px;
+}
+
+.noturno {
+    color: #004a85; font-size: 12px; padding-left: 0px;
+}
+
+.branq {
+    color: #fff; background-color: #ffffff; height: 270px; border-radius: 10px; margin: 0px !important; padding-top: 10px;
+}
+
+.tube {
+width: 90%;
+height: 200px;
+}
+
+.fonem {
+    display: none;
+}
+
+.whatsm {
+    display: none;
+}
+
+.listx {
+    height: 50px;
+    padding-left: 15px;
+    font-size: 16px;
+    position: absolute;
+    left: 0px;
+    margin-top: 60px;
+    padding: 10px;
+}
+
+.titux {
+    margin-top: -64px;
+    color: #ffffff;
+    font-size: 30px;
+    font-weight: bold;
+    font-family: Arial;
+    font-style: italic;
+    text-align: center !important;
+    padding-right: 0px;
+}
+
+.frasex {
+    position: absolute;
+    top: 140px;
+    margin-left: 0px !important;
+    width: 140px;
+}
+
+.l-header__chamada {
+    display: block;
+    width: 200px;
+    max-width: 100%;
+    margin: 0 auto !important;
+    margin-left: 140px !important;
+}
+
+.inicioa {
+    color: #f9e113; font-size: 30px; font-weight: bold; font-family: Arial; font-style: italic;
+}
+
+}
+

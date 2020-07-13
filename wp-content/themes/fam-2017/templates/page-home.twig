@@ -1,0 +1,211 @@
+{% extends 'layout/base.twig' %}
+
+{# Vídeos do YouTube #}
+{# Referência da API: https://github.com/madcoda/php-youtube-api/wiki/api-reference #}
+{% set playlist = post.custom.youtube_playlist %}
+
+{% if playlist %}
+{# {% set videosYT = YT.getPlaylistItemsByPlaylistId(playlist)|slice(0, 3) %} #}
+{% endif %}
+
+{# Slider #}
+{% block slider %}
+	<div id="slide" class="slide">
+		{{ function ('do_shortcode', '[rev_slider alias="home"]') }}
+		<div class="scroll-down">
+			<a class="scroll" href="#carrosel-videos-home"><i class="fa fa-chevron-down" aria-hidden="true"></i></a>
+		</div>
+	</div>
+	{# <div class="container iconMessenger">
+		<a href="https://m.me/famamericana" target="_blank"><img src="{{ site.theme.link }}/images/icon-messenger.png"></a>
+	</div> #}
+{% endblock %}
+
+{# Página #}
+{% block body %}
+	{% include 'widgets/home-slider-videos.twig' %}
+	
+	{# <section id="mural" class="mural">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8">
+					<h2 class="title-mural">Mural do Aluno</h2>
+					<div class="item-mural">
+						{{ function ('do_shortcode', '[rev_slider alias="mural"]') }}
+					</div>
+				</div>
+				
+				<div class="col-lg-4"></div>
+			</div>
+		</div>
+	</section> #}
+	
+	<section class="socialItem">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-1">
+					<div class="tittle-vertical">
+						<p>Youtube</p>
+					</div>
+				</div>
+				
+				<div class="col-lg-6">
+					<div class="videoBig wow fadeInDown">
+						{# <iframe width="100%" height="100%" src="https://www.youtube.com/embed/{{ videosYT[0].snippet.resourceId.videoId }}" frameborder="0" allowfullscreen></iframe> #}
+						<iframe width="100%" height="100%" src="https://www.youtube.com/embed/7r-53LPkxWs" frameborder="0" allowfullscreen></iframe>
+					</div>
+					
+					<div class="row">
+						<div class="col-lg-6">
+							<div class="videoSmall wow fadeInUp">
+								<iframe width="100%" height="100%" src="https://www.youtube.com/embed/xacpGw6JwXk" frameborder="0" allowfullscreen></iframe>
+							</div>
+						</div>
+						
+						<div class="col-lg-6">
+							<div class="videoSmall wow fadeInUp">
+								<iframe width="100%" height="100%" src="https://www.youtube.com/embed/GJOqaKYNX3o" frameborder="0" allowfullscreen></iframe>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="col-lg-5">
+					<div class="title-social">
+						{{ post.custom.chamada }}
+					</div>
+					
+					<div class="desc-social">
+						{{ post.custom.chamada_texto }}
+					</div>
+					
+				{% if post.custom.chamada_video_id %}
+					<div class="videoMid wow fadeInRight">
+						<iframe width="100%" height="100%" src="https://www.youtube.com/embed/{{ post.custom.chamada_video_id }}" frameborder="0" allowfullscreen></iframe>
+					</div>
+				{% endif %}
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="socialFotos">
+					
+						<div class="fotoTop wow fadeInUp"><img src="{{ site.theme.link }}/images/foto-top.jpg"></div>
+						<div class="fotoRight wow fadeInRight"><img src="{{ site.theme.link }}/images/foto-right.jpg"></div>
+						<div class="fotoCentral wow fadeInDown"><img src="{{ site.theme.link }}/images/foto-central.jpg"></div>
+						<div class="fotoBotton wow fadeInDown"><img src="{{ site.theme.link }}/images/foto-bottom.jpg"></div>
+						<div class="fotoLeft wow fadeInLeft"><img src="{{ site.theme.link }}/images/foto-left.jpg"></div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row">
+				<div class="col-lg-12 text-center">
+					<div class="bloco-social">
+						<a target="_blank" rel="noopener nofollow" href="https://br.linkedin.com/edu/faculdade-de-americana-191005">
+							<div class="item-social"><i class="fa fa-linkedin" aria-hidden="true"></i> Linkedin</div>
+						</a>
+						<a target="_blank" rel="noopener nofollow" href="https://www.facebook.com/famamericana/">
+							<div class="item-social"><i class="fa fa-facebook-official" aria-hidden="true"></i> Facebook</div>
+						</a>
+						<a target="_blank" rel="noopener nofollow" href="https://www.instagram.com/famamericana/">
+							<div class="item-social"><i class="fa fa-instagram" aria-hidden="true"></i> Instagram</div>
+						</a>
+						<a target="_blank" rel="noopener nofollow" href="https://www.youtube.com/channel/UCpk07TjMWhMr3Wv-bFnkk-A">
+							<div class="item-social"><i class="fa fa-youtube" aria-hidden="true"></i> YouTube</div>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	
+	<section class="no-padding fill-1440">
+		<a href="/cursos/#graduacao">
+			<div class="links-fam" style="background: url('{{ site.theme.link }}/images/bg-graduacao.jpg');">
+				<div class="cube-txt">
+					<h3 class="wow fadeInUp">GRADUAÇÃO</h3>
+					<p class="wow fadeInUp" data-wow-delay="100">A maior grade de cursos da região.</p>
+				</div>
+			</div>
+		</a>
+		
+		<a href="/cursos/#tecnico">
+			<div class="links-fam" style="background: url('{{ site.theme.link }}/images/bg-tecfam.jpg');">
+				<div class="cube-txt">
+					<h3 class="wow fadeInUp">TECFAM</h3>
+					<p class="wow fadeInUp" data-wow-delay="100">Cursos técnicos com estrutura de laboratórios e professores altamente qualificados.</p>
+				</div>
+			</div>
+		</a>
+		
+		<a href="/cursos/#ead">
+			<div class="links-fam" style="background: url('{{ site.theme.link }}/images/bg-ead.jpg');">
+				<div class="cube-txt">
+					<h3 class="wow fadeInUp">EAD</h3>
+					<p class="wow fadeInUp" data-wow-delay="100">Mais facilidade para você! Conhecimento no seu tempo!</p>
+				</div>
+			</div>
+		</a>
+		
+		<a href="/fam-news">
+			<div class="links-fam" style="background: url('{{ site.theme.link }}/images/bg-sejafam.jpg');">
+				<div class="cube-txt">
+					<h3 class="wow fadeInUp">#SEJAFAM</h3>
+					<p class="wow fadeInUp" data-wow-delay="100">Saiba porque a FAM é a Instituição de Ensino Superior que mais cresce no interior paulista.</p>
+				</div>
+			</div>
+		</a>
+	</section>
+	
+	<section id="home-app" class="container">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-12">
+					<div class="down">Baixe o app da fam</div>
+				</div>
+			</div>
+		</div>
+
+		{# <div id="parallax" class="item-app-all"> #}
+			{# <div class="item-app app-01 wow fadeInDown" style="background: url('{{ site.theme.link }}/images/app-01.jpg');"></div>
+			<div class="item-app app-02 wow fadeInDown" style="background: url('{{ site.theme.link }}/images/app-02.jpg');"></div>
+			<div class="item-app app-03 wow fadeInDown" style="background: url('{{ site.theme.link }}/images/app-03.jpg');"></div> #}
+			{# <div class="item-app app-04 wow fadeInDown" style="background: url('{{ site.theme.link }}/images/app-04.jpg');"></div> #}
+			{# <div class="item-app app-05 wow fadeInDown" style="background: url('{{ site.theme.link }}/images/app-05.jpg');"></div> #}
+		{# </div> #}
+        <div class="iframe-container">
+            <iframe class="iframe-app" src="https://www.youtube.com/embed/nIl2p4FTGqY?&amp;autoplay=1&amp;loop=1&amp;rel=0&amp;controls=0&amp;modestbranding=1&amp;showinfo=0&amp;playlist=nIl2p4FTGqY&amp;mute=1" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; loop" allowfullscreen></iframe>
+        </div>
+
+		<div class="container">
+			<div class="row">				
+				<div class="col-lg-12 dl">
+					<div class="down-itens-all">
+						{# App Store #}
+						<a href="https://itunes.apple.com/br/app/fam-faculdade-de-americana/id1283307075?mt=8" rel="noopener nofollow">
+							<div class="down-itens">
+								<img src="{{ site.theme.link }}/images/down-01.png">
+							</div>
+						</a>
+
+						{# Play Store #}
+						<a href="https://play.google.com/store/apps/details?id=com.PSX&hl=pt" rel="noopener nofollow">
+							<div class="down-itens">
+								<img src="{{ site.theme.link }}/images/down-03.png">
+							</div>	
+						</a>
+						
+						{# Windows Store #}
+						{#<a href="#">
+							<div class="down-itens">
+								<img src="{{ site.theme.link }}/images/down-02.png">
+							</div>	
+						</a>#}
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+{% endblock %}

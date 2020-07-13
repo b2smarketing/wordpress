@@ -1,0 +1,31 @@
+{% extends 'layout/base.twig' %}
+
+{% block body %}
+	<section class="c-banner">
+		<div class="container c-banner__container">
+            <img src="https://www.fam.br/wp-content/uploads/2019/11/logo.png" alt="Programa Faculdade Aberta" class="c-banner__logo" />
+            <h1 class="c-banner__title">
+                Galeria<br/>
+                de <span class="c-banner__title-main">FOTOS</span>
+            </h1>
+            <img src="https://www.fam.br/wp-content/uploads/2019/11/homem_vr.png" alt="" class="c-banner__vr" />
+        </div>
+	</section>
+    <section class="c-header container">
+        <div class="c-galeria c-header__div">
+            <i class="c-header__grid-icon"></i>
+            <h2 class="c-header__title">Galeria <i class="fa fa-chevron-down c-header__down-icon" aria-hidden="true"></i></h2>
+        </div>
+        <div class="c-header__div">
+            <p class="c-header__text"><i class="c-header__folder-icon"></i> Baixe o eBook grátis "Digital Influencer: saiba como ter um Instagram de blogueira(o)"</p>
+            <a href="https://assets.fam.br/arquivos/Dicas-para-arrasar-no-Instagram.pdf" target="_blank" class="c-header__button">Download</a>
+        </div>
+    </section>
+    <section class="container-fluid c-grid-container">
+        <div class="container">
+            <div class="row">
+                {{ post.content }}
+            </div>
+        </div>
+    </section>
+{% endblock %}

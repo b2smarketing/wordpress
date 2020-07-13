@@ -1,0 +1,26 @@
+<div class="list-eventos">
+	<div class="container">
+		<div class="row">
+		{% for post in posts %}
+			<a href="{{ post.link }}">
+				<article class="evento col-md-6">
+					<div class="row">
+						<div class="col-md-6"><div class="thumb" style="background-image: url('{{ post.thumbnail.src|resize(525, 525) }}')"></div></div>
+						<div class="col-md-6 legenda">
+							<strong class="title">{{ post.title }}</strong>
+							<p class="data">
+								{% if post._('data-texto') %}
+									{{ post._('data-texto') }}
+								{% else %}
+									{{ post._('data-evento')|date('d.m') }}
+								{% endif %}
+							</p>
+						</div>
+					</div>
+					<a class="cta">Ver Mais</a>
+				</article>
+			</a>
+		{% endfor %}
+		</div>
+	</div>
+</div>

@@ -1,0 +1,62 @@
+.c-form {
+    max-width: 100%;
+    width: 100%;
+    @media (min-width: 900px) {
+        width: 850px;
+        margin: 0 auto;
+    }
+    &__input, &__select, &__textarea {
+        background: $pink;
+        color: $white;
+        border: none;
+        padding: 10px 5px;
+        margin-bottom: .75em;
+        border-radius: 12px;
+        width: 100%;
+        text-align: center;
+        transition: .2s ease;
+        &:focus {
+            outline: none;
+        }
+        &::placeholder {
+            color: $white;
+        }
+    }
+    &__select {
+        line-height: 38px;
+        padding: 8px 5px 9px;
+    }
+    &__btn {
+        font-family: Arial, Helvetica, sans-serif;
+        width: 285px;
+        max-width: 90%;
+        display: block;
+        margin: 1.5em auto 1em;
+        background: $pink;
+        color: $yellow;
+        border: none;
+        text-transform: uppercase;
+        padding: 10px;
+        font-style: 1.2em;
+        font-weight: bold;
+        border-radius: 12px;
+        outline: none;
+        cursor: pointer;
+        transition: .2s ease;
+        &:hover {
+            background: darken($color: $pink, $amount: 15);
+            box-shadow: 0 3px 5px rgba($color: #000000, $alpha: .15);
+        }
+    }
+    &__response {
+        opacity: 1;
+        text-align: center;
+    }
+    &__loading {
+        opacity: 0;
+        height: 0;
+        max-height: 0;
+        line-height: 0;
+        transition: .2s ease;
+    }
+}

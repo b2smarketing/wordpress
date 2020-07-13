@@ -1,0 +1,109 @@
+{% extends 'layout/base.twig' %}
+
+{% block body %}
+	<article class="page container">
+        <div class="col-md-1"></div>
+        <div class="col-md-10 post-main-container">
+            {# Title #}
+            <h1 class="page-title post-title">{{ post.title }}</h1>
+            
+            {# Excerpt #}
+            <p class="post-excerpt">{{ post.post_excerpt }}</p>
+
+            {% if (post.type == "post") %}
+
+                <div class="d-flex">
+                    <div class="flex-row">
+                        {# Author #}
+                        <p class="post-author">Por {{ function("get_the_author") }}<span class="post-author-city"> — Americana</span></p>
+
+                        {# Cálculo da diferença entre hoje e última alteração #}
+                        {% set difference = date(post.post_modified).diff(date("now")) %}
+                        {% set diffYears = difference.y %}
+                        {% set diffMonths = difference.m %}
+                        {% set diffDays = difference.days %}
+                        {% set diffHours = difference.h %}
+                        {% set diffMinutes = difference.i %}
+                        {% if diffDays == 0 %}
+                            {% if diffHours == 0 %}
+                                {% set dateDiff = diffMinutes ~ " minutos" %}
+                            {% elseif diffHours == 1 %}
+                                {% set dateDiff = "1 hora" %}
+                            {% else %}
+                                {% set dateDiff = diffHours ~ " horas" %}
+                            {% endif %}
+                        {% elseif diffDays == 1 %}
+                            {% set dateDiff = "1 dia" %}
+
+                        {# Se passar de 31 dias, será 1 mês ou mais #}
+                        {% elseif diffDays > 31 %}
+                            {% if diffMonths == 1 %}
+                                {% set dateDiff = "1 mês" %}
+                            {% elseif diffMonths < 12 %}
+                                {% set dateDiff = diffMonths ~ " meses" %}
+                            {# Se 12 meses ou mais, será 1 ano ou mais #}
+                            {% else %}
+                                {% if diffYears == 1 %}
+                                    {% set dateDiff = "1 ano" %}
+                                {% else %}
+                                    {% set dateDiff = diffYears ~ " anos" %}  
+                                {% endif %}
+                            {% endif %}
+                        {% else %}
+                            {% set dateDiff = diffDays ~ " dias" %}
+                        {% endif %}
+
+                        {# Data #}
+                        <p class="data post-date">{{ post.post_date|date('d/m/Y') }} {{ post.post_date|date('H\\hi') }} <span class="post-modified"> Atualizado há {{ dateDiff }}</span></p>
+                    </div>
+                    <div class="flex-row share">
+                        {{ function("do_shortcode","[addtoany]") }}
+                    </div>
+                </div>
+
+                {# Separator #}
+                <hr class="post-separator"/>
+
+            {% endif %}
+            <div class="page-body post-content">
+                {# Imagem #}
+                {% if (post.thumbnail.src) %}
+                    <img src="{{ post.thumbnail.src }}" alt="{{ post.thumbnail.description }}" class="post-image"/>
+                {% endif %}
+
+                {# Conteúdo #}
+                {{ post.content }}
+            </div>
+	</article>
+
+    {# Posts Recentes #}
+    {% if (post.type == "post") %}
+        <div class="list-eventos posts-recentes t-darkblue">
+            <div class="container">
+                <h3 class="posts-recentes__title">Mais do Blog da FAM</h3>
+                <div class="row c-article-box">
+                {% for post_recente in posts_recentes %}
+                    <a href="{{ post_recente.link }}">
+                        <article class="evento col-md-3 c-article">
+                            <div class="row c-article-inside">
+                                <div class="c-article__thumb" style="background-image: url('{{ post_recente.thumbnail.src|resize(525, 525) }}')"></div>
+                                <div class="col-md-12 legenda c-article__content">
+                                    <strong class="title c-article__title">{{ post_recente.title }}</strong>
+                                    
+                                    <p class="data c-article__data">
+                                        {{ function("get_the_date", 'Y/m/d', post_recente.id ) }} <i class="fa fa-calendar-o" aria-hidden="true"></i>
+                                    </p>
+                                    <a class="cta c-article__ver-mais" href="{{ post_recente.link }}">Ver Mais</a>
+                                </div>
+                            </div>
+                        </article>
+                    </a>
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% if (post.type == "post") %}
+{% endif %}

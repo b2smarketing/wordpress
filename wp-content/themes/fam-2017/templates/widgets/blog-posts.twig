@@ -1,0 +1,23 @@
+<div class="list-eventos">
+	<div class="container">
+		<div class="row c-article-box">
+		{% for post in posts %}
+			<a href="{{ post.link }}">
+				<article class="evento col-md-3 c-article">
+					<div class="row c-article-inside">
+						<div class="c-article__thumb" style="background-image: url('{{ post.thumbnail.src|resize(525, 525) }}')"></div>
+						<div class="col-md-12 legenda c-article__content">
+							<strong class="title c-article__title">{{ post.title }}</strong>
+                            
+							<p class="data c-article__data">
+                                {{ function("get_the_date", 'Y/m/d', post.id ) }} <i class="fa fa-calendar-o" aria-hidden="true"></i>
+							</p>
+                            <a class="cta c-article__ver-mais" href="{{ post.link }}">Ver Mais</a>
+						</div>
+					</div>
+				</article>
+			</a>
+		{% endfor %}
+		</div>
+	</div>
+</div>

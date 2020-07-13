@@ -1,0 +1,191 @@
+{% extends 'layout/base.twig' %}
+
+{# Eventos #}
+{% set eventos = types.get('eventos', { 'posts_per_page': -1, 'orderby': 'wpcf-data-evento', 'order': 'DESC' }) %}
+
+{# Banner #}
+{% block banner %}
+<div class="spotlight-eventos">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h1>Próximos Eventos</h1>
+			</div>
+			<div class="col-md-12">
+				<div class="slider-eventos">
+				{% for evento in eventos %}
+					<div class="item" title="{{ evento.title }}">
+						<div class="thumb" style="background-image:url('{{ evento.thumbnail.src|resize(720, 720) }}')"></div>
+						<div class="legenda row">
+							<div class="col-md-8 data">
+								<i class="fa fa-calendar"></i>
+								{% if evento._('data-texto') %}
+									{{ evento._('data-texto') }}
+								{% else %}
+									{{ evento._('data-evento')|date('d.m') }}
+								{% endif %}
+							</div>
+							<div class="col-md-4 cta">
+								<a href="{{ evento.link }}">
+										SAIBA MAIS
+								</a>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{# Página #}
+{% block body %}
+<div class="list-eventos">
+	<div class="container">
+		<div class="row">
+		{% for evento in eventos %}
+			<a href="{{ evento.link }}">
+				<article class="evento col-md-6">
+					<div class="row">
+						<div class="col-md-6"><div class="thumb" style="background-image: url('{{ evento.thumbnail.src|resize(525, 525) }}')"></div></div>
+						<div class="col-md-6 legenda">
+							<strong class="title">{{ evento.title }}</strong>
+							<p class="data">
+								{% if evento._('data-texto') %}
+									{{ evento._('data-texto') }}
+								{% else %}
+									{{ evento._('data-evento')|date('d.m') }}
+								{% endif %}
+							</p>
+						</div>
+					</div>
+					<a class="cta">Ver Mais</a>
+				</article>
+			</a>
+		{% endfor %}
+		</div>
+	</div>
+</div>
+
+<script>
+(() => {
+	var $ = jQuery;
+
+	window.filtrar = () => {
+		var filters = [];
+
+		// Processar busca
+
+		var search = $('#busca-cursos').val().toLowerCase().trim();
+
+		// Processar tags
+
+		$('.tags').each((i, o) => {
+			var tags = $(o);
+			var filter = tags.data('filter');
+
+			var selected = [];
+
+			tags.find('.tag.active').each((i, tag) => {
+				selected.push($(tag).data('tag'));
+			});
+
+			if (selected.length == 0) {
+				$('.tags').removeClass('active');
+				return;
+			}
+			$('.tags').addClass('active');
+
+			filters.push({
+				filter: filter,
+				selected: selected
+			});
+		});
+
+		// Filtragem
+
+		$('.curso-filter').each((i, o) => {
+			var show = true;
+			var the_case = $(o);
+			var data = the_case.data();
+
+			// Para cada filtro....
+
+			$(filters).each((i, filter) => {
+				var values = data[filter.filter];
+
+				var found = false;
+
+				// Procurar nos selecionados e nos valores deste case
+
+				$(values).each((i, val) => {
+					if (~filter.selected.indexOf(val))
+						found = true;
+				});
+
+				// Se não foi encontrado, esconder
+
+				if (!found)
+					show = false;
+			});
+
+			// Busca
+
+			if (search.length > 0 && show) {
+				var text = $(o).text().toLowerCase().trim();
+				var idx = text.indexOf(search);
+				if (!~idx)
+					show = false;
+			}
+
+			// Parte visual
+
+			if (show)
+				the_case.show();
+			else
+				the_case.hide();
+		});
+	};
+
+	$(document).ready(() => {
+		$('#busca-cursos').on('keyup', window.filtrar);
+		$('.tags').each((i, o) => {
+			var color = $(o).data('color');
+			$(o).on('click', '.tag', (e) => {
+				var tag = $(e.target);
+				
+				tag.toggleClass('active');
+
+				if (tag.hasClass('active'))
+					tag.css('background-color', color);
+				else
+					tag.css('background-color', '');
+
+				window.filtrar();
+			});
+		});
+	});
+})();
+</script>
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+(() => {
+	var $ = jQuery;
+
+	var owl = $('.slider-eventos').addClass('owl-carousel');
+	owl.owlCarousel({
+		items: 3,
+		loop: true,
+		autoplay: true,
+		autoplayTimeout: 3000,
+		URLhashListener:true,
+    	autoplayHoverPause:true,
+    	startPosition: 'URLHash',
+	});
+})();
+</script>
+{% endblock %}

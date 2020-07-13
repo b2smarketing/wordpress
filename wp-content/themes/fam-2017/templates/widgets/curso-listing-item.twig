@@ -1,0 +1,9 @@
+{% set campo = curso.terms('campo-de-conhecimento')[0] %}
+<div class="col-sm-6 col-md-4 col-lg-3 curso-filter" data-area='[{{ campo.title|json_encode }}]'>
+	<a class="curso-item curso-{{ campo.slug }}" href="{{ curso.link }}">
+		<div class="capa" style="background-image:url('{{ curso.thumbnail.src }}')">
+			<div class="overlay" style="background-image:url('{{ function ('z_taxonomy_image_url', campo.id) }}')"></div>
+		</div>
+		<strong class="titulo">{{ curso.title }}</strong>
+	</a>
+</div>

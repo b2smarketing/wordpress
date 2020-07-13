@@ -1,0 +1,214 @@
+.txa {
+    color: #ffffff !important;
+    font-size: 28px !important;
+    font-weight: normal !important; 
+    font-style: normal;
+}
+
+.txb {
+    color: #ffffff !important;
+    font-size: 38px !important;
+    font-weight: bold !important;    
+    font-style: normal;
+}
+
+.titulocursox {
+    position: absolute;
+    top: 40px;
+    margin-left: 40%;
+}
+
+.inscx {
+    position: absolute !important;
+    z-index: 99999999 !important;
+    top: 200px;
+    margin-left: 39%;
+}
+
+.inscxb {
+    position: absolute !important;
+    z-index: 99999999 !important;
+    top: 200px;
+    margin-left: 52%;
+}
+
+.inscxc {
+    position: absolute !important;
+    z-index: 99999999 !important;
+    top: 200px;
+    margin-left: 65%;
+}
+
+
+.iconxmobile {
+    display: block !important;
+}
+
+.bannerdesktop {
+    display: block !important;
+}
+
+.bannermobile {
+    display: none !important;
+    width: 100% !important;
+}
+
+
+.youx {
+    width: 60% !important;
+    height: 400px !important;
+}
+
+.colx {
+    border-right: 1px solid #d6d6d6 !important;
+}
+
+#colxa {
+    border-left: 1px solid #d6d6d6 !important;
+}
+
+.vc_custom_1579029594387 {
+    display: none;
+}
+
+.vc_custom_1579029547771 {
+    margin-top: -35px !important;
+    margin-bottom: 0px !important;
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    height: 315px !important;
+}
+
+#cursobtcv {
+    background-color: #10b2ef !important;
+    color: #ffffff !important;
+    width: 200px !important;
+    padding: 10px !important;
+    font-size: 13px !important;
+    font-family: "Arial" !important;
+    font-weight: 600 !important;
+    border: none !important;
+    border-radius: 7px !important;
+    height: 48px !important;
+    padding-top: 12px !important;
+    margin-top: 40px; !important;
+}
+
+.sombrax {
+    width: 60% !important;
+}
+
+#selectcurso {
+    background-color: #10b2ef;
+    color: #ffffff;
+    width: 200px;
+    padding: 10px;
+    font-size: 15px;
+    font-family: "Arial";
+    font-weight: 600;
+    border: none !important;
+    border-radius: 7px !important;
+    height: 48px !important;
+}
+
+.btcurso {
+    color: #ffffff;
+    background: #10b2ef;
+    border: 0px solid #10b2ef;
+    border-radius: 7px;
+    font-size: 15px;
+    padding: 13px 10px;
+    width: 200px;
+}
+
+.btcursovalor {
+    background-color: #10b2ef !important;
+    color: #ffffff !important;
+    width: 200px !important;
+    padding: 10px !important;
+    font-size: 15px !important;
+    font-family: "Arial" !important;
+    font-weight: normal !important;
+    border: none !important;
+    border-radius: 7px !important;
+    height: 48px !important;
+}
+
+.cursovalor {
+    font-size: 20px !important;
+    font-weight: 600;
+}
+
+
+@media (max-width: 600px) {
+
+#cursobtcv {
+    background-color: #10b2ef !important;
+    color: #ffffff !important;
+    width: 160px !important;
+    padding-bottom: 12px !important;
+    font-size: 12px !important;
+    font-family: "Arial" !important;
+    font-weight: 600 !important;
+    border: none !important;
+    border-radius: 7px !important;
+    height: 48px !important;
+    padding-top: 12px !important;
+    margin-top: 15px;
+}
+
+#padmobile {
+   padding-left: 16px !important;    
+   padding-right: 16px !important;
+}
+
+.abinha {
+   margin-bottom: 40px !important;    
+}
+
+.colx {
+    border-right: none !important;
+     border-bottom: 1px solid #d6d6d6 !important;
+}
+
+#colxa {
+    border-left: none !important;
+     border-bottom: 1px solid #d6d6d6 !important;
+}
+
+.youx {
+    width: 95% !important;
+    height: 300px !important;
+}
+
+.bannerdesktop {
+    display: none !important;
+}
+
+.bannermobile {
+    display: block !important;
+    width: 100% !important;
+}
+
+.iconxmobile {
+    display: none !important;
+}
+
+.inscx {
+    display: none !important;
+}
+
+.inscxb {
+    display: none !important;
+}
+
+.inscxc {
+    display: none !important;
+}
+
+.titulocursox {
+    display: none !important;
+}
+
+
+}

@@ -1,0 +1,88 @@
+{% if main %}
+	{# Menu Principal #}
+
+	<ul class="nav navbar-nav">
+	{% for item in menu %}
+		{% if item.get_children %}
+			{# Submenu #}
+
+			<li class="dropdown {{ item.classes | join(' ') }}">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+					{{ item.title }} 
+					<span class="caret"></span>
+				</a>
+				{% include 'widgets/menu.twig' with { main: false, menu: item.get_children } %}
+			</li>
+
+		{% else %}
+			{# Item Normal #}
+
+			<li class="{{ item.classes | join(' ') }}"><a target="{{ item.target }}" href="{{ item.link }}">{{ item.title }}</a></li>
+		{% endif %}
+	{% endfor %}
+
+		{# Pesquisa #}
+
+		<li>
+			<a href="#">
+				<div class="btn-search">
+					<i class="fa fa-search" aria-hidden="true" onclick="jQuery('#search-box').addClass('open');"></i>
+				</div>
+			</a>
+		</li>
+
+		{# Portal Acadêmico #}
+
+		<li class="acessoPortais">
+			<a href="https://www.famportal.com.br/fam/" style="/* padding-top: 0px; *//* padding-bottom:  0px; *//* margin-top: -0.5em; */">
+				<div class="acessPt">
+					Portal Acadêmico
+				</div>
+			</a>
+			{#<a href="https://fam.brightspace.com/d2l/login" target="_blank">
+				<div class="acessPt acessDg">
+					Acesse o FAM Digit@l
+				</div>
+			</a>#}
+		</li>
+
+		{# Acessibilidade #}
+
+		<li class="a11y" title="Tamanho da Fonte">
+			<a title="Diminuir o Tamanho da Fonte" href="javascript:void(0)" onclick="a11y.zoomOut();"><sub>-</sub></a>
+			<a title="Redefinir o Tamanho da Fonte" href="javascript:void(0)" onclick="a11y.zoomReset();">A</a>
+			<a title="Aumentar o Tamanho da Fonte" href="javascript:void(0)" onclick="a11y.zoomIn();"><sup>+</sup></a>
+		</li>
+        <li>
+            <a target="_blank" class="menu-social-link" title="Ir para a página da FAM no Facebook. Abre nova aba" rel="noopener nofollow" href="https://www.facebook.com/famamericana/">
+                <i class="fa fa-facebook-official" aria-hidden="true"></i>
+            </a>
+            <a target="_blank" class="menu-social-link" title="Ir para o Instagram da FAM. Abre nova aba" rel="noopener nofollow" href="https://www.instagram.com/famamericana/">
+                <i class="fa fa-instagram" aria-hidden="true"></i>
+            </a>
+        </li>
+	</ul>
+{% else %}
+	{# Submenu #}
+
+	<ul class="dropdown-menu">
+	{% for item in menu %}
+		{% if item.get_children %}
+			{# Submenu #}
+
+			<li class="dropdown-submenu {{ item.classes | join(' ') }}">
+				<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+					{{ item.title }} 
+				</a>
+				{% include 'widgets/menu.twig' with { main: false, menu: item.get_children } %}
+			</li>
+
+		{% else %}
+			{# Item Normal #}
+
+			<li class="{{ item.classes | join(' ') }}"><a target="{{ item.target }}" href="{{ item.link }}">{{ item.title }}</a></li>
+		{% endif %}
+		{# <li class="{{ item.classes | join(' ') }}"><a target="{{ item.target }}" href="{{ item.link }}">{{ item.title }}</a></li> #}
+	{% endfor %}
+	</ul>
+{% endif %}

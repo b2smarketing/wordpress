@@ -1,0 +1,172 @@
+{% extends 'layout/base.twig' %}
+
+{# Cursos #}
+{% set cursos = types.get('cursos', { 'posts_per_page': -1, 'orderby': 'title', 'order': 'ASC' }) %}
+
+{# Página #}
+{% block body %}
+<div class="list-cursos">
+	<div class="container">
+		<div class="row">
+			<ul class="nav nav-tabs nav-justified">
+				<li class="active"><a data-toggle="tab" href="#graduacao">Graduação</a></li>
+				<li><a data-toggle="tab" href="#ead">EAD</a></li>
+				<li><a data-toggle="tab" href="#tecnico">Técnico</a></li>
+				{# <li><a data-toggle="tab" href="#pos-graduacao">Pós-Graduação</a></li> #}
+			</ul>
+
+			<div class="filtro-cursos">
+				<div class="busca"><input type="search" class="form-control" id="busca-cursos" placeholder="Pesquise por Cursos" /></div>
+				<div class="filtro tags" data-filter="area">
+					<a href="javascript:void(0)" class="tag humanas" data-tag="Humanas">Humanas</a>
+					<a href="javascript:void(0)" class="tag saude" data-tag="Saúde">Saúde</a>
+					<a href="javascript:void(0)" class="tag exatas" data-tag="Exatas">Exatas</a>
+				</div>
+			</div>
+
+			<div class="tab-content">
+				<div id="graduacao" class="tab-pane fade in active">
+					<div class="row">
+					{% for curso in cursos %}
+					{% if curso.has_term('graduacao', 'category') %}
+						{% include 'widgets/curso-listing-item.twig' %}
+					{% endif %}
+					{% endfor %}
+					</div>
+				</div>
+				<div id="ead" class="tab-pane fade">
+					<div class="row">
+					{% for curso in cursos %}
+					{% if curso.has_term('ead', 'category') %}
+						{% include 'widgets/curso-listing-item.twig' %}
+					{% endif %}
+					{% endfor %}
+					</div>
+				</div>
+				<div id="tecnico" class="tab-pane fade">
+					<div class="row">
+					{% for curso in cursos %}
+					{% if curso.has_term('tecnico', 'category') %}
+						{% include 'widgets/curso-listing-item.twig' %}
+					{% endif %}
+					{% endfor %}
+					</div>
+				</div>
+				{# <div id="pos-graduacao" class="tab-pane fade">
+					<div class="row">
+					{% for curso in cursos %}
+					{% if curso.has_term('pos-graduacao', 'category') %}
+						{% include 'widgets/curso-listing-item.twig' %}
+					{% endif %}
+					{% endfor %}
+					</div>
+				</div> #}
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+(() => {
+	var $ = jQuery;
+
+	window.filtrar = () => {
+		var filters = [];
+
+		// Processar busca
+
+		var search = $('#busca-cursos').val().toLowerCase().trim();
+
+		// Processar tags
+
+		$('.tags').each((i, o) => {
+			var tags = $(o);
+			var filter = tags.data('filter');
+
+			var selected = [];
+
+			tags.find('.tag.active').each((i, tag) => {
+				selected.push($(tag).data('tag'));
+			});
+
+			if (selected.length == 0) {
+				$('.tags').removeClass('active');
+				return;
+			}
+			$('.tags').addClass('active');
+
+			filters.push({
+				filter: filter,
+				selected: selected
+			});
+		});
+
+		// Filtragem
+
+		$('.curso-filter').each((i, o) => {
+			var show = true;
+			var the_case = $(o);
+			var data = the_case.data();
+
+			// Para cada filtro....
+
+			$(filters).each((i, filter) => {
+				var values = data[filter.filter];
+
+				var found = false;
+
+				// Procurar nos selecionados e nos valores deste case
+
+				$(values).each((i, val) => {
+					if (~filter.selected.indexOf(val))
+						found = true;
+				});
+
+				// Se não foi encontrado, esconder
+
+				if (!found)
+					show = false;
+			});
+
+			// Busca
+
+			// if (search.length > 0 && show) {
+			if (search.length > 0) {
+				var text = $(o).text().toLowerCase().trim();
+				var idx = text.indexOf(search);
+				if (!~idx)
+					show = false;
+				else
+					show = true;
+			}
+
+			// Parte visual
+
+			if (show)
+				the_case.show();
+			else
+				the_case.hide();
+		});
+	};
+
+	$(document).ready(() => {
+		$('#busca-cursos').on('keyup', window.filtrar);
+		$('.tags').each((i, o) => {
+			var color = $(o).data('color');
+			$(o).on('click', '.tag', (e) => {
+				var tag = $(e.target);
+				
+				tag.toggleClass('active');
+
+				if (tag.hasClass('active'))
+					tag.css('background-color', color);
+				else
+					tag.css('background-color', '');
+
+				window.filtrar();
+			});
+		});
+	});
+})();
+</script>
+{% endblock %}

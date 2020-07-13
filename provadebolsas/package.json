@@ -1,0 +1,25 @@
+{
+    "name": "dae-amigo",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.html",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "b2s",
+    "license": "ISC",
+    "devDependencies": {
+        "autoprefixer": "9.4.4",
+        "browser-sync": "^2.26.7",
+        "gulp": "3.9.1",
+        "gulp-cli": "2.0.1",
+        "gulp-postcss": "8.0.0",
+        "gulp-sass": "4.0.2",
+        "gulp-sourcemaps": "2.6.4",
+        "gulp-uglify": "3.0.1",
+        "node-sass": "4.11.0"
+    },
+    "dependencies": {
+        "readable-stream": "3.1.1"
+    }
+}

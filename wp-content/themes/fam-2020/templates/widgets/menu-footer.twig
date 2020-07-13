@@ -1,0 +1,18 @@
+{% if main %}
+	{% set size = 2 %}
+
+	{# Menu Principal #}
+	{% for item in menu %}
+		<div class="col-lg-{{ size }}">
+			<ul class="menu-footer">
+				<li><b>{{ item.title }} </b></li>
+				{% include 'widgets/menu-footer.twig' with { main: false, menu: item.get_children } %}
+			</ul>
+		</div>
+	{% endfor %}
+{% else %}
+	{# Submenu #}
+	{% for item in menu %}
+		<li class="{{ item.classes | join(' ') }}"><a target="{{ item.target }}" href="{{ item.link }}">{{ item.title }}</a></li>
+	{% endfor %}
+{% endif %}

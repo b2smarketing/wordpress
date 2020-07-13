@@ -1,0 +1,77 @@
+@font-face {
+  font-family: 'fam-web';
+  src:  url('fonts/fam-web.eot?m76p5');
+  src:  url('fonts/fam-web.eot?m76p5#iefix') format('embedded-opentype'),
+    url('fonts/fam-web.ttf?m76p5') format('truetype'),
+    url('fonts/fam-web.woff?m76p5') format('woff'),
+    url('fonts/fam-web.svg?m76p5#fam-web') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'fam-web' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-credit:before {
+  content: "\e90b";
+}
+.icon-tag:before {
+  content: "\e90d";
+}
+.icon-phone:before {
+  content: "\e909";
+}
+.icon-news:before {
+  content: "\e90a";
+}
+.icon-cash:before {
+  content: "\e90c";
+}
+.icon-facebook-messenger:before {
+  content: "\e908";
+  color: #fff;
+}
+.icon-fone-rounded:before {
+  content: "\e900";
+  color: #fff;
+}
+.icon-whatsapp:before {
+  content: "\e901";
+  color: #fff;
+}
+.icon-mapa-sala:before {
+  content: "\e902";
+  color: #fff;
+}
+.icon-mail:before {
+  content: "\e903";
+  color: #1c3456;
+}
+.icon-book:before {
+  content: "\e904";
+  color: #1c3456;
+}
+.icon-time:before {
+  content: "\e905";
+  color: #1c3456;
+}
+.icon-escola:before {
+  content: "\e906";
+  color: #1c3456;
+}
+.icon-periodo:before {
+  content: "\e907";
+  color: #1c3456;
+}

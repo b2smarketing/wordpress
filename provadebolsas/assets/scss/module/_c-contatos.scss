@@ -1,0 +1,39 @@
+.c-contatos {
+    border-radius: 8px;
+    background-color: $white;
+    box-shadow: 0px 4px 30px 0px rgba(0, 0, 0, 0.2);
+    padding: 2em;
+
+    &__title {
+        @extend %u-poppins-semibold;
+        color: $darkGray;
+        margin: 0 0 2em 0;
+    }
+    &__contato {
+        margin-top: 0;
+    }
+    &__text {
+        &.word-break { word-break: break-all }
+    }
+    &__link {
+        text-decoration: none;
+        color: inherit;
+        transition: .2s ease;
+        &:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+    }
+    &__contato, &__text {
+        opacity: .5;
+        transition: .2s ease;
+        &:hover {
+            opacity: .8;
+        }
+    }
+
+    @include media-breakpoint-down(sm) {
+        margin: 10px 10px 0;
+        flex: unset;
+    }
+}

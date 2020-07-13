@@ -1,0 +1,25 @@
+html, body {
+    @extend %u-verdana-regular;
+    font-size: 16px;
+    background-color: $darkBlue;
+    background-image: url('../img/pattern.png');
+    background-size: cover;
+
+    @media (min-width: 1000px) {
+        .container {
+            max-width: 900px;
+        }
+    }
+}
+
+::selection {
+    background: #08c1f3;
+    color: #fff;
+}
+
+#result {
+    @extend %u-verdana-regular;
+    color: $white;
+    text-align: center;
+    margin: 1em auto;
+}

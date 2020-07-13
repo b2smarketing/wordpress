@@ -1,0 +1,49 @@
+{% spaceless %}
+
+{# Inicializar shortcodes do VC #}
+{% set sc = '[vc_row][vc_column][vc_tta_tabs el_class="box-transportes-all"]' %}
+
+{# Pegar cidades e lista de empresas #}
+{% set cidades = terms.get({ taxonomy: 'cidade', 'post_type': 'transporte-escolar', hide_empty: false }) %}
+{% set transportes = types.get('transporte-escolar', { 'posts_per_page': -1 }) %}
+
+{# Loop de cidades #}
+{% for cidade in cidades %}
+	{% set sc = sc ~ '[vc_tta_section title="' ~ cidade.name ~ '" tab_id="' ~ cidade.slug ~ '"]' %}
+		{# Cabeçalho #}
+		{% set sc = sc ~ '[vc_row_inner el_class="box-title"][vc_column_inner width="6/12"][vc_column_text]Itinerário[/vc_column_text][/vc_column_inner][vc_column_inner width="3/12"][vc_column_text]Telefone(s)[/vc_column_text][/vc_column_inner][vc_column_inner width="3/12"][vc_column_text]Responsável[/vc_column_text][/vc_column_inner][/vc_row_inner]' %}
+
+		{# Linhas #}
+		{% for transporte in transportes %}
+		{% if transporte.has_term(cidade.id) %}
+			{# Shortcode da linha #}
+			{% set sc = sc ~ '[vc_row_inner][vc_column_inner width="6/12"][vc_column_text]' ~ transporte.custom.intinerario ~ '[/vc_column_text][/vc_column_inner][vc_column_inner width="3/12"][vc_column_text]' ~ transporte.custom.telefones ~ '[/vc_column_text][/vc_column_inner][vc_column_inner width="3/12"][vc_column_text]' ~ transporte.title ~ '[/vc_column_text][/vc_column_inner][/vc_row_inner]' %}
+		{% endif %}
+		{% endfor %}
+
+	{% set sc = sc ~ '[/vc_tta_section]' %}
+{% endfor %}
+
+{# Finalizar shortcodes do VC #}
+{% set sc = sc ~ '[/vc_tta_tabs][/vc_column][/vc_row]' %}
+
+{# Estilos #}
+<style type="text/css">
+	/* #245dae */
+	.box-transportes-all .vc_tta-tab.vc_active>a,
+	.box-title {
+		background-color: #245dae !important;
+		color: #fff !important;
+	}
+	.box-transportes-all .vc_tta-panel-body {
+		padding: 0px !important;
+	}
+	.box-transportes-all .vc_tta-panel-body>.vc_row {
+		padding: 1em;
+	}
+</style>
+
+{# Rodar shortcodes #}
+{{ function ('do_shortcode', sc) }}
+
+{% endspaceless %}

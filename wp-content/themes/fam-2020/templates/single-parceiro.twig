@@ -1,0 +1,31 @@
+{% extends 'layout/base.twig' %}
+
+{% block body %}
+	<article class="page container single-parceiro">
+        <div class="col-md-1"></div>
+        <div class="col-md-10 post-main-container">
+            {# Title #}
+            <h1 class="page-title post-title">{{ post.title }}</h1>
+            
+            {# Excerpt #}
+            <p class="post-excerpt">{{ post.post_excerpt }}</p>
+
+            {# Separator #}
+            <hr class="post-separator"/>
+
+            <div class="page-body post-content">
+                {# Imagem #}
+                {% if (post.thumbnail.src) %}
+                    <img src="{{ post.thumbnail.src }}" alt="{{ post.thumbnail.description }}" class="post-image rounded"/>
+                {% endif %}
+
+                {# Conteúdo #}
+                {{ post.content }}
+
+                <a href="/servicos/clube-de-vantagens-fam/" class="link-voltar">Voltar para o Clube de Vantagens</a>
+            </div>
+	</article>
+{% endblock %}
+
+{% if (post.type == "post") %}
+{% endif %}

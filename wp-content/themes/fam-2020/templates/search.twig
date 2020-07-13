@@ -1,0 +1,14 @@
+{% extends 'layout/base.twig' %}
+
+{% block body %}
+	<article id="search-page" class="page container">
+		<h1 class="page-title">{{ wp_title }}</h1>
+		<div class="page-body">
+			<ul>
+			{% for post in posts %}
+				<li><a href="{{ post.link }}">{{ post.title }}</a></li>
+			{% endfor %}
+			</ul>
+		</div>
+	</article>
+{% endblock %}
