@@ -9,9 +9,9 @@ class WPBakeryShortCode_image_swap extends WPBakeryShortCode {
 
 		extract( shortcode_atts( array(
 			'image_id' 				=> '',
-			'alt' 				=> '',
-			'alt2' 				=> '',
+			'alt' 					=> '',
 			'image_id2' 			=> '',
+			'alt2' 					=> '',
 			'caption_url' 			=> '',
 			'caption_url_target' 	=> '',
 			'border_width' 			=> '10px',
@@ -28,8 +28,8 @@ class WPBakeryShortCode_image_swap extends WPBakeryShortCode {
 		}
 		$content = wpb_js_remove_wpautop($content, true);
 		ob_start(); ?>
-		<div class="ih-item <?php echo $hover_effect; ?>"
-			style="border: <?php echo $border_width; ?>px <?php echo $border_style; ?> <?php echo $border_color; ?>;">
+		<div class="maw_image_swap ih-item <?php echo $hover_effect; ?>"
+			style="border: <?php echo $border_width; ?>px <?php echo $border_style; ?> <?php echo $border_color; ?>; box-shadow: none;">
 			<?php if (isset($caption_url['url']) && $caption_url['url'] != '') { ?>
 				<a href="<?php echo esc_url($caption_url['url']); ?>" target="<?php echo $caption_url['target']; ?>" title="<?php echo esc_html($caption_url['title']); ?>">
 			<?php } ?>

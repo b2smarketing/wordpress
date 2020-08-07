@@ -59,10 +59,11 @@ class CPTP_Module_Rewrite extends CPTP_Module {
 			$permalink = CPTP_DEFAULT_PERMALINK;
 		}
 
-		$permalink = '%' . $post_type . '_slug%' . $permalink;
-		$permalink = str_replace( '%postname%', '%' . $post_type . '%', $permalink );
+		$slug_placeholder = self::get_slug_placeholder( $post_type );
+		$permalink        = $slug_placeholder . $permalink;
+		$permalink        = str_replace( '%postname%', '%' . $post_type . '%', $permalink );
 
-		add_rewrite_tag( '%' . $post_type . '_slug%', '(' . $args->rewrite['slug'] . ')', 'post_type=' . $post_type . '&slug=' );
+		add_rewrite_tag( $slug_placeholder, '(' . $args->rewrite['slug'] . ')', 'post_type=' . $post_type . '&slug=' );
 
 		$taxonomies = CPTP_Util::get_taxonomies( true );
 		foreach ( $taxonomies as $taxonomy => $objects ) :
@@ -103,18 +104,15 @@ class CPTP_Module_Rewrite extends CPTP_Module {
 			}
 
 			if ( CPTP_Util::get_post_type_author_archive_support( $post_type ) ) {
-
 				add_rewrite_rule( $slug . '/author/([^/]+)/page/?([0-9]{1,})/?$', 'index.php?author_name=$matches[1]&paged=$matches[2]&post_type=' . $post_type, 'top' );
 				add_rewrite_rule( $slug . '/author/([^/]+)/?$', 'index.php?author_name=$matches[1]&post_type=' . $post_type, 'top' );
 			}
 
 			if ( in_array( 'category', $args->taxonomies, true ) ) {
-
 				$category_base = get_option( 'category_base', 'category' );
 
 				add_rewrite_rule( $slug . '/' . $category_base . '/([^/]+)/page/?([0-9]{1,})/?$', 'index.php?category_name=$matches[1]&paged=$matches[2]&post_type=' . $post_type, 'top' );
 				add_rewrite_rule( $slug . '/' . $category_base . '/([^/]+)/?$', 'index.php?category_name=$matches[1]&post_type=' . $post_type, 'top' );
-
 			}
 
 			do_action( 'CPTP_registered_' . $post_type . '_rules', $args, $slug );
@@ -122,7 +120,6 @@ class CPTP_Module_Rewrite extends CPTP_Module {
 
 		$rewrite_args['walk_dirs'] = false;
 		add_permastruct( $post_type, $permalink, $rewrite_args );
-
 	}
 
 
@@ -256,7 +253,6 @@ class CPTP_Module_Rewrite extends CPTP_Module {
 			}
 
 			do_action( 'CPTP_registered_' . $taxonomy . '_rules', $object_type, $args, $taxonomy_slug );
-
 		endforeach;
 	}
 
@@ -284,5 +280,16 @@ class CPTP_Module_Rewrite extends CPTP_Module {
 				}
 			}
 		}
+	}
+
+	/**
+	 * Returns the slug placeholder user in the permalink structure.
+	 *
+	 * @param string $post_type The post type.
+	 *
+	 * @return string
+	 */
+	public static function get_slug_placeholder( $post_type ) {
+		return '%' . $post_type . '_slug%';
 	}
 }

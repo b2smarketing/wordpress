@@ -11,14 +11,40 @@ class WPBakeryShortCode_accordion_father extends WPBakeryShortCodesContainer {
 			'active'			=>		'false',
 			'animation'			=>		'350',
 			'event' 			=> 		'click',
+			'titlemargin'		=>		'0',
+			'activetabbg'		=>		'',
+			'activetabclr'		=>		'',
+			'iconsize' 			=> 		'15',
+			'icon' 				=> 		'fa fa-plus',
+			'activeicon' 		=> 		'fa fa-minus',
 		), $atts ) );
+		$some_id = rand(5, 500);
+		$GLOBALS['maw_accordion_margin'] = $titlemargin;
 		$content = wpb_js_remove_wpautop($content);
 		wp_enqueue_style( 'accordion-css', plugins_url( '../css/accordion.css' , __FILE__ ));
 		wp_enqueue_script( 'accordion-js', plugins_url( '../js/accordion.js' , __FILE__ ), array('jquery', 'jquery-ui-accordion'));
 		ob_start(); ?>
-		<div class="mega-accordion" data-active="<?php echo $active; ?>" data-anim="<?php echo $animation; ?>" data-event="<?php echo $event; ?>">
+		<div class="mega-accordion maw_accordion_<?php echo $some_id; ?>" data-active="<?php echo $active; ?>" data-anim="<?php echo $animation; ?>" data-event="<?php echo $event; ?>" data-closeicons="<?php echo $icon; ?>" data-activeicons="<?php echo $activeicon; ?>">
 			<?php echo $content; ?>
 		</div>
+
+		<style>
+			.maw_accordion_<?php echo $some_id; ?> .ac-style .ui-accordion-header-icon {
+				font-size: <?php echo $iconsize; ?>px;
+			}
+			<?php if ($activetabbg != '' || $activetabclr != '') { ?>
+				.maw_accordion_<?php echo $some_id; ?> .ui-state-active,
+				.maw_accordion_<?php echo $some_id; ?> .ui-widget-content .ui-state-active, 
+				.maw_accordion_<?php echo $some_id; ?> .ui-widget-header .ui-state-active {
+					background: <?php echo $activetabbg; ?> !important;
+					color: <?php echo $activetabclr; ?> !important;
+				}
+				.maw_accordion_<?php echo $some_id; ?> .ui-accordion-header:hover {
+					background: <?php echo $activetabbg; ?> !important;
+					color: <?php echo $activetabclr; ?> !important;
+				}
+			<?php } ?>
+		</style>
 
 		<?php return ob_get_clean();
 	}
@@ -70,11 +96,60 @@ vc_map( array(
 			),
 
 			array(
+	            "type" 			=> 	"vc_number",
+				"heading" 		=> 	__( 'Margin', 'accordion' ),
+				"param_name" 	=> 	"titlemargin",
+				"description" 	=> 	__( 'margin between accordion titles.', 'accordion' ),
+				"value"			=>	"0",
+				"suffix" 		=> 	'px',
+				"group" 		=> 	'General',
+	        ),
+
+	        array(
+	            "type" 			=> 	"colorpicker",
+				"heading" 		=> 	__( 'Active Tab Background', 'accordion' ),
+				"param_name" 	=> 	"activetabbg",
+				"group" 		=> 	'General',
+	        ),
+
+	        array(
+	            "type" 			=> 	"colorpicker",
+				"heading" 		=> 	__( 'Active Tab Hover Color', 'accordion' ),
+				"param_name" 	=> 	"activetabclr",
+				"group" 		=> 	'General',
+	        ),
+
+			array(
 				"type" 			=> "vc_links",
 				"param_name" 	=> "caption_url",
 				"class"			=>	"ult_param_heading",
 				"description" 	=> __( '<span style="Background: #ddd;padding: 10px; display: block; color: #0073aa;font-weight:600;"><a href="https://1.envato.market/02aNL" target="_blank" style="text-decoration: none;">Get the Pro version for more stunning elements and customization options.</a></span>', 'ihover' ),
 				"group" 		=> 'General',
+			),
+
+			array(
+	            "type" 			=> 	"vc_number",
+				"heading" 		=> 	__( 'Icon Font Size', 'accordion' ),
+				"param_name" 	=> 	"iconsize",
+				"suffix" 		=> 	'px',
+				"value"			=>	"15",
+				"group" 		=> 	'Icon',
+	        ),
+
+			array(
+				"type" 			=> "iconpicker",
+				"heading" 		=> __( 'Icon', 'accordion' ),
+				"param_name" 	=> "icon",
+				"description" 	=> __( 'it will show by default', 'accordion' ),
+				"group" 		=> 'Icon',
+			),
+
+			array(
+				"type" 			=> "iconpicker",
+				"heading" 		=> __( 'Active Icon', 'accordion' ),
+				"param_name" 	=> "activeicon",
+				"description" 	=> __( 'it will show when accordion is active', 'accordion' ),
+				"group" 		=> 'Icon',
 			),
 		)
 ) );

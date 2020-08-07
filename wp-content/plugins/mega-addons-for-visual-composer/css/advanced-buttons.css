@@ -22,9 +22,9 @@
 }
 
 .mega-uae-btn.hvr-fade {
-    -webkit-transition: all .2s;
-    -moz-transition: all .2s;
-    transition: all .2s
+    -webkit-transition: all .3s;
+    -moz-transition: all .3s;
+    transition: all .3s
 }
 
 .mega-uae-btn:focus {

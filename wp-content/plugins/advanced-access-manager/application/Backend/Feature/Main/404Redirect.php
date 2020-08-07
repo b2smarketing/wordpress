@@ -9,71 +9,82 @@
 
 /**
  * Backend 404 redirect manager
- * 
+ *
+ * @since 6.4.0 Changed the way 404 settings are stored
+ *              https://github.com/aamplugin/advanced-access-manager/issues/64
+ * @since 6.0.0 Initial implementation of the method
+ *
  * @package AAM
- * @author Vasyl Martyniuk <vasyl@vasyltech.com>
+ * @version 6.0.0
  */
-class AAM_Backend_Feature_Main_404Redirect  extends AAM_Backend_Feature_Abstract {
-    
+class AAM_Backend_Feature_Main_404Redirect
+    extends AAM_Backend_Feature_Abstract implements AAM_Backend_Feature_ISubjectAware
+{
+
     /**
-     * Construct
+     * Default access capability to the service
+     *
+     * @version 6.0.0
      */
-    public function __construct() {
-        parent::__construct();
-        
-        $allowed = AAM_Backend_Subject::getInstance()->isAllowedToManage();
-        if (!$allowed || !current_user_can('aam_manage_404_redirect')) {
-            AAM::api()->denyAccess(array('reason' => 'aam_manage_404_redirect'));
-        }
-    }
-    
+    const ACCESS_CAPABILITY = 'aam_manage_404_redirect';
+
     /**
-     * @inheritdoc
+     * Type of AAM core object
+     *
+     * @version 6.4.0
      */
-    public static function getTemplate() {
-        return 'main/404redirect.phtml';
-    }
-    
+    const OBJECT_TYPE = AAM_Core_Object_NotFoundRedirect::OBJECT_TYPE;
+
     /**
-     * Save AAM utility options
-     * 
-     * @return string
+     * HTML template to render
+     *
+     * @version 6.0.0
+     */
+    const TEMPLATE = 'service/404redirect.php';
+
+    /**
+     * Get option value
+     *
+     * @param string $name
+     * @param mixed  $default
+     *
+     * @return mixed
      *
      * @access public
+     * @version 6.4.0
      */
-    public function save() {
-        $param = AAM_Core_Request::post('param');
-        $value = stripslashes(AAM_Core_Request::post('value'));
-        
-        AAM_Core_Config::set($param, $value);
-        
-        return wp_json_encode(array('status' => 'success'));
+    public function getOption($name, $default = null)
+    {
+        $object = $this->getSubject()->getObject(self::OBJECT_TYPE);
+        $option = $object->getOption();
+
+        return (!empty($option[$name]) ? $option[$name] : $default);
     }
-    
+
     /**
      * Register 404 redirect feature
-     * 
+     *
      * @return void
-     * 
+     *
      * @access public
+     * @version 6.0.0
      */
-    public static function register() {
-        if (is_main_site()) {
-            AAM_Backend_Feature::registerFeature((object) array(
-                'uid'        => '404redirect',
-                'position'   => 50,
-                'title'      => __('404 Redirect', AAM_KEY),
-                'capability' => 'aam_manage_404_redirect',
-                'type'       => 'main',
-                'subjects'   => array(
-                    AAM_Core_Subject_Default::UID,
-                    AAM_Core_Subject_Role::UID,
-                    AAM_Core_Subject_User::UID,
-                    AAM_Core_Subject_Visitor::UID
-                ),
-                'view'       => __CLASS__
-            ));
-        }
+    public static function register()
+    {
+        AAM_Backend_Feature::registerFeature((object)array(
+            'uid'        => '404redirect',
+            'position'   => 50,
+            'title'      => __('404 Redirect', AAM_KEY),
+            'capability' => self::ACCESS_CAPABILITY,
+            'type'       => 'main',
+            'subjects'   => array(
+                AAM_Core_Subject_Default::UID,
+                AAM_Core_Subject_Role::UID,
+                AAM_Core_Subject_User::UID,
+                AAM_Core_Subject_Visitor::UID
+            ),
+            'view'       => __CLASS__
+        ));
     }
 
 }

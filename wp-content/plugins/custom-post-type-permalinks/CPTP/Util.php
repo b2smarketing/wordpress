@@ -33,7 +33,6 @@ class CPTP_Util {
 		$post_type = get_post_types( $param );
 
 		return array_filter( $post_type, array( __CLASS__, 'is_rewrite_supported_by' ) );
-
 	}
 
 	/**
@@ -59,6 +58,7 @@ class CPTP_Util {
 		 * @param bool $support support CPTP.
 		 */
 		$support = apply_filters( "CPTP_is_rewrite_supported_by_${post_type}", $support );
+		$support = apply_filters( "cptp_is_rewrite_supported_by_${post_type}", $support );
 
 		/**
 		 * Filters support CPTP for custom post type.
@@ -68,7 +68,8 @@ class CPTP_Util {
 		 * @param bool $support support CPTP.
 		 * @param string $post_type post type name.
 		 */
-		return apply_filters( 'CPTP_is_rewrite_supported', $support, $post_type );
+		$support = apply_filters( 'CPTP_is_rewrite_supported', $support, $post_type );
+		return apply_filters( 'cptp_is_rewrite_supported', $support, $post_type );
 	}
 
 	/**
@@ -85,10 +86,13 @@ class CPTP_Util {
 			$output = 'names';
 		}
 
-		return get_taxonomies( array(
-			'public'   => true,
-			'_builtin' => false,
-		), $output );
+		return get_taxonomies(
+			array(
+				'public'   => true,
+				'_builtin' => false,
+			),
+			$output
+		);
 	}
 
 	/**
@@ -119,7 +123,7 @@ class CPTP_Util {
 
 		if ( $parent->parent && ( $parent->parent !== $parent->term_id ) && ! in_array( $parent->parent, $visited, true ) ) {
 			$visited[] = $parent->parent;
-			$chain     .= CPTP_Util::get_taxonomy_parents_slug( $parent->parent, $taxonomy, $separator, $nicename, $visited );
+			$chain    .= CPTP_Util::get_taxonomy_parents_slug( $parent->parent, $taxonomy, $separator, $nicename, $visited );
 		}
 		$chain .= $name . $separator;
 
@@ -155,9 +159,10 @@ class CPTP_Util {
 
 		if ( $parent->parent && ( $parent->parent !== $parent->term_id ) && ! in_array( $parent->parent, $visited, true ) ) {
 			$visited[] = $parent->parent;
-			$chain     .= CPTP_Util::get_taxonomy_parents( $parent->parent, $taxonomy, $link, $separator, $nicename, $visited );
+			$chain    .= CPTP_Util::get_taxonomy_parents( $parent->parent, $taxonomy, $link, $separator, $nicename, $visited );
 		}
 		if ( $link ) {
+			// phpcs:ignore
 			$chain .= '<a href="' . get_term_link( $parent->term_id, $taxonomy ) . '" title="' . esc_attr( sprintf( __( 'View all posts in %s' ), $parent->name ) ) . '">' . esc_html( $name ) . '</a>' . esc_html( $separator );
 		} else {
 			$chain .= $name . $separator;
@@ -182,14 +187,15 @@ class CPTP_Util {
 
 		if ( ! empty( $post_type->cptp ) && ! empty( $post_type->cptp['permalink_structure'] ) ) {
 			$structure = $post_type->cptp->permalink_structure;
-		} else if ( ! empty( $post_type->cptp_permalink_structure ) ) {
+		} elseif ( ! empty( $post_type->cptp_permalink_structure ) ) {
 			$structure = $post_type->cptp_permalink_structure;
 		} else {
 			$structure = get_option( $post_type->name . '_structure', '%postname%' );
 		}
 		$structure = '/' . ltrim( $structure, '/' );
 
-		return apply_filters( 'CPTP_' . $post_type->name . '_structure', $structure );
+		$structure = apply_filters( 'CPTP_' . $post_type->name . '_structure', $structure );
+		return apply_filters( 'cptp_' . $post_type->name . '_structure', $structure );
 	}
 
 	/**
@@ -232,7 +238,6 @@ class CPTP_Util {
 		}
 
 		return true;
-
 	}
 
 
@@ -260,7 +265,10 @@ class CPTP_Util {
 			$tok_index ++;
 		}
 
-		return apply_filters( 'CPTP_date_front', $front, $post_type, $structure );
+		$front = apply_filters( 'CPTP_date_front', $front, $post_type, $structure );
+		$front = apply_filters( 'cptp_date_front', $front, $post_type, $structure );
+
+		return $front;
 	}
 
 	/**
@@ -285,11 +293,9 @@ class CPTP_Util {
 	 * @return WP_Term[]
 	 */
 	public static function sort_terms( $terms, $orderby = 'term_id', $order = 'ASC' ) {
-
 		if ( function_exists( 'wp_list_sort' ) ) {
 			$terms = wp_list_sort( $terms, 'term_id', 'ASC' );
 		} else {
-
 			if ( 'name' === $orderby ) {
 				usort( $terms, '_usort_terms_by_name' );
 			} else {

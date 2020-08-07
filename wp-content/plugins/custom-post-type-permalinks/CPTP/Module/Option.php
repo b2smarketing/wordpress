@@ -51,7 +51,6 @@ class CPTP_Module_Option extends CPTP_Module {
 		$post_types = CPTP_Util::get_post_types();
 
 		foreach ( $post_types as $post_type ) :
-
 			$structure = trim( esc_attr( filter_input( INPUT_POST, $post_type . '_structure' ) ) ); // get setting.
 
 			// default permalink structure.
@@ -61,7 +60,7 @@ class CPTP_Module_Option extends CPTP_Module {
 
 			$structure = str_replace( '//', '/', '/' . $structure );// first "/"
 			// last "/".
-			$lastString = substr( trim( esc_attr( filter_input( INPUT_POST,'permalink_structure' ) ) ), - 1 );
+			$lastString = substr( trim( esc_attr( filter_input( INPUT_POST, 'permalink_structure' ) ) ), - 1 );
 			$structure  = rtrim( $structure, '/' );
 
 			if ( '/' === $lastString ) {
@@ -73,8 +72,8 @@ class CPTP_Module_Option extends CPTP_Module {
 		$no_taxonomy_structure = ! filter_input( INPUT_POST, 'no_taxonomy_structure' );
 		$add_post_type_for_tax = filter_input( INPUT_POST, 'add_post_type_for_tax' );
 
-		update_option( 'no_taxonomy_structure', $no_taxonomy_structure );
-		update_option( 'add_post_type_for_tax', $add_post_type_for_tax );
+		update_option( 'no_taxonomy_structure', ! ! $no_taxonomy_structure );
+		update_option( 'add_post_type_for_tax', ! ! $add_post_type_for_tax );
 		update_option( 'cptp_permalink_checked', CPTP_VERSION );
 	}
 

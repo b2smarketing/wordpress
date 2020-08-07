@@ -8,109 +8,47 @@
  */
 
 /**
- * AAM server
- * 
- * Connection to the external AAM server.
- * 
+ * Legacy class
+ *
+ * This class exists only to cover the fatal error during plugin update from 5.11 to
+ * 6.x.x. The problem is with the way AAM registers hooks to WP core `http_response`
+ * hook
+ *
+ * @link https://forum.aamplugin.com/d/358-uncaught-error-class-aam-core-server-not-found
+ *
  * @package AAM
- * @author Vasyl Martyniuk <vasyl@vasyltech.com>
+ * @since 6.0.3
+ * @todo Remove in July 2020
  */
-final class AAM_Core_Server {
+final class AAM_Core_Server
+{
 
     /**
      * Server endpoint
+     *
+     * @version 6.0.3
      */
-    const SERVER_V1_URL = 'https://aamplugin.com/api/v1';
     const SERVER_V2_URL = 'https://api.aamplugin.com/v2';
-    
-    /**
-     * Fetch the extension list
-     * 
-     * Fetch the extension list with versions from the server
-     * 
-     * @return array
-     * 
-     * @access public
-     */
-    public static function check() {
-        $repository = AAM_Extension_Repository::getInstance();
-        
-        //prepare check params
-        $params = array(
-            'domain'   => wp_parse_url(site_url(), PHP_URL_HOST), 
-            'version'  => AAM_Core_API::version(),
-            'uid'      => AAM_Core_API::getOption('aam-uid', null, 'site'),
-            'licenses' => $repository->getCommercialLicenses(false)
-        );
-        
-        $response = self::send('/check', $params);
-        $result   = array();
-        
-        if (!is_wp_error($response) && is_object($response)) {
-            //WP Error Fix bug report
-            if ($response->error !== true && !empty($response->products)) {
-                $result = $response->products;
-            }
-        }
-
-        return $result;
-    }
 
     /**
-     * Undocumented function
+     * Get AAM server endpoint
      *
      * @param string $v
-     * @return void
+     *
+     * @return string
+     *
+     * @access public
+     * @version 6.0.3
      */
-    public static function getEndpoint($v = 'V1') {
+    public static function getEndpoint($v = 'V1')
+    {
         $endpoint = getenv("AAM_API_{$v}_ENDPOINT");
-        
+
         if (empty($endpoint)) {
             $endpoint = ($v === 'V1' ? self::SERVER_V1_URL : self::SERVER_V2_URL);
         }
 
         return $endpoint;
-    }
-
-    /**
-     * Send request
-     * 
-     * @param string $request
-     * 
-     * @return stdClass|WP_Error
-     * 
-     * @access protected
-     */
-    protected static function send($request, $params, $timeout = 10) {
-        $response = self::parseResponse(
-            AAM_Core_API::cURL(
-                self::getEndpoint('V1') . $request, $params, $timeout
-            )
-        );
-        
-        return $response;
-    }
-    
-    /**
-     * 
-     * @param type $response
-     */
-    protected static function parseResponse($response) {
-        if (!is_wp_error($response)) {
-            if (intval($response['response']['code']) === 200) {
-                $response = json_decode($response['body']);
-                if (isset($response->uid)) {
-                    AAM_Core_API::updateOption('aam-uid', $response->uid, 'site');
-                }
-            } else {
-                $response = new WP_Error(
-                        $response['response']['code'], 
-                        $response['response']['message'] . ':' . $response['body']
-                );
-            }
-        }
-        
-        return $response;
     }
 
 }

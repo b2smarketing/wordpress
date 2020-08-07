@@ -20,7 +20,7 @@ class PUM_Upsell {
 			/* translators: %s url to product page. */
 			$message = sprintf( __( 'Want to disable the close button? Check out <a href="%s" target="_blank">Forced Interaction</a>!', 'popup-maker' ), 'https://wppopupmaker.com/extensions/forced-interaction/?utm_source=plugin-theme-editor&utm_medium=text-link&utm_campaign=Upsell&utm_content=close-button-settings' );
 
-			$tabs['close']['button']['fi_promotion'] = $tabs['close']['alternate_methods']['fi_promotion'] = array(
+			$tabs['close']['button']['fi_promotion'] = $tabs['close']['forms']['fi_promotion'] = $tabs['close']['alternate_methods']['fi_promotion'] = array(
 				'type'     => 'html',
 				'content'  => '<img src="' . pum_asset_url( 'images/upsell-icon-forced-interaction.png' ) . '" />' . $message,
 				'priority' => 999,
@@ -96,7 +96,6 @@ class PUM_Upsell {
 
 
         <style>
-            .wrap h1.wp-heading-inline,
             .wrap h1.wp-heading-inline + a.page-title-action {
                 display: none;
             }

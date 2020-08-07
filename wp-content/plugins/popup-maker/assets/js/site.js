@@ -40,6 +40,18 @@
         };
     }
 
+    if ($.fn.isInViewport === undefined) {
+        $.fn.isInViewport = function () {
+            var elementTop = $( this ).offset().top;
+            var elementBottom = elementTop + $( this ).outerHeight();
+
+            var viewportTop = $( window ).scrollTop();
+            var viewportBottom = viewportTop + $( window ).height();
+
+            return elementBottom > viewportTop && elementTop < viewportBottom;
+        };
+    }
+
     if (Date.now === undefined) {
         Date.now = function () {
             return new Date().getTime();
@@ -60,6 +72,7 @@ var PUM;
         default_theme: '0',
         home_url: '/',
         version: 1.7,
+		pm_dir_url: '',
         ajaxurl: '',
         restapi: false,
         rest_nonce: null,
@@ -294,6 +307,21 @@ var PUM;
                     .data('popmake', settings)
                     .trigger('pumInit');
 
+                // If our opening sound setting is not set to None...
+                if ( settings.open_sound && 'none' !== settings.open_sound ) {
+					// ... then set up our audio. Once loaded, add to popup data.
+					var audio = 'custom' !== settings.open_sound ? new Audio( pum_vars.pm_dir_url + '/assets/sounds/' + settings.open_sound ) : new Audio( settings.custom_sound );
+					audio.addEventListener('canplaythrough', function() {
+						$popup.data('popAudio', audio);
+					});
+					audio.addEventListener('error', function() {
+						console.warn( 'Error occurred when trying to load Popup opening sound.' );
+					});
+
+					// In case our audio loaded faster than us attaching the event listener.
+					audio.load();
+				}
+
                 return this;
             });
         },
@@ -414,6 +442,14 @@ var PUM;
                     }
                 });
 
+			// If the audio hasn't loaded yet, it wouldn't have been added to the popup.
+            if ( 'undefined' !== typeof $popup.data('popAudio') ) {
+				$popup.data('popAudio').play()
+					.catch(function(reason) {
+						console.warn('Sound was not able to play when popup opened. Reason: ' + reason);
+					});
+			}
+
             return this;
         },
         setup_close: function () {
@@ -472,6 +508,19 @@ var PUM;
                     $(document).off('click.pumCloseOverlay');
                 });
             }
+
+            if (settings.close_on_form_submission) {
+				PUM.hooks.addAction('pum.integration.form.success', function (form, args) {
+					// If this is the same popup the form was submitted in.
+					// Alternatively we can compare their IDs
+					if (args.popup && args.popup[0] === $popup[0]) {
+						setTimeout(function () {
+							$.fn.popmake.last_close_trigger = 'Form Submission';
+							$popup.popmake('close');
+						}, settings.close_on_form_submission_delay || 0);
+					}
+				});
+			}
 
             $popup.trigger('pumSetupClose');
 
@@ -665,6 +714,11 @@ var PUM;
                 .position(reposition)
                 .trigger('popmakeAfterReposition');
 
+            if (location === 'center' && $container[0].offsetTop < 0) {
+                // Admin bar is 32px high, with a 10px margin that is 42
+                $container.css({top: $('body').hasClass('admin-bar') ? 42 : 10});
+            }
+
             if (opacity.overlay) {
                 $popup.css({opacity: opacity.overlay}).hide(0);
             }
@@ -748,6 +802,67 @@ var PUM;
     };
 
 }(jQuery, document));
+
+/**
+ * Initialize Popup Maker.
+ * Version 1.8
+ */
+(function ($, document, undefined) {
+    "use strict";
+    // Defines the current version.
+    $.fn.popmake.version = 1.8;
+
+    // Stores the last open popup.
+    $.fn.popmake.last_open_popup = null;
+
+    window.PUM.init = function () {
+        console.log('init popups ✔');
+        $('.pum').popmake();
+        $(document).trigger('pumInitialized');
+
+        /**
+         * Process php based form submissions when the form_success args are passed.
+         */
+        if (typeof pum_vars.form_success === 'object') {
+            pum_vars.form_success = $.extend({
+                popup_id: null,
+                settings: {}
+            });
+
+            PUM.forms.success(pum_vars.form_success.popup_id, pum_vars.form_success.settings);
+        }
+
+        // Initiate integrations.
+        PUM.integrations.init();
+    };
+
+    $(document).ready(function () {
+        // TODO can this be moved outside doc.ready since we are awaiting our own promises first?
+        var initHandler = PUM.hooks.applyFilters('pum.initHandler', PUM.init);
+        var initPromises = PUM.hooks.applyFilters('pum.initPromises', []);
+
+        Promise.all(initPromises).then(initHandler);
+    });
+
+    /**
+     * Add hidden field to all popup forms.
+     */
+    $('.pum').on('pumInit', function () {
+        var $popup = PUM.getPopup(this),
+            popupID = PUM.getSetting($popup, 'id'),
+            $forms = $popup.find('form');
+
+        /**
+         * If there are forms in the popup add a hidden field for use in retriggering the popup on reload.
+         */
+        if ($forms.length) {
+            $forms.append('<input type="hidden" name="pum_form_popup_id" value="' + popupID + '" />');
+        }
+    });
+
+
+}(jQuery));
+
 /**
  * Defines the core $.popmake binds.
  * Version 1.4
@@ -906,12 +1021,12 @@ var PUM_Analytics;
             var beacon = new Image(),
                 url = rest_enabled ? pum_vars.restapi : pum_vars.ajaxurl,
                 opts = {
-                    route: '/analytics/',
-                    data: $.extend({
+                    route: pum.hooks.applyFilters( 'pum.analyticsBeaconRoute', '/analytics/' ),
+                    data: pum.hooks.applyFilters( 'pum.AnalyticsBeaconData', $.extend( true, {
                         event: 'open',
                         pid: null,
                         _cache: (+(new Date()))
-                    }, data),
+                    }, data ) ),
                     callback: typeof callback === 'function' ? callback : function () {
                     }
                 };
@@ -988,100 +1103,157 @@ var PUM_Analytics;
         return this;
     };
 
+    /**
+     * Resets animation & position properties prior to opening/reopening the popup.
+     *
+     * @param $popup
+     */
+	function popupCssReset( $popup ) {
+		var $container = $popup.popmake( 'getContainer' ),
+			cssResets = { display: '', opacity: '' };
+
+		$popup.css(cssResets);
+		$container.css(cssResets);
+	}
+
+    function overlayAnimationSpeed(settings) {
+        if (settings.overlay_disabled) {
+            return 0;
+        }
+
+        return settings.animation_speed / 2;
+    }
+
+    function containerAnimationSpeed(settings) {
+        if (settings.overlay_disabled) {
+            return parseInt(settings.animation_speed );
+        }
+
+        return settings.animation_speed / 2;
+    }
+
+    /**
+     * All animations should.
+     *
+     * 1. Reset Popup CSS styles. Defaults are as follows:
+     * - opacity: 1
+     * - display: "none"
+     * - left, top, right, bottom: set to final position (where animation ends).
+     *
+     * 2. Prepare the popup for animation. Examples include:
+     * - a. Static positioned animations like fade might set display: "block" & opacity: 0.
+     * - b. Moving animations such as slide might set display: "block" & opacity: 0 so that
+     *      positioning can be accurately calculated, then set opacity: 1 before the animation begins.
+     *
+     * 3. Animate the overlay using `$popup.popmake( 'animate_overlay', type, speed, callback);`
+     *
+     * 4. Animate the container.
+     * - a. Moving animations can use $container.popmake( 'reposition', callback ); The callback
+     *      accepts a position argument for where you should animate to.
+     * - b. This usually takes place inside the callback for the overlay callback or after it.
+     */
     $.fn.popmake.animations = {
         none: function (callback) {
             var $popup = PUM.getPopup(this);
 
             // Ensure the container is visible immediately.
-            $popup.popmake('getContainer').css({opacity: 1, display: "block"}),
+            $popup.popmake('getContainer').css({opacity: 1, display: "block"});
 
-                $popup.popmake('animate_overlay', 'none', 0, function () {
+            $popup.popmake('animate_overlay', 'none', 0, function () {
+                // Fire user passed callback.
+                if (callback !== undefined) {
+                    callback();
+                    // TODO Test this new method. Then remove the above.
+                    //callback.apply(this);
+                }
+            });
+            return this;
+        },
+        slide: function ( callback ) {
+            var $popup = PUM.getPopup( this ),
+                $container = $popup.popmake( 'getContainer' ),
+                settings = $popup.popmake( 'getSettings' ),
+                start = $popup.popmake( 'animation_origin', settings.animation_origin );
+
+            // Step 1. Reset popup styles.
+            popupCssReset( $popup );
+
+            // Step 2. Position the container offscreen.
+            $container.position( start );
+
+            // Step 3. Animate the popup.
+            $popup.popmake( 'animate_overlay', 'fade', overlayAnimationSpeed( settings ), function () {
+                $container.popmake( 'reposition', function ( position ) {
+                    $container.animate( position, containerAnimationSpeed( settings ), 'swing', function () {
+                        // Fire user passed callback.
+                        if ( callback !== undefined ) {
+                            callback();
+                            // TODO Test this new method. Then remove the above.
+                            //allback.apply(this);
+                        }
+                    } );
+                } );
+            } );
+            return this;
+        },
+        fade: function ( callback ) {
+            var $popup = PUM.getPopup( this ),
+                $container = $popup.popmake( 'getContainer' ),
+                settings = $popup.popmake( 'getSettings' );
+
+            // Step 1. Reset popup styles.
+            popupCssReset( $popup );
+
+            // Step 2. Hide each element to be faded in.
+            $popup.css( { opacity: 0, display: 'block' } );
+            $container.css( { opacity: 0, display: 'block' } );
+
+            // Step 3. Animate the popup.
+            $popup.popmake( 'animate_overlay', 'fade', overlayAnimationSpeed( settings ), function () {
+                $container.animate( { opacity: 1 }, containerAnimationSpeed( settings ), 'swing', function () {
                     // Fire user passed callback.
-                    if (callback !== undefined) {
+                    if ( callback !== undefined ) {
                         callback();
                         // TODO Test this new method. Then remove the above.
                         //callback.apply(this);
                     }
-                });
+                } );
+            } );
             return this;
         },
-        slide: function (callback) {
-            var $popup = PUM.getPopup(this),
-                $container = $popup.popmake('getContainer'),
-                settings = $popup.popmake('getSettings'),
-                speed = settings.animation_speed / 2,
-                start = $popup.popmake('animation_origin', settings.animation_origin);
+        fadeAndSlide: function ( callback ) {
+            var $popup = PUM.getPopup( this ),
+                $container = $popup.popmake( 'getContainer' ),
+                settings = $popup.popmake( 'getSettings' ),
+                start = $popup.popmake( 'animation_origin', settings.animation_origin );
 
-            // Make the overlay and container visible so they can be positioned & sized prior to display.
-            $popup.css({display: "block"});
-            // Position the opaque container offscreen then update its opacity.
-            $container.css({display: "block"})
-                .position(start)
-                .css({opacity: 1});
+            // Step 1. Reset popup styles.
+            popupCssReset( $popup );
 
-            $popup
-                .popmake('animate_overlay', 'fade', speed, function () {
-                    $container.popmake('reposition', function (position) {
-                        $container.animate(position, speed, 'swing', function () {
-                            // Fire user passed callback.
-                            if (callback !== undefined) {
-                                callback();
-                                // TODO Test this new method. Then remove the above.
-                                //callback.apply(this);
-                            }
-                        });
-                    });
-                });
-            return this;
-        },
-        fade: function (callback) {
-            var $popup = PUM.getPopup(this),
-                $container = $popup.popmake('getContainer').css({opacity: 0, display: "block"}),
-                settings = $popup.popmake('getSettings'),
-                speed = settings.animation_speed / 2;
+            // Step 2. Hide each element to be faded in. display: "block" is neccessary for accurate positioning based on popup size.
+            $popup.css( { display: 'block', opacity: 0 } );
+            $container.css( { display: 'block', opacity: 0 } );
 
-            $popup
-                .popmake('animate_overlay', 'fade', speed, function () {
-                    $container.animate({opacity: 1}, speed, 'swing', function () {
+            // Step 3. Position the container offscreen.
+            $container.position( start );
+
+            // Step 4. Animate the popup.
+            $popup.popmake( 'animate_overlay', 'fade', overlayAnimationSpeed( settings ), function () {
+                $container.popmake( 'reposition', function ( position ) {
+                    // Add opacity to the animation properties.
+                    position.opacity = 1;
+                    // Animate the fade & slide.
+                    $container.animate( position, containerAnimationSpeed( settings ), 'swing', function () {
                         // Fire user passed callback.
-                        if (callback !== undefined) {
+                        if ( callback !== undefined ) {
                             callback();
                             // TODO Test this new method. Then remove the above.
                             //callback.apply(this);
                         }
-                    });
-                });
-            return this;
-        },
-        fadeAndSlide: function (callback) {
-            var $popup = PUM.getPopup(this),
-                $container = $popup.popmake('getContainer'),
-                settings = $popup.popmake('getSettings'),
-                speed = settings.animation_speed / 2,
-                start = $popup.popmake('animation_origin', settings.animation_origin);
+                    } );
 
-            // Make the overlay and container visible so they can be positioned & sized prior to display.
-            $popup.css({display: "block"});
-            // Position the opaque container offscreen then update its opacity.
-            $container.css({display: "block"})
-                .position(start);
-
-            $popup
-                .popmake('animate_overlay', 'fade', speed, function () {
-                    $container.popmake('reposition', function (position) {
-                        $container.css({opacity: 0});
-                        position.opacity = 1;
-                        $container.animate(position, speed, 'swing', function () {
-                            // Fire user passed callback.
-                            if (callback !== undefined) {
-                                callback();
-                                // TODO Test this new method. Then remove the above.
-                                //callback.apply(this);
-                            }
-                        });
-
-                    });
-                });
+                } );
+            } );
             return this;
         },
         /**
@@ -1506,6 +1678,16 @@ var pm_cookie, pm_cookie_json, pm_remove_cookie;
 (function ($, document, undefined) {
     "use strict";
 
+    var setCookie = function (settings) {
+        $.pm_cookie(
+            settings.name,
+            true,
+            settings.session ? null : settings.time,
+            settings.path ? pum_vars.home_url || '/' : null
+        );
+        pum.hooks.doAction('popmake.setCookie', settings);
+    };
+
     $.extend($.fn.popmake.methods, {
         addCookie: function (type) {
             // Method calling logic
@@ -1520,15 +1702,7 @@ var pm_cookie, pm_cookie_json, pm_remove_cookie;
             }
             return this;
         },
-        setCookie: function (settings) {
-            $.pm_cookie(
-                settings.name,
-                true,
-                settings.session ? null : settings.time,
-                settings.path ? pum_vars.home_url || '/' : null
-            );
-            pum.hooks.doAction('popmake.setCookie', settings);
-        },
+        setCookie: setCookie,
         checkCookies: function (settings) {
             var i,
                 ret = false;
@@ -1574,6 +1748,30 @@ var pm_cookie, pm_cookie_json, pm_remove_cookie;
                 $popup.popmake('setCookie', settings);
             });
         },
+        form_submission: function ( settings ) {
+            var $popup = PUM.getPopup( this );
+
+            settings = $.extend( {
+                form: '',
+                formInstanceId: '',
+                only_in_popup: false,
+            }, settings );
+
+            PUM.hooks.addAction( 'pum.integration.form.success', function ( form, args ) {
+                if ( ! settings.form.length ) {
+                    return;
+                }
+
+                if ( PUM.integrations.checkFormKeyMatches( settings.form, settings.formInstanceId, args ) ) {
+                    if (
+                        ( settings.only_in_popup && PUM.getPopup( form ).length && PUM.getPopup( form ).is( $popup ) ) ||
+                        ! settings.only_in_popup
+                    ) {
+                        $popup.popmake( 'setCookie', settings );
+                    }
+                }
+            } );
+        },
         manual: function (settings) {
             var $popup = PUM.getPopup(this);
             $popup.on('pumSetCookie', function () {
@@ -1616,6 +1814,34 @@ var pm_cookie, pm_cookie_json, pm_remove_cookie;
 
     // Register All Cookies for a Popup
     $(document)
+        .ready(function () {
+            var $cookies = $('.pum-cookie');
+
+            $cookies.each(function () {
+                var $cookie = $(this),
+                    index = $cookies.index($cookie),
+                    args = $cookie.data('cookie-args');
+
+                // If only-onscreen not set or false, set the cookie immediately.
+                if ( ! $cookie.data('only-onscreen') ) {
+                    setCookie(args);
+                } else {
+                    // If the element is visible on page load, set the cookie.
+                    if ( $cookie.isInViewport() && $cookie.is(':visible') ) {
+                        setCookie(args);
+                    } else {
+                        // Add a throttled scroll listener, when its in view, set the cookie.
+                        $(window).on('scroll.pum-cookie-' + index, $.fn.popmake.utilities.throttle(function(event) {
+                            if ( $cookie.isInViewport() && $cookie.is(':visible') ) {
+                                setCookie(args);
+
+                                $(window).off('scroll.pum-cookie-' + index );
+                            }
+                        }, 100));
+                    }
+                }
+            })
+        })
         .on('pumInit', '.pum', function () {
             var $popup = PUM.getPopup(this),
                 settings = $popup.popmake('getSettings'),
@@ -1632,6 +1858,7 @@ var pm_cookie, pm_cookie_json, pm_remove_cookie;
         });
 
 }(jQuery, document));
+
 var pum_debug_mode = false,
     pum_debug;
 (function ($, pum_vars) {
@@ -2012,6 +2239,8 @@ var pum_debug_mode = false,
         stackable: false,
         disable_reposition: false,
         close_on_overlay_click: false,
+		close_on_form_submission: false,
+		close_on_form_submission_delay: 0,
         close_on_esc_press: false,
         close_on_f4_press: false,
         disable_on_mobile: false,
@@ -2101,6 +2330,7 @@ var pum_debug_mode = false,
     };
 
 }(jQuery, document));
+
 /*******************************************************************************
  * Copyright (c) 2019, Code Atlantic LLC
  ******************************************************************************/
@@ -2637,99 +2867,149 @@ var pum_debug_mode = false,
 
     window.pum = window.pum || {};
     window.pum.hooks = window.pum.hooks || new EventManager();
+	window.PUM = window.PUM || {};
+	window.PUM.hooks = window.pum.hooks;
 
 })(window);
+
 /*******************************************************************************
  * Copyright (c) 2019, Code Atlantic LLC
  ******************************************************************************/
 (function ($) {
-    "use strict";
+	"use strict";
 
-    var gFormSettings = {},
-        pumNFController = false;
+	window.PUM = window.PUM || {};
+	window.PUM.integrations = window.PUM.integrations || {};
 
-    function initialize_nf_support() {
-        /** Ninja Forms Support */
-        if (typeof Marionette !== 'undefined' && typeof nfRadio !== 'undefined') {
-            pumNFController = Marionette.Object.extend({
-                initialize: function () {
-                    this.listenTo(nfRadio.channel('forms'), 'submit:response', this.popupMaker)
-                },
-                popupMaker: function (response, textStatus, jqXHR, formID) {
-                    var $form = $('#nf-form-' + formID + '-cont'),
-                        settings = {};
+	function filterNull(x) {
+		return x;
+	}
 
-                    if (response.errors.length) {
-                        return;
-                    }
+	$.extend(window.PUM.integrations, {
+		init: function () {
+			if ("undefined" !== typeof pum_vars.form_submission) {
+				var submission = pum_vars.form_submission;
 
-                    if ('undefined' !== typeof response.data.actions) {
-                        settings.openpopup = 'undefined' !== typeof response.data.actions.openpopup;
-                        settings.openpopup_id = settings.openpopup ? parseInt(response.data.actions.openpopup) : 0;
-                        settings.closepopup = 'undefined' !== typeof response.data.actions.closepopup;
-                        settings.closedelay = settings.closepopup ? parseInt(response.data.actions.closepopup) : 0;
-                        if (settings.closepopup && response.data.actions.closedelay) {
-                            settings.closedelay = parseInt(response.data.actions.closedelay);
-                        }
-                    }
+				// Declare these are not AJAX submissions.
+				submission.ajax = false;
 
-                    window.PUM.forms.success($form, settings);
-                }
-            });
-        }
-    }
+				// Initialize the popup var based on passed popup ID.
+				submission.popup = submission.popupId > 0 ? PUM.getPopup(submission.popupId) : null;
+
+				PUM.integrations.formSubmission(null, submission);
+			}
+		},
+		/**
+		 * This hook fires after any integrated form is submitted successfully.
+		 *
+		 * It does not matter if the form is in a popup or not.
+		 *
+		 * @since 1.9.0
+		 *
+		 * @param {Object} form JavaScript DOM node or jQuery object for the form submitted
+		 * @param {Object} args {
+		 *     @type {string} formProvider Such as gravityforms or ninjaforms
+		 *     @type {string|int} formId Usually an integer ID number such as 1
+		 *     @type {int} formInstanceId Not all form plugins support this.
+		 * }
+		 */
+		formSubmission: function (form, args) {
+			args = $.extend({
+				popup: PUM.getPopup(form),
+				formProvider: null,
+				formId: null,
+				formInstanceId: null,
+				formKey: null,
+				ajax: true, // Allows detecting submissions that may have already been counted.
+				tracked: false
+			}, args);
+
+			// Generate unique formKey identifier.
+			args.formKey = args.formKey || [args.formProvider, args.formId, args.formInstanceId].filter(filterNull).join('_');
+
+			if (args.popup && args.popup.length) {
+				args.popupId = PUM.getSetting(args.popup, 'id');
+				// Should this be here. It is the only thing not replicated by a new form trigger & cookie.
+				// $popup.trigger('pumFormSuccess');
+			}
+
+			/**
+			 * This hook fires after any integrated form is submitted successfully.
+			 *
+			 * It does not matter if the form is in a popup or not.
+			 *
+			 * @since 1.9.0
+			 *
+			 * @param {Object} form JavaScript DOM node or jQuery object for the form submitted
+			 * @param {Object} args {
+			 *     @type {string} formProvider Such as gravityforms or ninjaforms
+			 *     @type {string|int} formId Usually an integer ID number such as 1
+			 *     @type {int} formInstanceId Not all form plugins support this.
+			 *     @type {string} formKey Concatenation of provider, ID & Instance ID.
+			 *     @type {int} popupId The ID of the popup the form was in.
+			 *     @type {Object} popup Usable jQuery object for the popup.
+			 * }
+			 */
+			window.PUM.hooks.doAction('pum.integration.form.success', form, args);
+		},
+		checkFormKeyMatches: function (formIdentifier, formInstanceId, submittedFormArgs) {
+			formInstanceId = '' === formInstanceId ? formInstanceId : false;
+			// Check if the submitted form matches trigger requirements.
+			var checks = [
+				// Any supported form.
+				formIdentifier === 'any',
+
+				// Checks for PM core sub form submissions.
+				'pumsubform' === formIdentifier && 'pumsubform' === submittedFormArgs.formProvider,
+
+				// Any provider form. ex. `ninjaforms_any`
+				formIdentifier === submittedFormArgs.formProvider + '_any',
+
+				// Specific provider form with or without instance ID. ex. `ninjaforms_1` or `ninjaforms_1_*`
+				// Only run this test if not checking for a specific instanceId.
+				!formInstanceId && new RegExp('^' + formIdentifier + '(_[\d]*)?').test(submittedFormArgs.formKey),
+
+				// Specific provider form with specific instance ID. ex `ninjaforms_1_1` or `calderaforms_jbakrhwkhg_1`
+				// Only run this test if we are checking for specific instanceId.
+				!!formInstanceId && formIdentifier + '_' + formInstanceId === submittedFormArgs.formKey
+			],
+			// If any check is true, set the cookie.
+			matchFound = -1 !== checks.indexOf(true);
+
+			/**
+			 * This filter is applied when checking if a form match was found.
+			 *
+			 * It is used for comparing user selected form identifiers with submitted forms.
+			 *
+			 * @since 1.9.0
+			 *
+			 * @param {boolean} matchFound A boolean determining whether a match was found.
+			 * @param {Object} args {
+			 *		@type {string} formIdentifier gravityforms_any or ninjaforms_1
+			 *		@type {int} formInstanceId Not all form plugins support this.
+			 *		@type {Object} submittedFormArgs{
+			 *			@type {string} formProvider Such as gravityforms or ninjaforms
+			 * 			@type {string|int} formId Usually an integer ID number such as 1
+			 *			@type {int} formInstanceId Not all form plugins support this.
+			 *			@type {string} formKey Concatenation of provider, ID & Instance ID.
+			 *			@type {int} popupId The ID of the popup the form was in.
+			 *			@type {Object} popup Usable jQuery object for the popup.
+			 *		}
+			 * }
+			 *
+			 * @returns {boolean}
+			 */
+			return window.PUM.hooks.applyFilters('pum.integration.checkFormKeyMatches', matchFound, {
+				formIdentifier: formIdentifier,
+				formInstanceId: formInstanceId,
+				submittedFormArgs: submittedFormArgs
+			} );
+		}
+	});
 
 
-    $(document)
-        .ready(function () {
-            /** Ninja Forms Support */
-            if (pumNFController === false) {
-                initialize_nf_support();
-            }
+}(window.jQuery));
 
-            if (pumNFController !== false) {
-                new pumNFController();
-            }
-
-            /** Gravity Forms Support */
-            $('.gform_wrapper > form').each(function () {
-                var $form = $(this),
-                    form_id = $form.attr('id').replace('gform_', ''),
-                    $settings = $form.find('input.gforms-pum'),
-                    settings = $settings.length ? JSON.parse($settings.val()) : false;
-
-                if (!settings || typeof settings !== 'object') {
-                    return;
-                }
-
-                if (typeof settings === 'object' && settings.closedelay !== undefined && settings.closedelay.toString().length >= 3) {
-                    settings['closedelay'] = settings.closedelay / 1000;
-                }
-
-                gFormSettings[form_id] = settings;
-            });
-        })
-        /** Gravity Forms Support */
-        .on('gform_confirmation_loaded', function (event, form_id) {
-            var $form = $('#gform_confirmation_wrapper_' + form_id + ',#gforms_confirmation_message_' + form_id),
-                settings = gFormSettings[form_id] || false;
-
-            window.PUM.forms.success($form, settings);
-        })
-        /** Contact Form 7 Support */
-        .on('wpcf7:mailsent', '.wpcf7', function (event) {
-            var $form = $(event.target),
-                $settings = $form.find('input.wpcf7-pum'),
-                settings = $settings.length ? JSON.parse($settings.val()) : false;
-
-            if (typeof settings === 'object' && settings.closedelay !== undefined && settings.closedelay.toString().length >= 3) {
-                settings['closedelay'] = settings.closedelay / 1000;
-            }
-
-            window.PUM.forms.success($form, settings);
-        });
-
-}(jQuery));
 /*******************************************************************************
  * Copyright (c) 2019, Code Atlantic LLC
  ******************************************************************************/
@@ -2780,8 +3060,24 @@ var pum_debug_mode = false,
     $(document)
         .on('submit', 'form.pum-sub-form', window.PUM.newsletter.form.submit)
         .on('success', 'form.pum-sub-form', function (event, data) {
-            var $form = $(event.target),
-                settings = $form.data('settings') || {};
+            var $form = $( event.target ),
+                settings = $form.data( 'settings' ) || {},
+                values = $form.pumSerializeObject(),
+                popup = PUM.getPopup($form),
+                formId = PUM.getSetting(popup, 'id'),
+                formInstanceId = $( 'form.pum-sub-form', popup).index( $form ) + 1;
+
+            // All the magic happens here.
+            window.PUM.integrations.formSubmission( $form, {
+                formProvider: 'pumsubform',
+                formId: formId,
+                formInstanceId: formInstanceId,
+                extras: {
+                    data: data,
+                    values: values,
+                    settings: settings
+                }
+            } );
 
             $form
                 .trigger('pumNewsletterSuccess', [data])
@@ -2911,6 +3207,46 @@ var pum_debug_mode = false,
                 $popup.popmake('open');
             });
         },
+		form_submission: function (settings) {
+			var $popup = PUM.getPopup(this);
+
+			settings = $.extend({
+				form: '',
+				formInstanceId: '',
+				delay: 0
+			}, settings);
+
+			var onSuccess = function () {
+				setTimeout(function () {
+					// If the popup is already open return.
+					if ($popup.popmake('state', 'isOpen')) {
+						return;
+					}
+
+					// If cookie exists or conditions fail return.
+					if ($popup.popmake('checkCookies', settings) || !$popup.popmake('checkConditions')) {
+						return;
+					}
+
+					// Set the global last open trigger to the a text description of the trigger.
+					$.fn.popmake.last_open_trigger = 'Form Submission';
+
+					// Open the popup.
+					$popup.popmake('open');
+				}, settings.delay);
+			};
+
+			// Listen for integrated form submissions.
+			PUM.hooks.addAction('pum.integration.form.success', function (form, args) {
+				if (!settings.form.length) {
+					return;
+				}
+
+				if (PUM.integrations.checkFormKeyMatches(settings.form, settings.formInstanceId, args)) {
+					onSuccess();
+				}
+			});
+		},
         admin_debug: function () {
             PUM.getPopup(this).popmake('open');
         }
@@ -2934,6 +3270,7 @@ var pum_debug_mode = false,
         });
 
 }(jQuery, document));
+
 /**
  * Defines the core $.popmake.utilites methods.
  * Version 1.4
@@ -3375,23 +3712,8 @@ var pum_debug_mode = false,
  ******************************************************************************/
 (function (root, factory) {
 
-    // AMD
-    if (typeof define === "function" && define.amd) {
-        define(["exports", "jquery"], function (exports, $) {
-            return factory(exports, $);
-        });
-    }
-
-    // CommonJS
-    else if (typeof exports !== "undefined") {
-        var $ = require("jquery");
-        factory(exports, $);
-    }
-
     // Browser
-    else {
-        factory(root, (root.jQuery || root.Zepto || root.ender || root.$));
-    }
+    factory(root, (root.jQuery || root.Zepto || root.ender || root.$));
 
 }(this, function (exports, $) {
 
@@ -3534,50 +3856,3 @@ var pum_debug_mode = false,
 
     return FormSerializer;
 }));
-/**
- * Initialize Popup Maker.
- * Version 1.8
- */
-(function ($, document, undefined) {
-    "use strict";
-    // Defines the current version.
-    $.fn.popmake.version = 1.8;
-
-    // Stores the last open popup.
-    $.fn.popmake.last_open_popup = null;
-
-    $(document).ready(function () {
-        $('.pum').popmake();
-        $(document).trigger('pumInitialized');
-
-        /**
-         * Process php based form submissions when the form_success args are passed.
-         */
-        if (typeof pum_vars.form_success === 'object') {
-            pum_vars.form_success = $.extend({
-                popup_id: null,
-                settings: {}
-            });
-
-            PUM.forms.success(pum_vars.form_success.popup_id, pum_vars.form_success.settings);
-        }
-    });
-
-    /**
-     * Add hidden field to all popup forms.
-     */
-    $('.pum').on('pumInit', function () {
-        var $popup = PUM.getPopup(this),
-            popupID = PUM.getSetting($popup, 'id'),
-            $forms = $popup.find('form');
-
-        /**
-         * If there are forms in the popup add a hidden field for use in retriggering the popup on reload.
-         */
-        if ($forms.length) {
-            $forms.append('<input type="hidden" name="pum_form_popup_id" value="' + popupID + '" />');
-        }
-    });
-
-
-}(jQuery));

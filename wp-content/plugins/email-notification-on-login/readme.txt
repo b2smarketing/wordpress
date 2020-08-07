@@ -4,9 +4,9 @@ Donate link: https://apasionados.es/
 Author URI: https://apasionados.es/
 Tags: login notification, admin login notification, email notification, email notify on admin login, email notify on login
 Requires at least: 4.0.1
-Tested up to: 5.3
+Tested up to: 5.4
 Requires PHP: 5.5
-Stable tag: 1.2.0
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -22,11 +22,11 @@ This plugin is an enhanced version of the plugin [Email notification on admin lo
 
 We created this enhanced version of the plugin, because we needed a translation to Spanish and wanted to know the country from which the uses send the contact form, whithout having to lookup the IP address.
 
-In order to display the Country it needs the [GeoIP Detection plugin](https://wordpress.org/plugins/geoip-detect/) that can be found in the WordPress plugin repository. This plugin "provides geographic information detected by an IP adress". *This plugin auto-updates the GeoIP database once a week. This product includes GeoLite data created by MaxMind, available from [www.maxmind.com](http://www.maxmind.com).*
+In order to display the Country it needs the [Geolocation IP Detection (until March 2020: GeoIP Detection) plugin](https://wordpress.org/plugins/geoip-detect/) that can be found in the WordPress plugin repository. This plugin "provides geographic information detected by an IP adress". *This plugin auto-updates the GeoIP database once a week. This product includes GeoLite data created by MaxMind, available from [www.maxmind.com](http://www.maxmind.com).*
 
-If the [GeoIP Detection plugin](https://wordpress.org/plugins/geoip-detect/) is not installed and enabled, you will only see the IP address, without the country of the IP adress.
+If the [Geolocation IP Detection (until March 2020: GeoIP Detection) plugin](https://wordpress.org/plugins/geoip-detect/) is not installed and enabled, you will only see the IP address, without the country of the IP adress.
 
-We decided to use the GEOIP DETECTION plugin to handle the lookup of the country, because it's a plugin that is actively developed and we saw no advantage in implementing all this functionality, when we could use an existing one.
+We decided to use the Geolocation IP Detection (until March 2020: GeoIP Detection) plugin to handle the lookup of the country, because it's a plugin that is actively developed and we saw no advantage in implementing all this functionality, when we could use an existing one.
 
 = What can I do with this plugin? =
 
@@ -98,6 +98,9 @@ Of course we do. That's why we created it. ;-)
 
 == Changelog ==
 
+= 1.3.0 (04/06/2020) =
+* Added non-standard user roles to the notification email
+
 = 1.2.0 (07/01/2020) =
 * Corrected multiple emails sent on login when using WordPress 5.2+
 
@@ -115,8 +118,8 @@ Of course we do. That's why we created it. ;-)
 
 == Upgrade Notice ==
 
-= 1.2.0 =
-UPDATED: Corrected multiple emails sent on login when using WordPress 5.2+
+= 1.3.0 =
+UPDATED: Added non-standard user roles to the notification email
 
 == Contact ==
 

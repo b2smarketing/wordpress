@@ -9,161 +9,190 @@
 
 /**
  * Post visibility object
- * 
+ *
+ * @since 6.1.0 Refactored implementation to fix merging bugs and improve inheritance
+ *              mechanism
+ * @since 6.0.0 Initial implementation of the class
+ *
  * @package AAM
- * @author Vasyl Martyniuk <vasyl@vasyltech.com>
+ * @version 6.1.0
  */
-class AAM_Core_Object_Visibility extends AAM_Core_Object {
+class AAM_Core_Object_Visibility extends AAM_Core_Object
+{
+
+    /**
+     * Type of object
+     *
+     * @version 6.0.0
+     */
+    const OBJECT_TYPE = 'visibility';
+
+    /**
+     * List of properties that are responsible for visibility
+     *
+     * @var array
+     *
+     * @access protected
+     * @version 6.0.0
+     */
+    protected $accessProperties = array();
 
     /**
      * Constructor
      *
      * @param AAM_Core_Subject $subject
+     * @param mixed            $id
      *
      * @return void
      *
+     * @since 6.1.0 Removed support for the $suppressFilters flag
+     * @since 6.0.0 Initial implementation of the method
+     *
      * @access public
+     * @version 6.1.0
      */
-    public function __construct(AAM_Core_Subject $subject) {
-        parent::__construct($subject);
+    public function __construct(AAM_Core_Subject $subject, $id = null)
+    {
+        $this->setSubject($subject);
+        $this->setId($id);
 
+        // Determine post access properties that are responsible for the post
+        // visibility
+        $this->accessProperties = apply_filters(
+            'aam_visibility_options_filter', array('hidden')
+        );
+
+        // Initialize the object
         $this->initialize();
     }
-    
+
     /**
-     * 
-     * @global type $wpdb
+     * @inheritDoc
+     *
+     * @since 6.1.0 Removed support for the $suppressFilters flag
+     * @since 6.0.0 Initial implementation of the method
+     *
+     * @version 6.1.0
      */
-    public function initialize() {
-        global $wpdb;
-        
-        $subject = $this->getSubject();
-        
-        $query  = "SELECT pm.`post_id`, pm.`meta_value`, p.`post_type` ";
-        $query .= "FROM {$wpdb->postmeta} AS pm ";
-        $query .= "LEFT JOIN {$wpdb->posts} AS p ON (pm.`post_id` = p.ID) ";
-        $query .= "WHERE pm.`meta_key` = %s";
-        
-        if ($wpdb->query($wpdb->prepare($query, $this->getOptionName('post')))) {
-            foreach($wpdb->last_result as $row) {
-                $settings = maybe_unserialize($row->meta_value);
-                $this->pushOptions('post', $row->post_id . '|' . $row->post_type, $settings);
-            }
+    protected function initialize()
+    {
+        $posts = $this->getSubject()->readOption(AAM_Core_Object_Post::OBJECT_TYPE);
+
+        foreach ($posts as $id => $settings) {
+            $this->pushOptions('post', $id, $settings);
         }
 
-        // Read all the settings from the Access & Security Policies
-        $area = AAM_Core_Api_Area::get();
-        $stms = AAM_Core_Policy_Factory::get($subject)->find("/^post:(.*):list$/");
-
-        foreach($stms as $key => $stm) {
-            $chunks = explode(':', $key);
-
-            if (is_numeric($chunks[2])) {
-                $postId = $chunks[2];
-            } else {
-                $post = get_page_by_path(
-                    $chunks[2], OBJECT, $chunks[1]
-                );
-                $postId = (is_a($post, 'WP_Post') ? $post->ID : 0);
-            }
-
-            // Cover the case when unknown slug is used
-            if (!empty($postId)) { 
-                $this->pushOptions(
-                    'post', 
-                    "{$postId}|{$chunks[1]}", 
-                    array(
-                        "{$area}.list" => ($stm['Effect'] === 'deny' ? 1 : 0)
-                    )
-                );
-            }
-        }
-
-        do_action('aam-visibility-initialize-action', $this);
-        
-        // inherit settings from parent
-        $option = $subject->inheritFromParent('visibility', 0);
-        if (!empty($option)) {
-            $option = array_replace_recursive($option, $this->getOption());
-        } else {
-            $option = $this->getOption();
-        }
-        
-        $this->setOption($option);
+        // Initialize post visibility option. This hooks is used by Access Policy
+        // service as well as Plus Package to populate visibility list
+        do_action('aam_visibility_object_init_action', $this);
     }
-    
+
     /**
-     * 
-     * @param type $object
-     * @param type $id
-     * @param type $options
-     * @return type
+     * Push visibility option to the registry
+     *
+     * @param string $object
+     * @param mixed  $id
+     * @param array  $options
+     *
+     * @return array
+     *
+     * @since 6.1.0 Changed the way visibility options are indexed (used to be as
+     *              multi-dimensional array and now it is key/value pairs)
+     * @since 6.0.0 Initial implementation of the method
+     *
+     * @access public
+     * @version 6.1.0
      */
-    public function pushOptions($object, $id, $options) {
+    public function pushOptions($object, $id, $options)
+    {
+        $option      = $this->getOption();
         $filtered    = array();
-        $listOptions = apply_filters(
-            'aam-post-list-options-filter', 
-            array('frontend.list', 'backend.list', 'api.list')
-        );
-        
-        foreach($options as $key => $value) {
-            if (in_array($key, $listOptions, true)) {
+
+        foreach ($options as $key => $value) {
+            if (in_array($key, $this->accessProperties, true)) {
                 $filtered[$key] = $value;
             }
         }
-        
+
         if (empty($filtered)) {
             $filtered = array_combine(
-                $listOptions, 
-                array_fill(0, count($listOptions), 0)
+                $this->accessProperties,
+                array_fill(0, count($this->accessProperties), false)
             );
         }
-        
-        $option = $this->getOption();
-        if (!isset($option[$object][$id])) {
-            $option[$object][$id] = $filtered;
+
+        if (!isset($option["{$object}/{$id}"])) {
+            $option["{$object}/{$id}"] = $filtered;
+        } else {
+            $option["{$object}/{$id}"] = array_replace(
+                $filtered, $option["{$object}/{$id}"]
+            );
         }
         $this->setOption($option);
-        
+
         return $filtered;
     }
-    
-    /**
-     * 
-     * @param type $object
-     * @param type $id
-     * @return type
-     */
-    public function has($object, $id = null) {
-        $option = $this->getOption();
-        
-        return (is_null($id) ? isset($option[$object]) : isset($option[$object][$id]));
-    }
-    
-    /**
-     * Generate option name
-     * 
-     * @return string
-     * 
-     * @access protected
-     */
-    protected function getOptionName($object) {
-        $subject = $this->getSubject();
-        
-        //prepare option name
-        $meta_key = 'aam-' . $object . '-access-' . $subject->getUID();
-        $meta_key .= ($subject->getId() ? $subject->getId() : '');
 
-        return $meta_key;
+    /**
+     * Get visibility segment
+     *
+     * @param string $segment
+     *
+     * @return array
+     *
+     * @since 6.1.0 Changed the way visibility options are fetched (used to be as
+     *              multi-dimensional array and now it is key/value pairs)
+     * @since 6.0.0 Initial implementation of the method
+     *
+     * @access public
+     * @version 6.1.0
+     */
+    public function getSegment($segment)
+    {
+        $response = array();
+
+        foreach($this->getOption() as $key => $value) {
+            if (strpos($key, "{$segment}/") === 0) {
+                $response[str_replace("{$segment}/", '', $key)] = $value;
+            }
+        }
+
+        return $response;
     }
 
     /**
-     * 
-     * @param type $external
-     * @return type
+     * Merge visibility settings
+     *
+     * @param array $options
+     *
+     * @return array
+     *
+     * @since 6.1.0 Fixed bug with incorrectly merged settings for users with multiple
+     *              roles
+     * @since 6.0.0 Initial implementation of the method
+     *
+     * @access public
+     * @version 6.1.0
      */
-    public function mergeOption($external) {
-        return AAM::api()->mergeSettings($external, $this->getOption(), 'post');
+    public function mergeOption($options)
+    {
+        $these_options = $this->getOption();
+        $keys          = array_unique(array_merge(
+            array_keys($options), array_keys($this->getOption())
+        ));
+
+        $merged = array();
+
+        // Iterate over each unique key end merge settings accordingly
+        foreach($keys as $key) {
+            $merged[$key] = AAM::api()->mergeSettings(
+                (isset($options[$key]) ? $options[$key] : array()),
+                (isset($these_options[$key]) ? $these_options[$key] : array()),
+                AAM_Core_Object_Post::OBJECT_TYPE
+            );
+        }
+
+        return $merged;
     }
 
 }

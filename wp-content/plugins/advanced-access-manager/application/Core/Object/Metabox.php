@@ -9,230 +9,77 @@
 
 /**
  * Metabox object
- * 
+ *
+ * @since 6.5.0 https://github.com/aamplugin/advanced-access-manager/issues/105
+ * @since 6.2.2 Added `aam_metabox_is_hidden_filter` filter
+ * @since 6.0.0 Initial implementation of the method
+ *
  * @package AAM
- * @author Vasyl Martyniuk <vasyl@vasyltech.com>
+ * @version 6.5.0
  */
-class AAM_Core_Object_Metabox extends AAM_Core_Object {
+class AAM_Core_Object_Metabox extends AAM_Core_Object
+{
 
     /**
-     * Constructor
+     * Type of object
      *
-     * @param AAM_Core_Subject $subject
-     *
-     * @return void
-     *
-     * @access public
+     * @version 6.0.0
      */
-    public function __construct(AAM_Core_Subject $subject) {
-        parent::__construct($subject);
-        
-        $option = AAM_Core_Compatibility::convertMetaboxes(
-                $this->getSubject()->readOption('metabox')
-        );
-        
-        if (!empty($option)) {
-            $this->setOverwritten(true);
-        }
-        
-        // Load settings from Access & Security Policy
-        if (empty($option)) {
-            $stms = AAM_Core_Policy_Factory::get($subject)->find("/^(Metabox|Widget):/i");
-            
-            foreach($stms as $key => $stm) {
-                $chunks = explode(':', $key);
-                $option[$chunks[1]] = ($stm['Effect'] === 'deny' ? 1 : 0);
-            }
-        }
-        
-        if (empty($option)) {
-            $option = $this->getSubject()->inheritFromParent('metabox');
-        }
-
-        $this->setOption($option);
-    }
-
-    /**
-     *
-     * @global type $wp_registered_widgets
-     * @param type $sidebar_widgets
-     * @return type
-     */
-    public function filterFrontend($sidebar_widgets) {
-        global $wp_registered_widgets;
-
-        if (is_array($wp_registered_widgets)) {
-            foreach ($wp_registered_widgets as $id => $widget) {
-                $callback = $this->getWidgetCallback($widget);
-                if ($this->has('widgets', $callback)) {
-                    unregister_widget($callback);
-                    //remove it from registered widget global var!!
-                    //INFORM: Why Unregister Widget does not clear global var?
-                    unset($wp_registered_widgets[$id]);
-                }
-            }
-        }
-
-        return $sidebar_widgets;
-    }
-
-    /**
-     * 
-     * @param type $widget
-     * @return type
-     */
-    protected function getWidgetCallback($widget) {
-        if (is_array($widget['callback'])) {
-            if (is_object($widget['callback'][0])) {
-                $callback = get_class($widget['callback'][0]);
-            } elseif (is_string($widget['callback'][0])) {
-                $callback = $widget['callback'][0];
-            }
-        }
-
-        if (empty($callback)) {
-            $callback = isset($widget['classname']) ? $widget['classname'] : null;
-        }
-
-        return $callback;
-    }
-
-    /**
-     *
-     * @global type $wp_meta_boxes
-     * @param type $screen
-     */
-    public function filterBackend($screen) {
-        global $wp_meta_boxes;
-
-        if (is_array($wp_meta_boxes)) {
-            foreach ($wp_meta_boxes as $screen_id => $zones) {
-                if ($screen === $screen_id) {
-                    $this->filterZones($zones, $screen_id);
-                }
-            }
-        }
-    }
-    
-    /**
-     * 
-     * @global type $wp_registered_widgets
-     */
-    public function filterAppearanceWidgets() {
-        global $wp_registered_widgets;
-        
-        foreach($wp_registered_widgets as $id => $widget) {
-            $callback = $this->getWidgetCallback($widget);
-            if ($this->has('widgets', $callback)) {
-                unregister_widget($callback);
-                unset($wp_registered_widgets[$id]);
-            }
-        }
-    }
-
-    /**
-     * 
-     * @param type $zones
-     * @param type $screen_id
-     */
-    protected function filterZones($zones, $screen_id) {
-        foreach ($zones as $zone => $priorities) {
-            foreach ($priorities as $metaboxes) {
-                $this->filterMetaboxes($zone, $metaboxes, $screen_id);
-            }
-        }
-    }
-
-    /**
-     * 
-     * @param type $zone
-     * @param type $metaboxes
-     * @param type $screen_id
-     */
-    protected function filterMetaboxes($zone, $metaboxes, $screen_id) {
-        foreach ($metaboxes as $id => $metabox) {
-            if ($this->has($screen_id, $id, $metabox['title'])) {
-                remove_meta_box($id, $screen_id, $zone);
-            }
-        }
-    }
+    const OBJECT_TYPE = 'metabox';
 
     /**
      * @inheritdoc
-     */
-    public function save($metabox, $granted) {
-        $option = $this->getOption();
-
-        $option[$metabox]        = $granted;
-        $option[crc32($metabox)] = $granted;
-
-        return $this->getSubject()->updateOption($option, 'metabox');
-    }
-    
-    /**
-     * 
-     */
-    public function reset() {
-        return $this->getSubject()->deleteOption('metabox');
-    }
-
-    /**
      *
-     * @param type $screen
-     * @param type $metabox
-     * @return type
+     * @since 6.5.0 https://github.com/aamplugin/advanced-access-manager/issues/105
+     * @since 6.0.0 Initial implementation of the method
+     *
+     * @version 6.5.0
      */
-    public function has($screen, $metaboxId, $metaboxTitle = null) {
-        $options = $this->getOption();
-        $mid     = "{$screen}|{$metaboxId}";
+    protected function initialize()
+    {
+        $option = $this->getSubject()->readOption(self::OBJECT_TYPE);
 
-        if(function_exists('mb_strtolower')) {
-            $mtl = mb_strtolower("{$screen}|{$metaboxTitle}");
-        } else {
-            $mtl = strtolower("{$screen}|{$metaboxTitle}");
+        $this->determineOverwritten($option);
+
+        // Trigger custom functionality that may populate the menu options. For
+        // example, this hooks is used by Access Policy service
+        $option = apply_filters('aam_metabox_object_option_filter', $option, $this);
+
+        // Making sure that all menu keys are lowercase
+        $normalized = array();
+        foreach($option as $key => $val) {
+            $normalized[strtolower($key)] = $val;
         }
 
-        // Also remove any HTML tags
-        $mtl = wp_strip_all_tags($mtl);
+        $this->setOption(is_array($normalized) ? $normalized : array());
+    }
 
-        return !empty($options[$mid]) || !empty($options[crc32($mid)]) || !empty($options[$mtl]);
-    }
-    
     /**
-     * Allow access to a specific metabox
-     * 
+     * Check if metabox or widget is visible
+     *
      * @param string $screen
-     * @param string $metabox
-     * 
+     * @param string $metaboxId
+     *
      * @return boolean
-     * 
+     *
+     * @since 6.2.2 Added `aam_metabox_is_hidden_filter` filter
+     * @since 6.0.0 Initial implementation of the method
+     *
      * @access public
+     * @version 6.2.2
      */
-    public function allow($screen, $metabox) {
-        $this->save("{$screen}|{$metabox}", 0);
-    }
-    
-    /**
-     * Deny access to a specific metabox
-     * 
-     * @param string $screen
-     * @param string $metabox
-     * 
-     * @return boolean
-     * 
-     * @access public
-     */
-    public function deny($screen, $metabox) {
-        return $this->save("{$screen}|{$metabox}", 1);
-    }
-    
-    /**
-     * 
-     * @param type $external
-     * @return type
-     */
-    public function mergeOption($external) {
-        return AAM::api()->mergeSettings($external, $this->getOption(), 'metabox');
+    public function isHidden($screen, $metaboxId)
+    {
+        $option = $this->getOption();
+        $id     = strtolower("{$screen}|{$metaboxId}");
+
+        return apply_filters(
+            'aam_metabox_is_hidden_filter',
+            !empty($option[$id]),
+            $screen,
+            $metaboxId,
+            $this
+        );
     }
 
 }

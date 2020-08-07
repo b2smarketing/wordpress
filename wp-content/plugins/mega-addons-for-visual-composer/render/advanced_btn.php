@@ -23,7 +23,7 @@ class WPBakeryShortCode_mvc_advanced_button extends WPBakeryShortCode {
 			'btn_border' => '',
 			'border_width' => '0',
 			'btn_clr' => '#000',
-			'btn_bg' => '#1e73be',
+			'btn_bg' => '',
 			'btn_hvrclr' => '#fff',
 			'btn_hvrbg' => '',
 		), $atts ) );

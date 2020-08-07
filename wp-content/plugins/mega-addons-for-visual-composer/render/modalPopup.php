@@ -32,6 +32,8 @@ class WPBakeryShortCode_modal_popup_box extends WPBakeryShortCode {
 			'titleclr'		=>		'',
 			'titlebg'		=>		'',
 			'titleborder'	=>		'',
+			'contentpad'	=>		'15',
+			'contentpad2'	=>		'15',
 		), $atts ) );
 		$some_id = rand(5, 500);
 		wp_enqueue_style( 'animate-css', plugins_url( '../css/animate.css' , __FILE__ ));
@@ -51,7 +53,7 @@ class WPBakeryShortCode_modal_popup_box extends WPBakeryShortCode {
 			    	<h2 style="border-bottom: 1px solid <?php echo $titleborder; ?>; text-align: <?php echo $titlealign; ?>; font-size: <?php echo $titlesize; ?>px; line-height: <?php echo $titleline; ?>; color: <?php echo $titleclr; ?>; background: <?php echo $titlebg; ?>; margin: 0px; padding: 0px 20px;">
 			    		<?php echo $titletext; ?>
 			    	</h2>
-			      <span style="padding: 15px 20px; display: block;">
+			      <span style="padding: <?php echo $contentpad ?>px <?php echo $contentpad2; ?>px; display: block;">
 			      	<?php echo $content; ?>
 			      </span>
 			    </div>
@@ -231,16 +233,16 @@ vc_map( array(
 		),
 		array(
 			"type" 			=> 	"colorpicker",
-			"heading" 		=> 	__( 'Hover Color', 'modal_popup' ),
-			"param_name" 	=> 	"hoverclr",
-			"description" 	=> 	__( 'Button text color onhover', 'modal_popup' ),
+			"heading" 		=> 	__( 'Background Color', 'modal_popup' ),
+			"param_name" 	=> 	"btnbg",
+			"description" 	=> 	__( 'Button background color', 'modal_popup' ),
 			"group" 		=> 	'Button Setting',
 		),
 		array(
 			"type" 			=> 	"colorpicker",
-			"heading" 		=> 	__( 'Background Color', 'modal_popup' ),
-			"param_name" 	=> 	"btnbg",
-			"description" 	=> 	__( 'Button background color', 'modal_popup' ),
+			"heading" 		=> 	__( 'Hover Color', 'modal_popup' ),
+			"param_name" 	=> 	"hoverclr",
+			"description" 	=> 	__( 'Button text color onhover', 'modal_popup' ),
 			"group" 		=> 	'Button Setting',
 		),
 		array(
@@ -315,8 +317,27 @@ vc_map( array(
 			"group" 		=> 	'Popup Content',
 		),
 		array(
+			"type" 			=> "vc_number",
+			"heading" 		=> __( 'Padding [Top Bottom]', 'megaaddons' ),
+			"edit_field_class" => "vc_col-sm-4 wdo_items_to_show wdo_margin_bottom",
+			"param_name" 	=> "contentpad",
+			"value"			=>	"15",
+			"suffix"		=>	"px",
+			"group" 		=> 'Popup Content',
+		),
+
+		array(
+			"type" 			=> "vc_number",
+			"heading" 		=> __( 'Padding [Right Left]', 'megaaddons' ),
+			"edit_field_class" => "vc_col-sm-4 wdo_items_to_show wdo_margin_bottom",
+			"param_name" 	=> "contentpad2",
+			"value"			=>	"15",
+			"suffix"		=>	"px",
+			"group" 		=> 'Popup Content',
+		),
+		array(
 			"type" 			=> 	"textarea_html",
-			"heading" 		=> 	__( 'You can also use shortcode', 'modal_popup' ),
+			"heading" 		=> 	__( 'You can also use shortcode', 'megaaddons' ),
 			"param_name" 	=> 	"content",
 			"group" 		=> 	'Popup Content',
 		),

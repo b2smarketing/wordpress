@@ -1,3 +1,75 @@
+### v1.11.1 - 07/22/2020
+* Fix: Form submission cookies no longer set with Contact Form 7 5.2 
+
+### v1.11.0 - 06/25/2020
+* Feature: Add new floating bar theme.
+* Feature: New guided tour of popup editor for first time users.
+* Feature: New href attribute on the popup_close shortcode for when setting the shortcode to use the `a` tag.
+* Fix: Shortcode popup_close tag attribute not functioning properly.
+* Tweak: Change popup_close tag setting to use a drop-down for more easily selecting which tag to use.
+* Tweak: Improve explanation of cookies in new trigger modal.
+* Tweak: Ensure all admin pages have visible page headings.
+* Tweak: Simplify name and title fields in popup editor.
+* Tweak: Add popup ID to quick links on All Popups.
+* Tweak: Move CSS and JS for our admin bar node to external file.
+* Tweak: Add our new optional telemetry system.
+
+### v1.10.2 - 06/09/2020
+* Fix: Popup Settings not working when WP Forms is active without forms
+* Fix: Missing closing div in new [popup_cookie] shortcode.
+* Fix: Shortcode popup_close tag attribute not functioning properly.
+
+### v1.10.1 - 04/21/2020
+* Fix: Typo in filter name caused extra p tags.
+* Fix: Add wp version check to prevent calling block functions on older versions or classicpress.
+* Fix: Font Awesome support now works for v4 fonts.
+
+### v1.10.0 - 04/20/2020
+* Feature: Display presets for top bar, bottom right slide-ins, full-screen popups & bottom left notifications to make it simple to get common setups done much quicker
+* Feature: Popup Trigger inline text format for the block editor.   
+* Feature: Turn any block in Gutenberg block editor into a popup trigger.
+* Feature: Font Awesome support added to close button text setting.
+* Feature: Play a sound when a popup is opened. Choose from 5 included sounds or upload your own.
+* Feature: Insert customizable [popup_cookie] shortcode on thank you pages when using non-integrated forms.
+* Tweak: Add option to disable or adjust the padding-right added to body.
+* Tweak: Remove Freemius integration from Popup Maker.
+* Improvement: Detect file permission issues with Asset Caching functionality.
+* Fix: Prevent popups from going off the screen when using center position for a tall popup.
+* Fix: Bug in slide animation origin positioning for bottom or right origins.
+* Fix: Bug where Middle Center caused tall popups to hang off the screen on small screens.
+* Fix: Typo in admin editor CSS path.
+* Fix: Bug on fresh installs where default theme's close position is wrong.
+
+### v1.9.2 - 03/26/2020
+* Tweak: Add support for WP 5.4's new method of adding custom fields to the nav menu editor.
+
+### v1.9.1 - 02/13/2020
+* Fix: JS error when MailChimp for WordPress was active but no forms on the page.
+
+### v1.9.0 - 02/11/2020
+* Feature: New Form Submission trigger with option to choose specific forms for integrated forms.
+* Feature: New Form Submission cookie event with option to choose specific forms.
+* Feature: New Close on Form Submission with optional delay.
+* Feature: WP Forms integration.
+* Feature: Caldera Forms integration.
+* Feature: MailChimp for WordPress integration
+* Improvement: Enhanced asset cache to identify issues with a site's filesystem.
+* Improvement: Various changes to ensure PHP 7.4 compatibility.
+* Improvement: Minimum PHP version updated to v5.6 to match WP core.
+* Improvement: Simplified form integration interfaces to more easily support additional form plugins or custom integrations. Includes full AJAX & non-AJAX form support.
+* Improvement: Added RTL CSS support.
+* Improvement: Added new SVG admin menu icon which plays well with custom admin color schemes. Thanks @KZeni (Kurt Zenisek)
+* Improvement: Simplified form integration apis.
+* Improvement: Various performance improvements.
+* Tweak: Remove unnecessary usage of esc_attr_e causing extra translation calls.
+* Fix: Bug when accept language header is not supplied causes undefined index notice.
+* Fix: Error caused by invalid post ID returned by CF7 when saving new forms.
+* Fix: Bug when selecting more than 10 items in targeting rule post/page select fields.
+
+### v1.8.14 - 10/24/2019
+* Improvement: Updated nav menu editor walker class for adding custom fields to further improve compatibility.
+* Fix: Ninja Forms popup actions missing.
+
 ### v1.8.13 - 10/11/2019
 * Tweak: Added cap check to ensure only authorized users can access support debug text file. @Credit goes to Ilias Dimopoulos from Neurosoft S.A , RedyOps Team.
 

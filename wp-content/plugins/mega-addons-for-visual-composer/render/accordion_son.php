@@ -8,7 +8,6 @@ class WPBakeryShortCode_accordion_son extends WPBakeryShortCode {
 	protected function content( $atts, $content = null ) {
 
 		extract( shortcode_atts( array(
-			'titlemargin'		=>		'0',
 			'title'				=>		'',
 			'height'			=>		'50',
 			'size'				=>		'16',
@@ -22,11 +21,13 @@ class WPBakeryShortCode_accordion_son extends WPBakeryShortCode {
 			'bodybg'			=>		'',
 		), $atts ) );
 		$content = wpb_js_remove_wpautop($content);
-		ob_start(); ?>
-		<h3 class="ac-style" style="margin-top: <?php echo $titlemargin; ?>px; border-width: <?php echo $borderwidth; ?>; border-style: solid; border-color: <?php echo $borderclr; ?>; color: <?php echo $clr; ?>; background: <?php echo $bgclr; ?> <?php echo $gradientbg; ?>; font-size: <?php echo $size; ?>px;height: <?php echo $height; ?>px; line-height: <?php echo $height; ?>px;">
+		ob_start();
+		global $maw_accordion_margin;
+		?>
+		<h3 class="ac-style" style="margin-top: <?php echo $maw_accordion_margin; ?>px; border-width: <?php echo $borderwidth; ?>; border-style: solid; border-color: <?php echo $borderclr; ?>; color: <?php echo $clr; ?>; background: <?php echo $bgclr; ?> <?php echo $gradientbg; ?>; font-size: <?php echo $size; ?>px;height: <?php echo $height; ?>px; line-height: <?php echo $height; ?>px;">
 			<?php echo $title; ?>
 		</h3>
-		<div class="mega-panel" style="margin-bottom: <?php echo $titlemargin; ?>px;background: <?php echo $bodybg; ?>; border-width: <?php echo $borderwidth2; ?>; border-style: solid; border-color: <?php echo $borderclr2; ?>;">
+		<div class="mega-panel" style="margin-bottom: <?php echo $maw_accordion_margin; ?>px;background: <?php echo $bodybg; ?>; border-width: <?php echo $borderwidth2; ?>; border-style: solid; border-color: <?php echo $borderclr2; ?>;">
 		  <?php echo $content; ?>
 		</div>
 
@@ -48,16 +49,6 @@ vc_map( array(
 		// Title Section
 
 		array(
-            "type" 			=> 	"vc_number",
-			"heading" 		=> 	__( 'Margin', 'accordion' ),
-			"param_name" 	=> 	"titlemargin",
-			"description" 	=> 	__( 'margin from bottom for each tab, set in pixel', 'accordion' ),
-			"value"			=>	"0",
-			"suffix" 		=> 	'px',
-			"group" 		=> 	'General',
-        ),
-
-		array(
             "type" 			=> 	"textfield",
 			"heading" 		=> 	__( 'Title', 'accordion' ),
 			"param_name" 	=> 	"title",
@@ -76,7 +67,7 @@ vc_map( array(
 			"group" 		=> 	"Title",
         ),
 		array(
-            "type" 			=> 	"textfield",
+            "type" 			=> 	"vc_number",
 			"heading" 		=> 	__( 'Font Size', 'accordion' ),
 			"param_name" 	=> 	"size",
 			"description" 	=> 	__( 'set in pixel eg, 16', 'accordion' ),

@@ -1,5 +1,5 @@
 <?php exit; ?>{
-    "version": "0.13.1",
+    "version": "0.14.3",
     "cluster.messagebus.debug": false,
     "cluster.messagebus.enabled": false,
     "cluster.messagebus.sns.region": "",
@@ -61,6 +61,9 @@
     "lazyload.enabled": false,
     "lazyload.process_img": true,
     "lazyload.process_background": true,
+    "lazyload.googlemaps.google_maps_easy": false,
+    "lazyload.googlemaps.wp_google_maps": false,
+    "lazyload.googlemaps.wp_google_map_plugin": false,
     "lazyload.exclude": [
         "avia-bg-style-fixed",
         "data-bgposition=",
@@ -513,7 +516,7 @@
         "{plugins_dir}\/wp-fb-autoconnect\/facebook-platform\/channel.html"
     ],
     "cdn.reject.ssl": false,
-    "cdnfsd.enabled": true,
+    "cdnfsd.enabled": "0",
     "cdnfsd.engine": "",
     "cdnfsd.debug": false,
     "cdnfsd.cloudfront.access_key": "",
@@ -912,5 +915,9 @@
     },
     "fragmentcache": {
         "engine": ""
+    },
+    "pgcache.bad_behavior_path": "",
+    "newrelic": {
+        "monitoring_type": "apm"
     }
 }

@@ -43,6 +43,7 @@ class PUM_Admin_Popups {
 		add_filter( 'manage_edit-popup_sortable_columns', array( __CLASS__, 'sortable_columns' ) );
 		add_action( 'load-edit.php', array( __CLASS__, 'load' ), 9999 );
 		add_action( 'restrict_manage_posts', array( __CLASS__, 'add_popup_filters' ), 100 );
+		add_filter( 'post_row_actions', array( __CLASS__, 'add_id_row_actions' ), 2, 100 );
 	}
 
 	/**
@@ -66,7 +67,7 @@ class PUM_Admin_Popups {
 		}
 
 		if ( 'popup' == $screen->post_type ) {
-			$title = __( 'Popup Name (appears under "Name" column on "All Popups" screen', 'popup-maker' );
+			$title = __( 'Popup Name', 'popup-maker' );
 		}
 
 		return $title;
@@ -91,10 +92,10 @@ class PUM_Admin_Popups {
 			<div id="popup-titlediv" class="pum-form">
 				<div id="popup-titlewrap">
 					<label class="screen-reader-text" id="popup-title-prompt-text" for="popup-title">
-						<?php _e( 'Popup Title (appears on front end inside the popup container)', 'popup-maker' ); ?>
+						<?php _e( 'Popup Title', 'popup-maker' ); ?>
 					</label>
-					<input tabindex="2" name="popup_title" size="30" value="<?php esc_attr_e( get_post_meta( $post->ID, 'popup_title', true ) ); ?>" id="popup-title" autocomplete="off" placeholder="<?php _e( 'Popup Title (appears on front end inside the popup container)', 'popup-maker' ); ?>" />
-					<p class="pum-desc"><?php echo '(' . __( 'Optional', 'popup-maker' ) . ') ' . __( 'Display a title inside the popup container. May be left empty.', 'popup-maker' ); ?></p>
+					<input tabindex="2" name="popup_title" size="30" value="<?php echo esc_attr( get_post_meta( $post->ID, 'popup_title', true ) ); ?>" id="popup-title" autocomplete="off" placeholder="<?php _e( 'Popup Title', 'popup-maker' ); ?>" />
+					<p class="pum-desc"><?php echo '(' . __( 'Optional', 'popup-maker' ) . ') ' . __( 'Shown as headline inside the popup. Can be left blank.', 'popup-maker' ); ?></p>
 				</div>
 				<div class="inside"></div>
 			</div>
@@ -118,7 +119,7 @@ class PUM_Admin_Popups {
 		}
 
 		if ( 'popup' == $typenow && in_array( $pagenow, array( 'post-new.php', 'post.php' ) ) ) { ?>
-			<p class="pum-desc"><?php echo '(' . __( 'Required', 'popup-maker' ) . ') ' . __( 'Register a popup name. The CSS class ‘popmake-{popup-name}’ can be used to set a trigger to display a popup.', 'popup-maker' ); ?></p>
+			<p class="pum-desc"><?php echo '(' . __( 'Required', 'popup-maker' ) . ') ' . __( 'Enter a name to help you remember what this popup is about. Only you will see this.', 'popup-maker' ); ?></p>
 			<?php
 		}
 	}
@@ -132,6 +133,25 @@ class PUM_Admin_Popups {
 	}
 
 	/**
+	 * Ensures integrity of values.
+	 *
+	 * @param array $values
+	 *
+	 * @return array
+	 */
+	public static function parse_values( $values = [] ) {
+		$defaults = self::defaults();
+
+		if ( empty( $values ) ) {
+			return $defaults;
+		}
+
+		$values = self::fill_missing_defaults( $values );
+
+		return $values;
+	}
+
+	/**
 	 * Render the settings meta box wrapper and JS vars.
 	 */
 	public static function render_settings_meta_box() {
@@ -140,16 +160,7 @@ class PUM_Admin_Popups {
 		$popup = pum_get_popup( $post->ID );
 
 		// Get the meta directly rather than from cached object.
-		$settings = $popup->get_settings();
-
-		if ( empty( $settings ) ) {
-			$settings = self::defaults();
-		}
-
-		// Do settings migration on the fly and then self clean for a passive migration?
-
-		// $settings['conditions'] = get_post_meta( $post->ID, 'popup_conditions', true );
-		//$settings['triggers'] = get_post_meta( $post->ID, 'popup_triggers', true );
+		$settings = self::parse_values( $popup->get_settings() );
 
 		wp_nonce_field( basename( __FILE__ ), 'pum_popup_settings_nonce' );
 		wp_enqueue_script( 'popup-maker-admin' );
@@ -166,7 +177,7 @@ class PUM_Admin_Popups {
 				'conditions_selectlist' => PUM_Conditions::instance()->dropdown_list(),
 				'triggers'              => PUM_Triggers::instance()->get_triggers(),
 				'cookies'               => PUM_Cookies::instance()->get_cookies(),
-				'current_values'        => self::parse_values( $settings ),
+				'current_values'        => self::render_form_values( $settings ),
 			) ) ); ?>;
 		</script>
 
@@ -248,8 +259,6 @@ class PUM_Admin_Popups {
 
 		$settings = ! empty( $_POST['popup_settings'] ) ? $_POST['popup_settings'] : array();
 
-		$settings = wp_parse_args( $settings, self::defaults() );
-
 		// Sanitize JSON values.
 		$settings['conditions'] = isset( $settings['conditions'] ) ? self::sanitize_meta( $settings['conditions'] ) : array();
 		$settings['triggers']   = isset( $settings['triggers'] ) ? self::sanitize_meta( $settings['triggers'] ) : array();
@@ -258,6 +267,7 @@ class PUM_Admin_Popups {
 		$settings = apply_filters( 'pum_popup_setting_pre_save', $settings, $post->ID );
 
 		$settings = self::sanitize_settings( $settings );
+		$settings = self::parse_values( $settings );
 
 		$popup->update_settings( $settings, false );
 
@@ -274,8 +284,16 @@ class PUM_Admin_Popups {
 		do_action( 'pum_save_popup', $post_id, $post );
 	}
 
-	public static function parse_values( $settings ) {
-
+	/**
+	 * Parse & prepare values for form rendering.
+	 *
+	 * Add additional data for license_key fields, split the measure fields etc.
+	 *
+	 * @param $settings
+	 *
+	 * @return mixed
+	 */
+	public static function render_form_values( $settings ) {
 		foreach ( $settings as $key => $value ) {
 			$field = self::get_field( $key );
 
@@ -324,14 +342,17 @@ class PUM_Admin_Popups {
 				'main' => __( 'Conditions', 'popup-maker' ),
 			),
 			'display'   => array(
+				'preset'    => __( 'Display Presets', 'popup-maker' ),
 				'main'      => __( 'Appearance', 'popup-maker' ),
 				'size'      => __( 'Size', 'popup-maker' ),
 				'animation' => __( 'Animation', 'popup-maker' ),
+				'sound'     => __( 'Sounds', 'popup-maker' ),
 				'position'  => __( 'Position', 'popup-maker' ),
 				'advanced'  => __( 'Advanced', 'popup-maker' ),
 			),
 			'close'     => array(
 				'button'            => __( 'Button', 'popup-maker' ),
+				'forms'             => __( 'Form Submission', 'popup-maker' ),
 				'alternate_methods' => __( 'Alternate Methods', 'popup-maker' ),
 			),
 			'advanced'  => array(
@@ -393,6 +414,22 @@ class PUM_Admin_Popups {
 					),
 				) ),
 				'display'   => apply_filters( 'pum_popup_display_settings_fields', array(
+					'preset'    => array(
+						'explain' => array(
+							'type'    => 'html',
+							'content' => '<p>Select one of the types below to get started! Once selected, you can adjust the display settings using the tabs above.</p>'
+						),
+						'type_section' => array(
+							'type'    => 'section',
+							'classes' => 'popup-types',
+							'fields'  => array(
+								'<div class="popup-type" data-popup-type="center-popup"><img src="' . Popup_Maker::$URL  . 'assets/images/admin/display-switcher/center-popup.png" alt="' . __( 'Center Popup', 'popup-maker' ) . '"/><button class="button">' . __( 'Center Popup', 'popup-maker' ) . '</button></div>',
+								'<div class="popup-type" data-popup-type="right-bottom-slidein"><img src="' . Popup_Maker::$URL  . 'assets/images/admin/display-switcher/right-bottom-slidein.png" alt="' . __( 'Right Bottom Slide-in', 'popup-maker' ) . '"/><button class="button">' . __( 'Right Bottom Slide-in', 'popup-maker' ) . '</button></div>',
+								'<div class="popup-type" data-popup-type="top-bar"><img src="' . Popup_Maker::$URL  . 'assets/images/admin/display-switcher/top-bar.png" alt="' . __( 'Top Bar', 'popup-maker' ) . '"/><button class="button">' . __( 'Top Bar', 'popup-maker' ) . '</button></div>',
+								'<div class="popup-type" data-popup-type="left-bottom-notice"><img src="' . Popup_Maker::$URL  . 'assets/images/admin/display-switcher/left-bottom-notice.png" alt="' . __( 'Left Bottom Notice', 'popup-maker' ) . '"/><button class="button">' . __( 'Left Bottom Notice', 'popup-maker' ) . '</button></div>',
+							),
+						),
+					),
 					'main'      => array(
 						'theme_id' => array(
 							'label'        => __( 'Popup Theme', 'popup-maker' ),
@@ -544,6 +581,34 @@ class PUM_Admin_Popups {
 							),
 						),
 					),
+					'sound' => array(
+						'open_sound'   => array(
+							'label'    => __( 'Opening Sound', 'popup-maker' ),
+							'desc'     => __( 'Select a sound to play when the popup opens.', 'popup-maker' ),
+							'type'     => 'select',
+							'std'      => 'none',
+							'priority' => 10,
+							'options'  => array(
+								'none'         => __( 'None', 'popup-maker' ),
+								'beep.mp3'     => __( 'Beep', 'popup-maker' ),
+								'beep-two.mp3' => __( 'Beep 2', 'popup-maker' ),
+								'beep-up.mp3'  => __( 'Beep Up', 'popup-maker' ),
+								'chimes.mp3'   => __( 'Chimes', 'popup-maker' ),
+								'correct.mp3'  => __( 'Correct', 'popup-maker' ),
+								'custom'       => __( 'Custom Sound', 'popup-maker' ),
+							),
+						),
+						'custom_sound'   => array(
+							'label'    => __( 'Custom Sound URL', 'popup-maker' ),
+							'desc'     => __( 'Enter URL to sound file.', 'popup-maker' ),
+							'type'     => 'text',
+							'std'      => '',
+							'priority' => 10,
+							'dependencies' => array(
+								'open_sound' => array( 'custom' ),
+							),
+						),
+					),
 					'position'  => array(
 						'location'              => array(
 							'label'    => __( 'Location', 'popup-maker' ),
@@ -668,7 +733,7 @@ class PUM_Admin_Popups {
 						'close_text'         => array(
 							'label'       => __( 'Close Text', 'popup-maker' ),
 							'placeholder' => __( 'Close', 'popup-maker' ),
-							'desc'        => __( 'Override the default close text.', 'popup-maker' ),
+							'desc'        => __( 'Override the default close text. To use a Font Awesome icon instead of text, enter the CSS classes such as "fas fa-camera".', 'popup-maker' ),
 							'priority'    => 10,
 							'private'     => true,
 						),
@@ -684,6 +749,26 @@ class PUM_Admin_Popups {
 							'priority' => 20,
 						),
 					),
+					'forms' => [
+						'close_on_form_submission'          => [
+							'label' => __( 'Close on Form Submission', 'popup-maker' ),
+							'desc'  => __( 'Close the popup automatically after integrated form plugin submissions.', 'popup-maker' ),
+							'type'  => 'checkbox',
+						],
+						'close_on_form_submission_delay'    => [
+							'type'         => 'rangeslider',
+							'label'        => __( 'Delay', 'popup-maker' ),
+							'desc'         => __( 'The delay before the popup will close after submission (in milliseconds).', 'popup-maker' ),
+							'std'          => 0,
+							'min'          => 0,
+							'max'          => 10000,
+							'step'         => 500,
+							'unit'         => 'ms',
+							'dependencies' => [
+								'close_on_form_submission' => true,
+							],
+						],
+					],
 					'alternate_methods' => array(
 						'close_on_overlay_click' => array(
 							'label'    => __( 'Click Overlay to Close', 'popup-maker' ),
@@ -826,23 +911,53 @@ class PUM_Admin_Popups {
 		return false;
 	}
 
+	/**
+	 * Sanitizes fields after submission.
+	 *
+	 * Also handles pre save manipulations for some field types (measure/license).
+	 *
+	 * @param array $settings
+	 *
+	 * @return array
+	 */
 	public static function sanitize_settings( $settings = array() ) {
 
+		$fields = self::fields();
+		$fields = PUM_Admin_Helpers::flatten_fields_array( $fields );
+
+		foreach ( $fields as $field_id => $field ) {
+			switch ( $field['type'] ) {
+				case 'checkbox':
+
+					if ( ! isset( $settings[ $field_id ] ) ) {
+						$settings[ $field_id ] = false;
+					}
+					break;
+			}
+		}
 
 		foreach ( $settings as $key => $value ) {
 			$field = self::get_field( $key );
 
-			if ( is_string( $value ) ) {
-				$settings[ $key ] = sanitize_text_field( $value );
-			}
-
 			if ( $field ) {
+
+				// Sanitize every string value.
+				if ( is_string( $value ) ) {
+					$settings[ $key ] = sanitize_text_field( $value );
+				}
+
 				switch ( $field['type'] ) {
+					default:
+						$settings[ $key ] = is_string( $value ) ? trim( $value ) : $value;
+						break;
+
+
 					case 'measure':
 						$settings[ $key ] .= $settings[ $key . '_unit' ];
 						break;
 				}
 			} else {
+				// Some custom field types include multiple additional fields that do not need to be saved, strip out any non-whitelisted fields.
 				unset( $settings[ $key ] );
 			}
 
@@ -871,6 +986,32 @@ class PUM_Admin_Popups {
 		}
 
 		return $defaults;
+	}
+
+	/**
+	 * Fills default settings only when missing.
+	 *
+	 * Excludes checkbox type fields where a false value is represented by the field being unset.
+	 *
+	 * @param array $settings
+	 *
+	 * @return array
+	 */
+	public static function fill_missing_defaults( $settings = [] ) {
+		$excluded_field_types = [ 'checkbox', 'multicheck' ];
+
+		$defaults = self::defaults();
+		foreach ( $defaults as $field_id => $default_value ) {
+			$field = self::get_field( $field_id );
+			if ( isset( $settings[ $field_id ] ) || in_array( $field['type'], $excluded_field_types ) ) {
+				continue;
+			}
+
+			$settings[ $field_id ] = $default_value;
+		}
+
+		return $settings;
+
 	}
 
 	/**
@@ -966,8 +1107,8 @@ class PUM_Admin_Popups {
 						if ( is_object( $value ) || is_array( $value ) ) {
 							$meta[ $key ] = PUM_Admin_Helpers::object_to_array( $value );
 						}
-					} catch ( \Exception $e ) {
-					};
+					} catch ( Exception $e ) {
+					}
 				}
 
 			}
@@ -1003,6 +1144,7 @@ class PUM_Admin_Popups {
 	 *  Post Type List Table
 	 */
 	public static function dashboard_columns( $_columns ) {
+		wp_enqueue_style( 'pum-admin-general' );
 		$columns = array(
 			'cb'          => '<input type="checkbox"/>',
 			'title'       => __( 'Name', 'popup-maker' ),
@@ -1197,6 +1339,22 @@ class PUM_Admin_Popups {
 			}
 		}
 
+	}
+
+	/**
+	 * Prepends Popup ID to the action row on All Popups
+	 * @param array $actions The row actions.
+	 * @param $post The post
+	 *
+	 * @return array The new actions.
+	 */
+	public static function add_id_row_actions( $actions, $post ) {
+		// Only adjust if we are dealing with our popups.
+		if ( 'popup' === $post->post_type ) {
+			return array_merge( array( 'id' => 'ID: ' . $post->ID ), $actions );
+		}
+
+		return $actions;
 	}
 
 }

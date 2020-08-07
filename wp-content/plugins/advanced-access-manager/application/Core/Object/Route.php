@@ -9,106 +9,82 @@
 
 /**
  * API route object
- * 
+ *
+ * @since 6.5.0 https://github.com/aamplugin/advanced-access-manager/issues/105
+ * @since 6.4.0 Enhancement https://github.com/aamplugin/advanced-access-manager/issues/56
+ * @since 6.1.0 Fixed bug with incorrectly halted inheritance mechanism
+ * @since 6.0.0 Initial implementation of the class
+ *
  * @package AAM
- * @author Vasyl Martyniuk <vasyl@vasyltech.com>
+ * @version 6.5.0
  */
-class AAM_Core_Object_Route extends AAM_Core_Object {
+class AAM_Core_Object_Route extends AAM_Core_Object
+{
 
     /**
-     * Constructor
+     * Type of object
      *
-     * @param AAM_Core_Subject $subject
-     *
-     * @return void
-     *
-     * @access public
+     * @version 6.0.0
      */
-    public function __construct(AAM_Core_Subject $subject) {
-        parent::__construct($subject);
-        
-        $option = AAM_Core_Compatibility::convertRoute(
-                $this->getSubject()->readOption('route')
-        );
-        
-        if (!empty($option)) {
-            $this->setOverwritten(true);
-        }
-       
-        // Load settings from Access & Security Policy
-        if (empty($option)) {
-            $stms = AAM_Core_Policy_Factory::get($subject)->find("/^Route:/i");
-           
-            foreach($stms as $key => $stm) {
-                $chunks = explode(':', $key);
-                $method = (isset($chunks[3]) ? $chunks[3] : 'post');
-                $id     = "{$chunks[1]}|{$chunks[2]}|{$method}";
-                
-                $option[$id] = ($stm['Effect'] === 'deny' ? 1 : 0);
-            }
-        }
-        
-        if (empty($option)) {
-            $option = $this->getSubject()->inheritFromParent('route');
-        }
-        
-        $this->setOption($option);
-    }
-    
+    const OBJECT_TYPE = 'route';
+
     /**
-     * Check if route is denied
-     * 
-     * @param string $type REST or XMLRPC
+     * @inheritdoc
+     *
+     * @since 6.5.0 https://github.com/aamplugin/advanced-access-manager/issues/105
+     * @since 6.1.0 Fixed bug with incorrectly halted inheritance mechanism
+     * @since 6.0.0 Initial implementation of the method
+     *
+     * @version 6.5.0
+     */
+    protected function initialize()
+    {
+        $option = $this->getSubject()->readOption('route');
+
+        $this->determineOverwritten($option);
+
+        // Trigger custom functionality that may populate the menu options. For
+        // example, this hooks is used by Access Policy service
+        $option = apply_filters('aam_route_object_option_filter', $option, $this);
+
+        // Making sure that all menu keys are lowercase
+        $normalized = array();
+        foreach($option as $key => $val) {
+            $normalized[strtolower($key)] = $val;
+        }
+
+        $this->setOption(is_array($normalized) ? $normalized : array());
+    }
+
+    /**
+     * Check if route is restricted
+     *
+     * @param string $type   REST or XMLRPC
      * @param string $route
      * @param string $method
-     * 
+     *
      * @return boolean
-     * 
+     *
+     * @since 6.4.0 Added `aam_route_match_filter` to support enhancement
+     *              https://github.com/aamplugin/advanced-access-manager/issues/56
+     * @since 6.0.0 Initial implementation of the method
+     *
      * @access public
+     * @version 6.4.0
      */
-    public function has($type, $route, $method = 'POST') {
+    public function isRestricted($type, $route, $method = 'POST')
+    {
         $options = $this->getOption();
         $id      = strtolower("{$type}|{$route}|{$method}");
-        
-        return !empty($options[$id]);
+        $matched = !empty($options[$id]);
+
+        if ($matched === false) {
+            $matched = apply_filters(
+                'aam_route_match_filter', false, $type, $route, $method, $this
+            );
+        }
+
+        return $matched;
     }
 
-    /**
-     * Save menu option
-     * 
-     * @return bool
-     * 
-     * @access public
-     */
-    public function save($type, $route, $method, $value) {
-        $option = $this->getOption();
-        
-        $id     = strtolower("{$type}|{$route}|{$method}");
-        $option[$id] = $value;
-        
-        $this->setOption($option);
-        
-        return $this->getSubject()->updateOption($this->getOption(), 'route');
-    }
-    
-    /**
-     * Reset default settings
-     * 
-     * @return bool
-     * 
-     * @access public
-     */
-    public function reset() {
-        return $this->getSubject()->deleteOption('route');
-    }
-
-     /**
-     * 
-     * @param type $external
-     * @return type
-     */
-    public function mergeOption($external) {
-        return AAM::api()->mergeSettings($external, $this->getOption(), 'route');
-    }
-    
 }

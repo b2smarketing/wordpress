@@ -3,111 +3,28 @@ Contributors: timersys
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=K4T6L69EV9G2Q
 Tags:  popup,twitter,google+,facebook,Popups,twitter follow,facebook like,mailchimp,Activecampaign,Mailpoet,Postmatic,Infusionsoft,mailerlite,constant contact,aweber,google plus,social boost,social splash,postmatic,mailpoet,facebook popup,scroll popups,popups,wordpress popup,wp popups,cf7,gf,gravity forms,contact form 7,ifs,infusion soft,subscribe,login popup,ajax login popups,popupmaker
 Requires at least: 3.6
-Tested up to: 5.1.1
-Stable tag: 1.9.3.7
+Tested up to: 5.3
+Stable tag: 1.9.3.8
 Requires PHP: 5.3
 Text Domain: popups
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Popup plugin that works! Most complete free popup plugin with display filters, scroll triggered popups, compatible with social networks, Gravity Forms, Ninja Forms, Contact form 7, Mailpoet, Mailchimp for WP, Postmatic, etc
+Popups plugin is an easy an intuive way to create to create all kind of popups. Try the new version called [WP Popups](https://wordpress.org/plugins/wp-popups-lite)
 
 == Description ==
 
-The new Popups plugin can display multiple popups. Is the perfect solution to show important messages such as EU Cookie notice, increase your social followers, add call to actions, increase your mailing lists by adding a form like mailchimp or to display any other important message in a simple popup.
+Popups plugin is an easy an intuive way to create to create all kind of popups. Also the core version of Popups Premium plugin .
 
-https://www.youtube.com/watch?v=S_MfZne6X2I&t=3s
+You want more power and an intuitive builder ? Try the new version called [WP Popups](https://wordpress.org/plugins/wp-popups-lite), the most powerful and intuitive popup maker plugin for WordPress.
 
-It's compatible with the major form plugins like (read FAQ):
+= WP Popups =
 
-* Gravity Forms
-* Ninja Forms
-* Contact form 7
-* USP Forms
-* Infusion Soft
-* Jetpack
-* Mailpoet
-* Mailchimp for WP
-* Postmatic
-* Any generic form
-* Facebook Login popups using the [Facebook login pro plugin](https://timersys.com/facebook-login/)
+https://www.youtube.com/embed/_yJ-xHVOQYw
 
-There are multiple display filters that can be combined:
+Download [WP Popups](https://wordpress.org/plugins/wp-popups-lite) Now! or [check all the premium features](https://wppopups.com/features/)
 
-* Show popup on specific pages, templates, posts, etc
-* Filter user from search engines
-* Filter users that never commented
-* Filter users that arrived via another page on your site
-* Filter users via roles
-* Show popup depending on referrer
-* Show popup to logged / non logged users
-* Show or not to mobile, desktop and tablet users
-* Show or not to bots / crawlers like Google
-* Show or not depending on query strings EG: utm_source=email
-* Show depending on post type, post template, post name, post format, post status and post taxonomy
-* Show depending on page template, if page is parent, page name, page type
-* Geotarget popups using the [Geotargeting plugin](https://timersys.com/geotargeting/)
-
- = Need it in another language? Help us [translate Popup Plugin](https://www.transifex.com/projects/p/popups/) =
-
-= Available Settings =
-
-* Choose from 5 different popup locations
-* Trigger popup after X seconds , after scrolling % of page, after scrolling X pixels
-* Auto hide the popup if the user scroll up
-* Change font color, background, borders, etc
-* You can also configure background opacity.
-* Days until popup shows again
-* Ajax mode to make popups cache compatible
-* Shortcodes for social networks available
-
-> <strong>Premium Version</strong><br>
->
-> Check the **new premium version** available in ([https://timersys.com/popups/](https://timersys.com/popups/?utm_source=readme%20file&utm_medium=readme%20links&utm_campaign=Popups%20Premium))
->
-> * Beautiful optin forms for popular mail providers
-> * Currently supporting MailChimp, Aweber, Postmatic, Mailpoet, Constant Contact, Newsletter plugin, Activecampaign, InfusionSoft, etc
-> * New popup positions: top/bottoms bars , fullscreen mode, after post content
-> * A/B testing. Explore which popup perform better for you
-> * More Display Rules: Show after N(numbers) of pages viewed
-> * More Display Rules: Show popup at certain time / day or date
-> * More Display Rules: Show/hide if another popup already converted
-> * Track impressions and Conversions of social networks and forms like CF7 or Gravity forms
-> * Track impressions and Conversions in Google Analytics ande define custom events
-> * Data sampling for heavy traffic sites
-> * Background images
-> * 8 New animations effects
-> * Exit Intent technology
-> * More trigger methods
-> * Timer for auto closing
-> * Ability to disable close button
-> * Ability to disable Advanced close methods like esc or clicking outside of the popup
-> * Premium support
->
-
-= Plugin's Official Site =
-
-Popups ([https://timersys.com/free-plugins/social-popup/](https://timersys.com/free-plugins/popups/))
-
-= Github =
-
-Fork me in https://github.com/timersys/popups/
-
-= Available Languages =
-
-* French
-* Russian
-* Serbo-Croatian - Borisa - http://www.webhostinghub.com/
-* Spanish - Andrew Kurtis - http://www.webhostinghub.com/
-* German
-* Slovak - J�n "Fajo" Fajc�k
-
-= Beautiful WordPress Emails  =
-Now you can send html email in WordPress with [https://wordpress.org/plugins/email-templates/](https://wordpress.org/plugins/email-templates/)
-
-= Install Multiple plugins at once with WpFavs  =
-
-Bulk plugin installation tool, import WP favorites and create your own lists ([http://wordpress.org/extend/plugins/wpfavs/](http://wordpress.org/extend/plugins/wpfavs/))
+[How to import your old popups into WP Popups](https://wppopups.com/docs/how-to-import-legacy-popups-from-old-plugin/)
 
 == Installation ==
 
@@ -184,6 +101,9 @@ If you are not seeing that code instead, the problem is that one of the display 
 If you have cache be sure to enable AJAX mode in the plugin settings page
 
 == Changelog ==
+
+= 1.9.3.8 =
+* Discontinued for WP Popups
 
 = 1.9.3.7 =
 * Cookies in days/hours

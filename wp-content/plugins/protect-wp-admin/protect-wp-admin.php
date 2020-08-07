@@ -1,14 +1,14 @@
 <?php
 /**
 Plugin Name: Protect WP-Admin
-Plugin URI: http://www.mrwebsolution.in/
-Description: Hide your WP Admin URL using a secret term and secure your website against hackers!!
-Author: MR Web Solution
-Author URI: http://www.mrwebsolution.in/
-Version: 3.0.3
+Plugin URI: https://www.wp-experts.in/
+Description: Give extra protection to your site admin and make secure your website against hackers!!
+Author: WP Experts Team
+Author URI: https://www.wp-experts.in/
+Version: 3.3
 */
 
-/*** Protect WP-Admin Copyright 2017  (email : raghunath.0087@gmail.com)
+/*** WP Experts Team Copyright 2017-2020  (email : raghunath.0087@gmail.com)
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License, version 2, as 
@@ -67,15 +67,23 @@ add_action('admin_init','init_pwa_options_fields');
 if(!function_exists('init_pwa_options_fields')):
 function init_pwa_options_fields(){
 	register_setting('pwa_setting_options','pwa_active');
-	register_setting('pwa_setting_options','pwa_rewrite_text');	
+	register_setting('pwa_setting_options','pwa_rewrite_text','pwa_sanitization_newslug_escaping_text');	
 	register_setting('pwa_setting_options','pwa_restrict');	
 	register_setting('pwa_setting_options','pwa_logout');
 	register_setting('pwa_setting_options','pwa_allow_custom_users');
 	register_setting('pwa_setting_options','pwa_logo_path');
 	register_setting('pwa_setting_options','pwa_login_page_bg_color');
+	register_setting('pwa_setting_options','pwa_login_page_color');
 } 
 endif;
-
+if(!function_exists('pwa_sanitization_newslug_escaping_text')):
+function pwa_sanitization_newslug_escaping_text($val)
+{
+  //sanitize
+  $val = sanitize_text_field($val);
+  return $val;
+}
+endif;
 if(!function_exists('add_pwa_admin_style_script')):
 function add_pwa_admin_style_script()
 {
@@ -89,7 +97,7 @@ endif;
 add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), 'pwa_action_links' );
 if(!function_exists('pwa_action_links')):
 function pwa_action_links( $links ) {
-   $links[] = '<a href="'. get_admin_url(null, 'options-general.php?page=pwa-settings') .'">Settings</a> | <a href="https://rgaddons.wordpress.com/protect-wp-admin-pro/">GO PRO</a>';
+   $links[] = '<a href="'. get_admin_url(null, 'options-general.php?page=pwa-settings') .'">Settings</a> | <a href="http://www.wp-experts.in/products/protect-wp-admin-pro">GO PRO</a>';
    return $links;
 }
 endif;
@@ -107,7 +115,7 @@ function init_pwa_admin_option_page(){
   <!-- Start Options Form -->
 	<form action="options.php" method="post" id="pwa-settings-form-admin">
 	<input type="hidden"  id="check_permalink" value="<?php echo $permalink_structure_val;?>">	
-	<div id="pwa-tab-menu"><a id="pwa-general" class="pwa-tab-links active" >General</a> <a  id="pwa-admin-style" class="pwa-tab-links">Login Page Style</a> <a  id="pwa-advance" class="pwa-tab-links">Advance Settings</a> <a  id="pwa-gopro" class="pwa-tab-links">Go Pro</a> <a  id="pwa-support" class="pwa-tab-links">Support</a> </div>
+	<div id="pwa-tab-menu"><a id="pwa-general" class="pwa-tab-links active" >General</a> <a  id="pwa-admin-style" class="pwa-tab-links">Login Page Style</a><a  id="pwa-support" class="pwa-tab-links">Support & Our other plugin</a> </div>
 	<hr>
 	<div class="pwa-setting">
 		<!-- General Setting -->	
@@ -115,30 +123,41 @@ function init_pwa_admin_option_page(){
 	<h2>General Settings</h2>
 	<table cellpadding="10">
 	<tr>
-	<td valign="top">
+	<td valign="top" width="50%">
 		
-	<p><input type="checkbox" id="pwa_active" name="pwa_active" value='1' <?php if(get_option('pwa_active')!=''){ echo ' checked="checked"'; }?>/> <label>Enable </label></p>
-	<p id="adminurl"><label>New admin url slug: </label><br><input type="text" id="pwa_rewrite_text" size="40" name="pwa_rewrite_text" value="<?php echo esc_attr(get_option('pwa_rewrite_text')); ?>"  placeholder="myadmin" size="30"><br><i>Enter new admin slug to make wp-login page more secure( i.e myadmin )</i></p>
+	<p><input type="checkbox" id="pwa_active" name="pwa_active" value='1' <?php if(get_option('pwa_active')!=''){ echo ' checked="checked"'; }?>/> <label><strong>Enable</strong></label></p>
+	<p id="adminurl"><label><strong>New Admin Slug:</strong></label><br><input  onkeyup="this.value=this.value.replace(/[^a-z]/g,'');"  type="text" id="pwa_rewrite_text" size="20" name="pwa_rewrite_text" value="<?php echo esc_attr(get_option('pwa_rewrite_text')); ?>"  placeholder="myadmin" size="30"><br><i>Don't use any special character.</i></p>
 	<?php 
 		$getPwaOptions=get_pwa_setting_options();
 		if((isset($getPwaOptions['pwa_active']) && '1'==$getPwaOptions['pwa_active']) && (isset($getPwaOptions['pwa_rewrite_text']) && $getPwaOptions['pwa_rewrite_text']!='')){
-		echo "<p><strong>Note:</strong>Please check new admin url before logout.<br><strong><blink><a href='".home_url($getPwaOptions['pwa_rewrite_text'].'?preview=1')."' target='_blank'>CLICK HERE</a></blink></strong> to preview new admin URL.</p>";
+		echo '<p><a href="'.site_url($getPwaOptions['pwa_rewrite_text'].'?preview=1').'" target="_blank" style="border: 1px solid #ff0000;text-decoration: none;color: #ff0000;font-size: 18px;vertical-align: middle;padding: 10px 20px;" target="_blank">Preview Of New Admin URL</a></blink></strong></p><em><strong>Note:</strong>Please check new admin url before logout.</em><br>';
 
 		}
 	?>
+	<hr>
+	
+	<h2>Advance Settings</h2>
+
+	<p><input type="checkbox" id="pwa_restrict" name="pwa_restrict" value='1' <?php if(get_option('pwa_restrict')!=''){ echo ' checked="checked"'; }?>/> <label>Restrict registered non-admin users from wp-admin :</label></p>
+	<p><label>Allow access to non-admin users:<br></label><input type="text" id="pwa_allow_custom_users" name="pwa_allow_custom_users" value="<?php echo esc_attr(get_option('pwa_allow_custom_users')); ?>"  placeholder="1,2,3"> <br>(<i>Add comma seprated ids</i>)</p>
+	
 	</td>
 	<td valign="top" style="border-left:2px solid #ccc; padding-left:10px;">
+		<div class="offer-announcement" style="display:none;"><h2><i class="wpexperts dashicons-before dashicons-megaphone"></i><a href="https://www.wp-experts.in/products/protect-wp-admin-pro">FLAT 20% DISCOUNT ON PLUGIN ADD-ON</a></h2><em class="tagline">No Coupon Code Required. Hurry! Limited Time Offer!</em></div>
 		<h3>Pro Addon Features:</h3>
-		<ol>
-		    <li>Login Attempt Counter</li>
-			<li>An option to define login page logo URL</li>
-			<li>An option to manage login page CSS from admin</li>
-			<li>An option to change username of any user</li>
-			<li>An option to define custom redirect url for defalut wp-admin url</li>
-		</ol>
-	   <p style="font-size:16px;">Want to know about all features of addon? Watch given below video</p>
-		<iframe width="560" height="315" src="https://www.youtube.com/embed/Vbk8QX2HWic?rel=1&autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-		<h2><a href="https://rgaddons.wordpress.com/protect-wp-admin-pro/" target="_blank" class="contact-author"><strong>Click Here</strong></a> to download addon.</h2>
+		<ol class="hand right-click twocolumn">
+		<li>Rename wordpress wp-admin URL</li>
+		<li>Enable Login Tracker</li>
+		<li>Set Number of Login Attempt</li>
+		<li>Change username of any existing user</li>
+		<li>Define login page logo URL</li>
+		<li>Manage login page style from admin</li>
+		<li>Define custom redirect url for default wp-admin url</li>
+		<li>Change wordpress admin URL</li>
+		<li>Track user login history.</li>
+		<li>Faster support</li>
+		</ol><br>
+		<h2><a href="https://www.wp-experts.in/products/protect-wp-admin-pro" target="_blank" style="background: #0472aa; padding: 10px 20px; margin: 10px 0px; text-decoration: none; color: #fff; font-size: 24px; "><strong>Click here to download add-on</strong></a></h2>
 		</td>
 	</tr>
 	</table>
@@ -148,30 +167,8 @@ function init_pwa_admin_option_page(){
 	<div class="last author pwa-tab" id="div-pwa-admin-style">
 	<h2>Admin Login Page Style Settings</h2>
 	<p id="adminurl"><label>Login Page Logo:</label><br><input type="text" id="pwa_logo_path" name="pwa_logo_path" value="<?php echo esc_attr(get_option('pwa_logo_path')); ?>"  placeholder="Add Custom Logo Image Path" size="30"> <input data-id="pwa_logo_path" type="button" value="Upload Image" class="upload_image"/>(<i>Change WordPress Default Login Logo </i>)</p>
-	<p id="adminurl"><label>Body Background Color: </label><input type="text" id="pwa_login_page_bg_color" name="pwa_login_page_bg_color" value="<?php echo esc_attr(get_option('pwa_login_page_bg_color')); ?>"  size="30" class="color-field"></p>
-	</div>
-	<!-- Advance Setting -->	
-	<div class="pwa-tab" id="div-pwa-advance">
-	<h2>Advance Settings</h2>
-
-	<p><input type="checkbox" id="pwa_restrict" name="pwa_restrict" value='1' <?php if(get_option('pwa_restrict')!=''){ echo ' checked="checked"'; }?>/> <label>Restrict registered non-admin users from wp-admin :</label></p>
-	<!-- <p><input type="checkbox" id="pwa_logout" name="pwa_logout" value='1' <?php if(get_option('pwa_logout')==''){ echo ''; }else{echo 'checked="checked"';}?>/> <label>Logout Admin After Add/Update New Admin URL(Optional) :</label> (This is only for security purpose)</p> -->
-	<p><label>Allow access to non-admin users:<br></label><input type="text" id="pwa_allow_custom_users" name="pwa_allow_custom_users" value="<?php echo esc_attr(get_option('pwa_allow_custom_users')); ?>"  placeholder="1,2,3"> <br>(<i>Add comma seprated ids</i>)</p>
-	</div>
-	<!-- go pro -->
-	<div class="last author pwa-tab" id="div-pwa-gopro">
-	<h2> Go Pro</h2>
-	<a href="https://rgaddons.wordpress.com/protect-wp-admin-pro/"> Click here</a> for update to pro version.
-	<ol>
-	<li>Login Attempt Counter</li>
-	<li>An option to define login page logo URL</li>
-	<li>An option to manage login page CSS from admin</li>
-	<li>An option to change username of any user</li>
-	<li>An option to define custom redirect url for defalut wp-admin url</li>
-	<li>Faster support</li>
-	</ol>
-	<strong>PRO Features:</strong>
-	<iframe width="560" height="315" src="https://www.youtube.com/embed/Vbk8QX2HWic" frameborder="0" allowfullscreen></iframe>
+	<p id="adminurl"><label>Background Color: </label><input type="text" id="pwa_login_page_bg_color" name="pwa_login_page_bg_color" value="<?php echo esc_attr(get_option('pwa_login_page_bg_color')); ?>"  size="30" class="color-field"></p>
+	<p id="adminurl1"><label>Text Color: </label><input type="text" id="pwa_login_page_color" name="pwa_login_page_color" value="<?php echo esc_attr(get_option('pwa_login_page_color')); ?>"  size="30" class="color-field"></p>
 	</div>
 	<!-- Support -->
 	<div class="last author pwa-tab" id="div-pwa-support">
@@ -180,7 +177,7 @@ function init_pwa_admin_option_page(){
 	<tr>
 	<td width="30%"><p><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=ZEMSYQUZRUK6A" target="_blank" style="font-size: 17px; font-weight: bold;"><img src="https://www.paypal.com/en_US/i/btn/btn_donate_LG.gif" title="Donate for this plugin"></a></p>
 	
-	<p><strong>Plugin Author:</strong><br><img src="<?php echo  plugins_url( 'images/mrweb.jpg' , __FILE__ );?>" width="75" height="75"><br><a href="http://raghunathgurjar.wordpress.com" target="_blank">MR Web Solution</a></p>
+	<p><strong>Plugin Author:</strong><br><a href="http://www.wp-experts.in" target="_blank">WP-Experts.In Team</a></p>
 	<p><a href="mailto:raghunath.0087@gmail.com" target="_blank" class="contact-author">Contact Author</a></p>
    </td>
 	<td>		
@@ -207,6 +204,8 @@ function init_pwa_admin_option_page(){
 							<li><a href="https://wordpress.org/plugins/wp-easy-recipe/" target="_blank">WP Easy Recipe</a></li>
 					</ol>
 		</p></td>
+		<td><p style="font-size:16px;">Want to know about all features of addon? Watch given below video</p>
+		<iframe width="560" height="315" src="https://www.youtube.com/embed/sXywBe0XWy0?rel=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></td>
 	</tr>
 	</table>
 
@@ -281,7 +280,7 @@ echo $script='<script type="text/javascript">
 		 if(($el[0].checked) && $vlue=="")
 		 {
 			 	 jQuery("#pwa_rewrite_text").css("border","1px solid red");
-			 	 jQuery("#adminurl").append(" <strong style=\'color:red;\'>Please enter admin url slug</strong>");
+			 	 jQuery("#adminurl").append(" <span style=\'color:red;display:block;\'>Please enter new admin slug</span>");
 			 	 return false;
 			 }
 			
@@ -357,6 +356,7 @@ function init_uninstall_pwa_plugins(){
 	delete_option('pwa_allow_custom_users');
 	delete_option('pwa_logo_path');
 	delete_option('pwa_login_page_bg_color');
+	delete_option('pwa_login_page_color');
 }
 endif;
 require dirname(__FILE__).'/pwa-class.php';

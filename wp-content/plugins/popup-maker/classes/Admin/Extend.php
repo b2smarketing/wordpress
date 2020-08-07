@@ -155,10 +155,22 @@ class PUM_Admin_Extend {
 				'desc' => __( 'CF7 is one of the most downloaded plugins on the WordPress repo. Make simple forms with ease and plenty of free addons available.', 'popup-maker' ),
 			),
 			array(
-				'slug' => 'quiz-survey-master',
-				'name' => __( 'Quiz & Survey Master', 'popup-maker' ),
-				'url'  => 'https://wppopupmaker.com/recommends/quiz-survey-master',
-				'desc' => __( 'If you need more from your forms data look no further, QSM is all about the statistics & collective data, something other form plugins neglect.', 'popup-maker' ),
+				'slug' => 'mc4wp',
+				'name' => __( 'MailChimp For WordPress', 'popup-maker' ),
+				'url'  => 'https://wppopupmaker.com/recommends/mailchimp-for-wordpress',
+				'desc' => __( 'Allowing your visitors to subscribe to your newsletter should be easy. With this plugin, it finally is.', 'popup-maker' ),
+			),
+			array(
+				'slug' => 'caldera-forms',
+				'name' => __( 'Caldera Forms', 'popup-maker' ),
+				'url'  => 'https://wppopupmaker.com/recommends/caldera-forms',
+				'desc' => __( 'Responsive form builder for contact forms, user registration and login forms, Mailchimp, PayPal Express and more.', 'popup-maker' ),
+			),
+			array(
+				'slug' => 'wp-forms',
+				'name' => __( 'WP Forms', 'popup-maker' ),
+				'url'  => 'https://wppopupmaker.com/recommends/wp-forms',
+				'desc' => __( 'Drag & Drop online form builder that helps you create beautiful contact forms with just a few clicks.', 'popup-maker' ),
 			),
 		);
 
@@ -200,7 +212,24 @@ class PUM_Admin_Extend {
 	 * @return array
 	 */
 	public static function other_plugins() {
-		return array();
+		$other_plugins = array(
+			array(
+				'slug' => 'user-menus',
+				'name' => __( 'User Menus', 'popup-maker' ),
+				'url'  => 'https://wppopupmaker.com/recommends/user-menus',
+				'desc' => __( "Show/hide menu items to logged in users, logged out users or specific user roles. Display logged in user details in menu. Add a logout link to menu.", 'popup-maker' ),
+			),
+			array(
+				'slug' => 'content-control',
+				'name' => __( 'Content Control', 'popup-maker' ),
+				'url'  => 'https://wppopupmaker.com/recommends/content-control',
+				'desc' => __( "	Restrict content to logged in/out users or specific user roles. Restrict access to certain parts of a page/post. Control the visibility of widgets.", 'popup-maker' ),
+			),
+		);
+
+		shuffle( $other_plugins );
+
+		return apply_filters( 'pum_extend_page_other_plugins', $other_plugins );
 	}
 
 	/**
@@ -216,20 +245,17 @@ class PUM_Admin_Extend {
 
 		?>
         <div class="wrap">
-            <hr class="wp-header-end">
+			<h1><?php _e( 'Extensions & Integrations for Popup Maker', 'popup-maker' ) ?></h1>
 			<?php PUM_Upsell::display_addon_tabs(); ?>
             <div id="poststuff">
                 <div id="post-body" class="metabox-holder">
                     <div id="post-body-content">
-                        <h1 class="section-heading">
-							<?php _e( 'Extensions & Integrations for Popup Maker', 'popup-maker' ) ?>
-                            &nbsp;&nbsp;<a href="https://wppopupmaker.com/extensions/?utm_source=plugin-extension-page&utm_medium=text-link&utm_campaign=<?php echo $campaign; ?>&utm_content=browse-all" class="button-primary" title="<?php _e( 'Browse All Extensions', 'popup-maker' ); ?>" target="_blank"><?php _e( 'Browse All Extensions', 'popup-maker' ); ?></a>
-                        </h1>
-
                         <div class="pum-add-ons-view-wrapper">
 							<?php self::render_subtabs(); ?>
                         </div>
 
+						<br class="clear" />
+						<a href="https://wppopupmaker.com/extensions/?utm_source=plugin-extension-page&utm_medium=text-link&utm_campaign=<?php echo $campaign; ?>&utm_content=browse-all" class="button-primary" title="<?php _e( 'Browse All Extensions', 'popup-maker' ); ?>" target="_blank"><?php _e( 'Browse All Extensions', 'popup-maker' ); ?></a>
                         <br class="clear" />
 
                         <div class="pum-tabs-container">
@@ -238,7 +264,7 @@ class PUM_Admin_Extend {
 							} elseif ( 'page-builders' === $active_tab ) {
 								self::render_page_builders_list();
 							} elseif ( 'other' === $active_tab ) {
-
+								self::render_other_list();
 							} else { ?>
 
 								<?php self::render_extension_list(); ?>
@@ -369,18 +395,18 @@ class PUM_Admin_Extend {
 			$i = 1;
 
 			foreach ( $form_plugins as $plugin ) : ?>
-                <li class="available-extension-inner <?php esc_attr_e( $plugin['slug'] ); ?>">
+                <li class="available-extension-inner <?php echo esc_attr( $plugin['slug'] ); ?>">
                     <h3>
-                        <a target="_blank" href="<?php esc_attr_e( $plugin['url'] ); ?>?utm_campaign=<?php echo $campaign; ?>&utm_source=plugin-extend-page&utm_medium=form-banner&utm_content=<?php echo $plugin['slug']; ?>">
+                        <a target="_blank" href="<?php echo esc_attr( $plugin['url'] ); ?>?utm_campaign=<?php echo $campaign; ?>&utm_source=plugin-extend-page&utm_medium=form-banner&utm_content=<?php echo $plugin['slug']; ?>">
 							<?php echo esc_html( $plugin['name'] ); ?>
                         </a>
                     </h3>
-                    <img alt="<?php echo esc_html( $plugin['name'] ); ?>" class="extension-thumbnail" src="<?php esc_attr_e( POPMAKE_URL . '/assets/images/plugins/' . $plugin['slug'] . '.png' ) ?>" />
+                    <img alt="<?php echo esc_html( $plugin['name'] ); ?>" class="extension-thumbnail" src="<?php echo esc_attr( POPMAKE_URL . '/assets/images/plugins/' . $plugin['slug'] . '.png' ) ?>" />
 
                     <p><?php echo esc_html( $plugin['desc'] ); ?></p>
 
                     <span class="action-links">
-					<a class="button" target="_blank" href="<?php echo esc_url( $plugin['url'] ); ?>"><?php _e( 'Check it out', 'popup-maker' ); ?></a>
+					<a class="button" target="_blank" href="<?php echo esc_attr( $plugin['url'] ); ?>"><?php _e( 'Check it out', 'popup-maker' ); ?></a>
 				</span>
                 </li>
 				<?php
@@ -411,25 +437,61 @@ class PUM_Admin_Extend {
 			$i = 1;
 
 			foreach ( $page_builder_plugins as $plugin ) : ?>
-                <li class="available-extension-inner <?php esc_attr_e( $plugin['slug'] ); ?>">
+                <li class="available-extension-inner <?php echo esc_attr( $plugin['slug'] ); ?>">
                     <h3>
-                        <a target="_blank" href="<?php esc_attr_e( $plugin['url'] ); ?>?utm_campaign=<?php echo $campaign; ?>&utm_source=plugin-extend-page&utm_medium=page-builder-banner&utm_content=<?php echo $plugin['slug']; ?>">
-							<?php esc_html_e( $plugin['name'] ) ?>
+                        <a target="_blank" href="<?php echo esc_attr( $plugin['url'] ); ?>?utm_campaign=<?php echo $campaign; ?>&utm_source=plugin-extend-page&utm_medium=page-builder-banner&utm_content=<?php echo $plugin['slug']; ?>">
+							<?php echo esc_html( $plugin['name'] ) ?>
                         </a>
                     </h3>
 
-                    <img class="extension-thumbnail" src="<?php esc_attr_e( POPMAKE_URL . '/assets/images/plugins/' . $plugin['slug'] . '.png' ) ?>" />
+                    <img class="extension-thumbnail" src="<?php echo esc_attr( POPMAKE_URL . '/assets/images/plugins/' . $plugin['slug'] . '.png' ) ?>" />
 
-                    <p><?php esc_html_e( $plugin['desc'] ); ?></p>
+                    <p><?php echo esc_html( $plugin['desc'] ); ?></p>
 
                     <span class="action-links">
-					<a class="button" target="_blank" href="<?php echo esc_url( $plugin['url'] ); ?>"><?php _e( 'Check it out', 'popup-maker' ); ?></a>
+					<a class="button" target="_blank" href="<?php echo esc_attr( $plugin['url'] ); ?>"><?php _e( 'Check it out', 'popup-maker' ); ?></a>
 				</span>
                 </li>
 				<?php
 				$i ++;
 			endforeach; ?>
         </ul>
+
+
+		<?php
+	}
+
+	/**
+	 * Renders extensions tab other plugins list.
+	 *
+	 * @since 1.10.0
+	 */
+	public static function render_other_list() {
+		$recommended_plugins = self::other_plugins();
+		?>
+		<h4><?php _e( 'These plugins work great alongside our popups!', 'popup-maker' ); ?></h4>
+
+		<ul class="extensions-available">
+			<?php
+			foreach ( $recommended_plugins as $plugin ) : ?>
+				<li class="available-extension-inner <?php echo esc_attr( $plugin['slug'] ); ?>">
+					<h3>
+						<a target="_blank" href="<?php echo esc_attr( $plugin['url'] ); ?>">
+							<?php echo esc_html( $plugin['name'] ) ?>
+						</a>
+					</h3>
+
+					<img class="extension-thumbnail" src="<?php echo esc_attr( POPMAKE_URL . '/assets/images/plugins/' . $plugin['slug'] . '.png' ) ?>" />
+
+					<p><?php echo esc_html( $plugin['desc'] ); ?></p>
+
+					<span class="action-links">
+					<a class="button" target="_blank" href="<?php echo esc_attr( $plugin['url'] ); ?>"><?php _e( 'Check it out', 'popup-maker' ); ?></a>
+				</span>
+				</li>
+				<?php
+			endforeach; ?>
+		</ul>
 
 
 		<?php
@@ -486,26 +548,22 @@ class PUM_Admin_Extend {
 					$extensions[ $ext['slug'] ] = $ext;
 				}
 
-				// Set core bundle to be first item listed.
-				// TODO Replace this with a full width banner instead.
-				$extensions = array_merge( array( 'core-extensions-bundle' => $extensions['core-extensions-bundle'] ), $extensions );
-
 				$i = 0;
 
 				foreach ( $extensions as $extension ) : ?>
-                    <li class="available-extension-inner <?php esc_attr_e( $extension['slug'] ); ?>">
+                    <li class="available-extension-inner <?php echo esc_attr( $extension['slug'] ); ?>">
                         <h3>
-                            <a target="_blank" href="<?php echo esc_url( $extension['homepage'] ); ?>?utm_source=plugin-extension-page&utm_medium=extension-title-<?php echo $i; ?>&utm_campaign=<?php echo $campaign; ?>&utm_content=<?php esc_attr_e( urlencode( str_replace( ' ', '+', $extension['name'] ) ) ); ?>">
-								<?php esc_html_e( $extension['name'] ) ?>
+                            <a target="_blank" href="<?php echo esc_url( $extension['homepage'] ); ?>?utm_source=plugin-extension-page&utm_medium=extension-title-<?php echo $i; ?>&utm_campaign=<?php echo $campaign; ?>&utm_content=<?php echo esc_attr( urlencode( str_replace( ' ', '+', $extension['name'] ) ) ); ?>">
+								<?php echo esc_html( $extension['name'] ) ?>
                             </a>
                         </h3>
 						<?php $image = in_array( $extension['slug'], $existing_extension_images ) ? POPMAKE_URL . '/assets/images/extensions/' . $extension['slug'] . '.png' : $extension['image']; ?>
-                        <img class="extension-thumbnail" src="<?php esc_attr_e( $image ) ?>" />
+                        <img class="extension-thumbnail" src="<?php echo esc_attr( $image ) ?>" />
 
-                        <p><?php esc_html_e( $extension['excerpt'] ); ?></p>
+                        <p><?php echo esc_html( $extension['excerpt'] ); ?></p>
 
                         <span class="action-links">
-						<a class="button" target="_blank" href="<?php echo esc_url( $extension['homepage'] ); ?>?utm_source=plugin-extension-page&utm_medium=extension-button-<?php echo $i; ?>&utm_campaign=<?php echo $campaign; ?>&utm_content=<?php esc_attr_e( urlencode( str_replace( ' ', '+', $extension['name'] ) ) ); ?>"><?php _e( 'Get this Extension', 'popup-maker' ); ?></a>
+						<a class="button" target="_blank" href="<?php echo esc_url( $extension['homepage'] ); ?>?utm_source=plugin-extension-page&utm_medium=extension-button-<?php echo $i; ?>&utm_campaign=<?php echo $campaign; ?>&utm_content=<?php echo esc_attr( urlencode( str_replace( ' ', '+', $extension['name'] ) ) ); ?>"><?php _e( 'Get this Extension', 'popup-maker' ); ?></a>
 					</span>
 
                         <!--					--><?php

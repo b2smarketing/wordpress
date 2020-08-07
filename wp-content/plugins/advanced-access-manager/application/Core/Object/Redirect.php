@@ -9,126 +9,78 @@
 
 /**
  * Access denied redirect object
- * 
+ *
+ * @since 6.4.0 Enhancement https://github.com/aamplugin/advanced-access-manager/issues/61
+ * @since 6.1.0 Fixed bug with incorrectly merged settings
+ * @since 6.0.0 Initial implementation of the class
+ *
  * @package AAM
- * @author Vasyl Martyniuk <vasyl@vasyltech.com>
+ * @version 6.4.0
  */
-class AAM_Core_Object_Redirect extends AAM_Core_Object {
-    
-    /**
-     * Constructor
-     *
-     * @param AAM_Core_Subject $subject
-     *
-     * @return void
-     *
-     * @access public
-     */
-    public function __construct(AAM_Core_Subject $subject) {
-        parent::__construct($subject);
+class AAM_Core_Object_Redirect extends AAM_Core_Object
+{
 
-        $this->initialize();
-    }
-    
     /**
-     * 
-     */
-    public function initialize() {
-        $this->read();
-    }
-    
-    /**
+     * Type of object
      *
-     * @return void
-     *
-     * @access public
+     * @version 6.0.0
      */
-    public function read() {
-        $option = $this->getSubject()->readOption('redirect');
-       
-        //inherit from default Administrator role
-        if (empty($option)) {
-             //inherit from parent subject
-            $option = $this->getSubject()->inheritFromParent('redirect');
-            
-            if (empty($option)) {
-                $option = array();
-                $this->readByArea('frontend', $option);
-                $this->readByArea('backend', $option);
-            }
-        } else {
-            $this->setOverwritten(true);
-        }
-        
-        $this->setOption($option);
-    }
-    
+    const OBJECT_TYPE = 'redirect';
+
     /**
-     * 
-     * @param type $area
-     * @param type $option
+     * @inheritdoc
+     *
+     * @since 6.4.0 Enhancement https://github.com/aamplugin/advanced-access-manager/issues/61
+     * @since 6.0.0 Initial implementation of the method
+     *
+     * @version 6.0.0
      */
-    protected function readByArea($area, &$option) {
-        $type = AAM_Core_Config::get("{$area}.redirect.type");
-        if ($type) {
-            $option["{$area}.redirect.type"] = $type;
-            $option["{$area}.redirect.{$type}"] = AAM_Core_Config::get(
-                    "{$area}.redirect.{$type}"
-            );
-        }
+    protected function initialize()
+    {
+        $option = $this->getSubject()->readOption(self::OBJECT_TYPE);
+
+        $this->determineOverwritten($option);
+
+        // Trigger custom functionality that may populate the redirect options. For
+        // example, this hooks is used by Access Policy service
+        $option = apply_filters('aam_redirect_object_option_filter', $option, $this);
+
+        $this->setOption(is_array($option) ? $option : array());
     }
 
     /**
-     * Save options
-     * 
-     * @param string  $property
-     * @param boolean $value
-     * 
-     * @return boolean
-     * 
-     * @access public
-     */
-    public function save($property, $value) {
-        $option            = $this->getOption();
-        $option[$property] = $value;
-        
-        return $this->getSubject()->updateOption($option, 'redirect');
-    }
-    
-    /**
-     * 
-     * @return type
-     */
-    public function reset() {
-        return $this->getSubject()->deleteOption('redirect');
-    }
-
-    /**
-     * 
+     * Get access option
+     *
      * @param string $param
-     * 
-     * @return boolean
-     * 
+     * @param mixed  $default
+     *
+     * @return mixed
+     *
      * @access public
+     * @version 6.0.0
      */
-    public function has($param) {
+    public function get($param, $default = null)
+    {
         $option = $this->getOption();
-        
-        return !empty($option[$param]);
+
+        return isset($option[$param]) ? $option[$param] : $default;
     }
-    
+
     /**
-     * 
-     * @param string $param
-     * 
-     * @return boolean
-     * 
+     * Merge settings
+     *
+     * The last subject overrides previous
+     *
+     * @param array $options
+     *
+     * @return array
+     *
      * @access public
+     * @version 6.1.0
      */
-    public function get($param) {
-        $option = $this->getOption();
-        
-        return !empty($option[$param]) ? $option[$param] : null;
+    public function mergeOption($options)
+    {
+        return array_replace_recursive($options, $this->getOption());
     }
-    
+
 }

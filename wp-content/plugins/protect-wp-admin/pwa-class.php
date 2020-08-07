@@ -43,7 +43,7 @@ if(!function_exists('check_login_status')):
 	{
 		$getPwaOptions = get_pwa_setting_options();
 		$current_uri = pwa_get_current_page_url($_SERVER);
-		$newadminurl = home_url($getPwaOptions['pwa_rewrite_text']);
+		$newadminurl = site_url($getPwaOptions['pwa_rewrite_text']);
 		 if ( is_user_logged_in() && $current_uri==$newadminurl) 
 		 {
 				wp_redirect(admin_url()); die();
@@ -68,7 +68,7 @@ function pwa_logout_user_after_settings_save()
    {
      $URL=str_replace('&amp;','&',wp_logout_url());
       if(isset($getPwaOptions['pwa_rewrite_text']) && isset($getPwaOptions['pwa_logout']) && $getPwaOptions['pwa_logout']==1 && $getPwaOptions['pwa_rewrite_text']!=''){
-      wp_redirect(home_url('/'.$getPwaOptions['pwa_rewrite_text']));
+      wp_redirect(site_url('/'.$getPwaOptions['pwa_rewrite_text']));
      }else
      {
 		 //silent
@@ -107,16 +107,16 @@ $getPwaOptions=get_pwa_setting_options();
 if(isset($getPwaOptions['pwa_active']) && ''!=$getPwaOptions['pwa_rewrite_text']){
 
 echo '<script>jQuery(document).ready(function(){
-	jQuery("#login #login_error a").attr("href","'.home_url($getPwaOptions["pwa_rewrite_text"].'/lostpassword').'");
-	jQuery("body.login-action-resetpass p.reset-pass a").attr("href","'.home_url($getPwaOptions["pwa_rewrite_text"].'/').'");
+	jQuery("#login #login_error a").attr("href","'.site_url($getPwaOptions["pwa_rewrite_text"].'/lostpassword').'");
+	jQuery("body.login-action-resetpass p.reset-pass a").attr("href","'.site_url($getPwaOptions["pwa_rewrite_text"].'/').'");
 	var formId= jQuery("#login form").attr("id");
 if(formId=="loginform"){
-	jQuery("#"+formId).attr("action","'.home_url($getPwaOptions["pwa_rewrite_text"]).'");
+	jQuery("#"+formId).attr("action","'.site_url($getPwaOptions["pwa_rewrite_text"]).'");
 	}else if("lostpasswordform"==formId){
-			jQuery("#"+formId).attr("action","'.home_url($getPwaOptions["pwa_rewrite_text"].'/lostpassword').'");
-			jQuery("#"+formId+" input:hidden[name=redirect_to]").val("'.home_url($getPwaOptions["pwa_rewrite_text"].'/?checkemail=confirm').'");
+			jQuery("#"+formId).attr("action","'.site_url($getPwaOptions["pwa_rewrite_text"].'/lostpassword').'");
+			jQuery("#"+formId+" input:hidden[name=redirect_to]").val("'.site_url($getPwaOptions["pwa_rewrite_text"].'/?checkemail=confirm').'");
 		}else if("registerform"==formId){
-			jQuery("#"+formId).attr("action","'.home_url($getPwaOptions["pwa_rewrite_text"].'/register').'");
+			jQuery("#"+formId).attr("action","'.site_url($getPwaOptions["pwa_rewrite_text"].'/register').'");
 			}
 		else
 			{
@@ -130,17 +130,17 @@ if(formId=="loginform"){
             
             if(linkText.indexOf("?action=register") >= 0)
             {
-                //jQuery(this).attr("href","'.home_url($getPwaOptions["pwa_rewrite_text"].'/register').'");
+                //jQuery(this).attr("href","'.site_url($getPwaOptions["pwa_rewrite_text"].'/register').'");
             }
             
             if(linkText.indexOf("?action=lostpassword") >= 0)
             {
-               // jQuery(this).attr("href","'.home_url($getPwaOptions["pwa_rewrite_text"].'/lostpassword').'");
+               // jQuery(this).attr("href","'.site_url($getPwaOptions["pwa_rewrite_text"].'/lostpassword').'");
             }
             */
             var linkText = jQuery(this).attr("href").match(/[^/]*(?=(\/)?$)/)[0];
-            if(linkText=="wp-login.php"){jQuery(this).attr("href","'.home_url($getPwaOptions["pwa_rewrite_text"]).'");}
-			else if(linkText=="wp-login.php?action=register"){jQuery(this).attr("href","'.home_url($getPwaOptions["pwa_rewrite_text"].'/register').'");}else if(linkText=="wp-login.php?action=lostpassword"){jQuery(this).attr("href","'.home_url($getPwaOptions["pwa_rewrite_text"].'/lostpassword').'");}else { 
+            if(linkText=="wp-login.php"){jQuery(this).attr("href","'.site_url($getPwaOptions["pwa_rewrite_text"]).'");}
+			else if(linkText=="wp-login.php?action=register"){jQuery(this).attr("href","'.site_url($getPwaOptions["pwa_rewrite_text"].'/register').'");}else if(linkText=="wp-login.php?action=lostpassword"){jQuery(this).attr("href","'.site_url($getPwaOptions["pwa_rewrite_text"].'/lostpassword').'");}else { 
 				//silent
 				}	
         });});</script>';
@@ -155,19 +155,19 @@ function pwa_admin_url_redirect_conditions()
 	$getPwaOptions=get_pwa_setting_options();
 	$pwaActualURLAry =array
 	                       (
-                           home_url('/wp-login.php'),
-                           home_url('/wp-login.php/'),
-                           home_url('/wp-login'),
-                           home_url('/wp-login/'),
-                           home_url('/wp-admin'),
-                           home_url('/wp-admin/'),
+                           site_url('/wp-login.php'),
+                           site_url('/wp-login.php/'),
+                           site_url('/wp-login'),
+                           site_url('/wp-login/'),
+                           site_url('/wp-admin'),
+                           site_url('/wp-admin/'),
                            );
     $request_url = pwa_get_current_page_url($_SERVER);
     $newUrl = explode('?',$request_url);
 	//print_r($pwaActualURLAry); echo $newUrl[0];exit;
 if(! is_user_logged_in() && in_array($newUrl[0],$pwaActualURLAry) ) 
 	{
- if(DOING_AJAX && $newUrl[0]==home_url('/wp-admin/admin-ajax.php'))
+ if(wp_doing_ajax() && $newUrl[0]==site_url('/wp-admin/admin-ajax.php'))
    return true;
 /** is forgot password link */
 if( isset($_GET['login']) && isset($_GET['action']) && $_GET['action']=='rp' && $_GET['login']!='')
@@ -184,7 +184,7 @@ if(username_exists($username))
 	}
 elseif(isset($_GET['action']) && isset($_GET['error']) && $_GET['action']=='lostpassword' && $_GET['error']=='invalidkey')
 {
-	$redirectUrl=home_url($getPwaOptions["pwa_rewrite_text"].'/?action=lostpassword&error=invalidkey');
+	$redirectUrl=site_url($getPwaOptions["pwa_rewrite_text"].'/?action=lostpassword&error=invalidkey');
 	wp_redirect($redirectUrl,301);//exit;
 	}
 elseif(isset($_GET['action']) && $_GET['action']=='resetpass')
@@ -267,6 +267,9 @@ if(!function_exists('pwa_update_login_page_logo')):
 	  $getPwaOptions=get_pwa_setting_options();
 	   // get logo height and width
 	   $imagelogo = $getPwaOptions['pwa_logo_path'];
+	   echo '<style type="text/css"> /* Protect WP-Admin Style*/';
+	   if(!empty($imagelogo))
+	   {
 		ob_start();
 		$data = getimagesize($imagelogo);
 		$resize_warning = ob_get_clean();
@@ -279,16 +282,15 @@ if(!function_exists('pwa_update_login_page_logo')):
 			   $logheight = $data[1].'px !important;';
 			   $logbgsize ='inherit !important;';
 		}
-		echo '<style type="text/css"> /* Protect WP-Admin Style*/';
-		
+
 		if(isset($getPwaOptions['pwa_logo_path']) && $getPwaOptions['pwa_logo_path']!=''){
 		  echo ' h1 a { background-image:url('.$getPwaOptions['pwa_logo_path'].') !important; width:'.$logwigdth.'height:'.$logheight.'background-size:'.$logbgsize.'}';
 	  }
-		  
+	 }  
 		if(isset($getPwaOptions['pwa_login_page_bg_color']) && $getPwaOptions['pwa_login_page_bg_color']!='')
-		echo ' body.login-action-login,html{ background:'.$getPwaOptions['pwa_login_page_bg_color'].' !important; height: 100% !important;}.login .button-primary{background:'.$getPwaOptions['pwa_login_page_bg_color'].' !important;}';
-		
+		echo ' body.login-action-login,html{ background:'.$getPwaOptions['pwa_login_page_bg_color'].' !important; height: 100% !important;}.login .button-primary{background:'.$getPwaOptions['pwa_login_page_bg_color'].' !important;}.login #backtoblog a, .login #nav a { color: '.$getPwaOptions['pwa_login_page_color'].'; }';
 		echo '</style>';
+	
 	   
 	}
 endif;

@@ -8,51 +8,81 @@
  */
 
 /**
- * AAM Shortcode
- * 
+ * Shortcode factory for the [aam] shortcode
+ *
+ * @since 6.6.0 https://github.com/aamplugin/advanced-access-manager/issues/90
+ * @since 6.0.0 Initial implementation of the class
+ *
  * @package AAM
- * @author Vasyl Martyniuk <vasyl@vasyltech.com>
+ * @version 6.6.0
  */
-class AAM_Shortcode_Factory {
-    
+class AAM_Shortcode_Factory
+{
+
     /**
+     * Shortcode handler based on the provided attributes
      *
-     * @var type 
+     * @var AAM_Core_Contract_ShortcodeInterface
+     *
+     * @access protected
+     * @version 6.0.0
      */
-    protected $strategy = null;
-    
+    protected $handler = null;
+
     /**
      * Initialize shortcode factory
-     * 
-     * @param type $args
-     * @param type $content
+     *
+     * @param array  $args
+     * @param string $content
+     *
+     * @return void
+     *
+     * @since 6.6.0 https://github.com/aamplugin/advanced-access-manager/issues/90
+     * @since 6.0.0 Initial implementation of the method
+     *
+     * @access public
+     * @version 6.6.0
      */
-    public function __construct($args, $content) {
-        $context = !empty($args['context']) ? $args['context'] : 'content';
-        
-        $classname = 'AAM_Shortcode_Strategy_' . ucfirst($context);
-        
-        if (class_exists($classname)) {
-            $this->strategy = new $classname($args, $content);
+    public function __construct($args, $content)
+    {
+        $cnt = strtolower(!empty($args['context']) ? $args['context'] : 'content');
+
+        if ($cnt === 'content') {
+            $this->handler = new AAM_Shortcode_Handler_Content($args, $content);
+        } elseif ($cnt === 'loginredirect') {
+            $this->handler = new AAM_Shortcode_Handler_LoginRedirect($args, $content);
+        } elseif ($cnt === 'loginform') {
+            $this->handler = new AAM_Shortcode_Handler_LoginForm($args);
         } else {
-            $this->strategy = apply_filters(
-                    'aam-shortcode-filter', null, $context, $args, $content
+            $this->handler = apply_filters(
+                'aam_shortcode_filter', null, $cnt, $args, $content
             );
         }
     }
-    
+
     /**
-     * 
+     * Process the short-code
+     *
      * @return string
+     *
+     * @access public
+     * @version 6.0.0
      */
-    public function process() {
-        if (is_a($this->strategy, 'AAM_Shortcode_Strategy_Interface')) {
-            $content = $this->strategy->run();
+    public function process()
+    {
+        $content = null;
+
+        if (is_a($this->handler, 'AAM_Core_Contract_ShortcodeInterface')) {
+            $content = $this->handler->run();
         } else {
-            $content = __('No valid strategy found for the given context', AAM_KEY);
+            _doing_it_wrong(
+                __CLASS__ . '::' . __METHOD__,
+                'No valid strategy found for the given context',
+                AAM_VERSION
+            );
         }
-        
+
         return $content;
     }
-    
+
 }

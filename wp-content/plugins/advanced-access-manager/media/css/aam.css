@@ -108,6 +108,9 @@
 .icon-info-circled:before { content: '\e81f' !important; } /* 'î ' */
 .icon-attention:before { content: '\e81e' !important; } /* 'î ' */
 .icon-tag:before { content: '\e821' !important; } /* 'î ¡' */
+.icon-file-code:before { content: '\f1c9' !important; } /* 'ï' */
+.icon-chat:before { content: '\e825' !important; } /* 'î ¥' */
+.icon-ccw:before { content: '\e827' !important; } /* 'î §' */
 
 .icon-image-40 {
   font-size: 40px;
@@ -212,9 +215,19 @@ html, body {
     overflow: hidden;
 }
 
+.modal-backdrop.in {
+  opacity: .1;
+}
+
 .wp-admin select {
     height: 34px;
     line-height: 34px;
+}
+
+#wpbody-content > p {
+  margin: 5em;
+  text-align: center;
+  font-weight: bold;
 }
 
 .metabox-holder h3 {
@@ -224,6 +237,7 @@ html, body {
 
 .wrap {
     position: relative;
+    min-height: calc(100vh - 108px);
 }
 
 .inner-sm {
@@ -238,6 +252,16 @@ html, body {
 .badge.success {
     color: #3c763d;
     background-color: #DDEEDD;
+}
+
+.badge.redirect {
+  color: #286090;
+  background-color:#d7d4f0;
+}
+
+.badge.callback {
+  color: #F5AA2E;
+  background-color: #F7D3A1;
 }
 
 .js .postbox .hndle, .js .widget .widget-top {
@@ -259,6 +283,10 @@ html, body {
 /** BOOTSTRAP **/
 .row {
     position: relative;
+}
+
+.tooltip{
+  z-index:9999;
 }
 
 a:focus, a:active {
@@ -298,6 +326,8 @@ div.error {
     box-shadow: none;
     height: 34px;
     border-radius: 0;
+    border: 1px solid #ccc !important;
+    padding: 6px 12px !important;
 }
 
 .form-control.highlight {
@@ -391,6 +421,28 @@ a.btn:focus, a.btn:active {
     margin: 5px 0 0 0;
 }
 
+.subject-top-actions {
+  position: absolute;
+  top: 15px;
+  right: 30px;
+  font-size: 1.5em;
+  color:#FFF;
+  display: table;
+}
+
+.subject-top-actions .action-row {
+  display: table-row;
+}
+
+.subject-top-actions .action-row div {
+  display: inline-block;
+}
+
+.subject-top-actions a > i {
+  color: #FFFFFF !important;
+  display: table-cell;
+}
+
 .btn-group-xs > .btn, .btn-xs {
     border-radius: 0;
 }
@@ -449,6 +501,18 @@ a.btn:focus, a.btn:active {
     color: #3c763d;
 }
 
+.aam-iframe .aam-subject-title {
+  display: none;
+}
+
+.aam-iframe .postbox .hndle {
+  display: none;
+}
+
+.aam-subject-title {
+  margin-left: 4px;
+}
+
 .aam-api-method.post {
     color: #F5AA2E;
 }
@@ -462,6 +526,10 @@ a.btn:focus, a.btn:active {
 }
 
 /** DATATABLES **/
+.dataTable.table sup {
+  opacity: 0.6 !important;
+}
+
 .dataTables_info {
     float: left;
     font-weight: bold;
@@ -483,6 +551,7 @@ div.dataTables_wrapper div.dataTables_filter {
 #capability-list_wrapper div.dataTables_filter,
 #route-list_wrapper div.dataTables_filter,
 #eproduct-list_wrapper div.dataTables_filter,
+#service-list_wrapper div.dataTables_filter,
 #post-list_wrapper div.dataTables_filter {
     text-align: right;
 }
@@ -586,16 +655,9 @@ input[type=radio]:checked + label:before {
 
 .aam-small-highlighted {
     font-size: 85%;
-    border-bottom: 1px solid #999999;
-    padding: 0px 20px 2px 0;
+    padding: 0px 25px 2px 0;
     margin-bottom: 10px;
     display: inline-block;
-}
-
-.aam-switch-user {
-    float:right;
-    font-size:1em !important;
-    cursor: pointer;
 }
 
 .aam-access-overwritten {
@@ -617,13 +679,20 @@ input[type=radio]:checked + label:before {
 }
 
 .aam-outer-top-xs {
-    margin-top: 30px;
+    margin-top: 30px !important;
 }
 
-.input-group-addon.btn-primary {
-  background-color: #337ab7;
-  border-color: #337ab7;
-  color: #FFFFFF;
+.aam-outer-bottom-xxs {
+  margin-bottom: 15px !important;
+}
+
+.aam-outer-left-xxs {
+  margin-left: 10px;
+}
+
+.aam-ghost {
+  opacity: 0.3;
+  filter: alpha(opacity=50);
 }
 
 .aam-highligh-row {
@@ -632,6 +701,18 @@ input[type=radio]:checked + label:before {
 
 .aam-highligh-row > td {
     padding: 15px !important;
+}
+
+.aam-drop-zone {
+  border: 2px dashed
+#bbb;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  padding: 25px;
+  text-align: center;
+  color:
+  #bbb;
 }
 
 .aam-lock {
@@ -771,9 +852,9 @@ input[type=radio]:checked + label:before {
 
 .aam-sticky-note {
     position: fixed;
-    top: 32px;
-    left: 160px;
-    width: calc(100% - 160px);
+    top: 0px;
+    left: 0px;
+    width: 100%;
     -webkit-box-shadow: 0px 0px 12px 2px rgba(100,100,100,1);
     -moz-box-shadow: 0px 0px 12px 2px rgba(100,100,100,1);
     box-shadow: 0px 0px 12px 2px rgba(100,100,100,1);
@@ -803,16 +884,14 @@ input[type=radio]:checked + label:before {
     padding: 2px 15px 0px 15px;
 }
 
-.aam-submenu-item .aam-menu-capability, .aam-metabox-details {
+.aam-submenu-item small {
     display: block;
     margin-top: -4px;
 }
 
-.aam-submenu-item label {
+.aam-submenu-item .aam-menu-details {
     display: inline-block;
     width: 80%;
-    font-size: 0.9em;
-    font-weight: 500;
 }
 
 .aam-feature {
@@ -851,9 +930,10 @@ input[type=radio]:checked + label:before {
     display: block;
     font-size: 0.8em;
     font-style: normal;
+    color: #437798;
 }
 
-.aam-row-subtitle b {
+.aam-row-subtitle b, .aam-row-subtitle strong {
     color: #777777;
 }
 
@@ -935,8 +1015,12 @@ input[type=radio]:checked + label:before {
 
 .aam-slide-form.active, .aam-help-context.active {
     left: 0;
-    z-index: 1000;
+    z-index: 999;
     position: relative;
+}
+
+.modal-backdrop {
+  z-index: 998;
 }
 
 .aam-slide-form .table td {
@@ -1042,10 +1126,39 @@ input[type=radio]:checked + label:before {
     font-weight: 700;
 }
 
+.aam-notification-metabox  {
+  background-color: #CB413A;
+  color: #FFFFFF;
+  letter-spacing: 0.5px;
+}
+
+.aam-notification-metabox .postbox {
+  border: 0;
+}
+
 .aam-error-list {
-    padding: 15px;
-    list-style: disc;
+    padding: 15px 25px 10px 25px;
+    list-style: none;
     margin-bottom: 0;
+}
+
+.aam-error-list > li::before {
+  content: "\2022";
+  color: #FFFFFF;
+  font-weight: 700;
+  display: inline-block;
+  width: 1em;
+  margin-left: -1em;
+}
+
+.aam-error-list a {
+  color: #FFFFFF !important;
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.aam-error-list a:hover {
+  color: #F0F0F0 !important;
 }
 
 .aam-menu-capability, .aam-metabox-details {
@@ -1100,8 +1213,8 @@ input[type=radio]:checked + label:before {
 
 .aam-current-subject {
     background-color: #337ab7;
-    padding: 5px 15px 4px 10px;
-    font-size: 23px;
+    padding: 15px 15px 15px 10px;
+    font-size: 2em;
     font-weight: 400;
     line-height: 29px;
     margin: 0;
