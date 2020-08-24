@@ -23,11 +23,38 @@
 
 $context = Timber::get_context();
 $post = new TimberPost();
+
+
+
+// YOUTUBE LISTA DE VIDEOS DO CANAL
+// Usuário e ApiKey do Youtube
+$username = 'famamericana';
+
+// Crie uma API KEY no https://code.google.com/apis/console, não se esqueça de habilitar o Youtube Data API
+$apiKey = 'AIzaSyAEtAlNZzSTAVQjy2Xmsq__WSXAoz3lYgk';
+
+$channelUrl = "https://www.googleapis.com/youtube/v3/channels?forUsername={$username}&part=contentDetails&key={$apiKey}";
+$videosUrl = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=20&key={$apiKey}";
+
+function request($url) {
+  $curl = curl_init($url);
+  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+  $body = curl_exec($curl);
+  curl_close($curl);
+
+  return json_decode($body);
+}
+
+$channel = request($channelUrl)->items[0]->contentDetails;
+$playlistId = $channel->relatedPlaylists->uploads;
+
+$videos = request("{$videosUrl}&playlistId={$playlistId}")->items;
+
+//print_r($videos);
+
 $context['post'] = $post;
-
-// inserir os videos automaticos no array context , pesquisar array_push
-
-/*
+$context['videos'] = $videos;
 if ($post->post_name == "clube-de-vantagens-fam") {
     $args = array(
         // Get post type project
@@ -48,5 +75,4 @@ else if ($post->post_name == "megadescontofam") {
     header("Location: https://megadesconto2019.vestibularfam.com.br/");
     exit();
 }
-*/
 Timber::render( array( 'page-' . $post->post_name . '.twig', 'page.twig' ), $context );
