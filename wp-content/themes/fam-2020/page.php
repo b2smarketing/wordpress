@@ -24,6 +24,10 @@
 $context = Timber::get_context();
 $post = new TimberPost();
 
+$cat = 27; //dicas
+$dicas = Timber::get_posts('cat='.$cat);
+//print_r($dicas[0]);
+$context['dicas'] = $dicas;
 
 
 // YOUTUBE LISTA DE VIDEOS DO CANAL
