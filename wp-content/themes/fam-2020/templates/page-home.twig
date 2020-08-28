@@ -32,7 +32,7 @@
 						<br><br>
 						<iframe width="100%" height="100%" src="https://www.youtube.com/embed/{{videos[0].snippet.resourceId.videoId}}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 					</div>
-
+					<!-- Videos Youtube automáticos do canal -->
 					<div class="row">
 						<div class="col-lg-6">
 							<div class="videoSmall wow fadeInUp">
@@ -75,50 +75,45 @@
 					<br>				
 				</div>				
 			</div>
+			<!-- Blog automático -->
 			<div class="row">
 			<div class="col-lg-6">			
-				<img src="{{dicas[0].thumbnail.src}}" style="width:550px;"><br>
+				<img src="{{dicas[0].thumbnail.src}}" style="width:550px;height:330px;"><br>
 				<h3><a href="{{dicas[0].link}}">{{dicas[0].name}}</a></h3>			
 			</div>
 			<div class="col-lg-6">
-			<img src="{{dicas[1].thumbnail.src}}" style="width:550px;"><br>
+			<img src="{{dicas[1].thumbnail.src}}" style="width:550px;height:330px;"><br>
 				<h3><a href="{{dicas[1].link}}">{{dicas[1].name}}</a></h3>
-			</div>
-				
+			</div>		
 
 			</div>	
 		</div>
-	</section>	
-	<section id="home-app" class="container">
+	</section>
+	<div class="download-apps"><p>Faça o download<br>e <span>acesse</span> nosso conteúdo</p>
+			{# App Store #}
+			<div class="down-itens">
+			<a href="https://itunes.apple.com/br/app/fam-faculdade-de-americana/id1283307075?mt=8" target="_blank" rel="noopener nofollow">				
+			<img src="{{ site.theme.link }}/images/down-01.png"></a>&emsp;
+			{# Play Store #}
+			<a href="https://play.google.com/store/apps/details?id=com.PSX&hl=pt" target="_blank" rel="noopener nofollow">				
+			<img src="{{ site.theme.link }}/images/down-03.png"></a>
+
+			<img class="celular" src="{{ site.theme.link }}/images/celular.png">
+			</div>
+	</div>	
+	<section id="home-app" class="container redesocial">
 		<div class="container">
 			<div class="row">
 				<div class="col-lg-12">
-					<div class="down">Baixe o app da fam</div>
+					<h1 style="display:block;position:relative;width:480px;left:20px;top:1px;color:#444;">#SejaFAM e mostre pra gente</h1>
+					<h2 style="display:block;position:relative;width:336px;left:20px;top:-10px;color:#aaa;">nas <span class="redsoc">redes sociais</span></h2>
+					<hr style="display:block;position:relative;margin:0 auto;width:97%;height:1px;top:20px;background-color:#444;"/>
+					<img style="display:block;position:relative;margin:0 auto;width:260px;top:-5px;" src="{{ site.theme.link }}/images/logosocial.png">
+					<br>
+					<img style="width:100%;" src="{{ site.theme.link }}/images/fotos_rede_social.png"><br><br>
+					<img style="display:block;position:relative;margin:0 auto;width:50%;top:7em;" src="{{ site.theme.link }}/images/inscrevase.png">		
 				</div>
 			</div>
-		</div>
-
-		<div class="container">
-			<div class="row">				
-				<div class="col-lg-12 dl">
-					<div class="down-itens-all">
-						{# App Store #}
-						<a href="https://itunes.apple.com/br/app/fam-faculdade-de-americana/id1283307075?mt=8" rel="noopener nofollow">
-							<div class="down-itens">
-								<img src="{{ site.theme.link }}/images/down-01.png">
-							</div>
-						</a>
-
-						{# Play Store #}
-						<a href="https://play.google.com/store/apps/details?id=com.PSX&hl=pt" rel="noopener nofollow">
-							<div class="down-itens">
-								<img src="{{ site.theme.link }}/images/down-03.png">
-							</div>	
-						</a>			
-		
-					</div>
-				</div>
-			</div>
-		</div>
+		</div>		
 	</section>
 {% endblock %}

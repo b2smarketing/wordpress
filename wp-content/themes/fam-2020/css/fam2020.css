@@ -143,6 +143,38 @@
     font-size: 30px;
     line-height: 190px;  
   }
+  .download-apps{
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 300px;
+    margin-top: 30px;
+    padding-left: 9em;
+    padding-top: 1.5em;
+    background-color: #1141a7;;
+    color:#fff;
+    font-size: 35px; 
+  }
+  .download-apps span{
+    font-weight: bold;
+  }
+  img.celular{
+    display: block;
+    position: relative;
+    float: right;
+    margin-right: 30%;
+    top:-240px;
+    height: 380px;
+  }
+  .redesocial{
+    display: block;
+    position: relative;
+    top: -20em !important;
+    bottom: -10em;    
+  }
+  .redesocial .redsoc{
+    font-weight: bold;
+  }
   }
   /*Fim Desktop*/
 
@@ -179,6 +211,23 @@
         margin-top: -80px !important;
         background-color: #fff !important;
       }
-  
+      .download-apps{
+        display: block;
+        position: relative;
+        width: 100%;
+        height: 200px;
+        margin-top: 0px;
+        padding-left: 2em;
+        padding-top: 1em;
+        background-color: #1141a7;;
+        color:#fff;
+        font-size: 15px;
+      }
+      .download-apps span{
+        font-weight: bold;
+      }
+      img.celular{
+        display: none;
+      } 
   }
   /*Fim Mobile*/
