@@ -16,7 +16,12 @@
 			<a class="scroll" href="#carrosel-videos-home"><i class="fa fa-chevron-down" aria-hidden="true"></i></a>
 		</div>
 	</div>
-
+	<div id="slide" class="slide mobile">
+		{{ function ('do_shortcode', '[rev_slider alias="mobile"]') }}
+		<div class="scroll-down">
+			<a class="scroll" href="#carrosel-videos-home"><i class="fa fa-chevron-down" aria-hidden="true"></i></a>
+		</div>
+	</div>
 {% endblock %}
 
 {% block body %}	
@@ -70,8 +75,8 @@
 				<div class="col-lg-12">
 					<h1 style="display:block;position:relative;width:280px;left:20px;top:1px;color:#444;">Fique por Dentro</h1>
 					<h2 style="display:block;position:relative;width:336px;left:20px;top:-10px;color:#aaa;">do que acontece na FAM</h2>
-					<hr style="display:block;position:relative;margin:0 auto;width:97%;height:1px;top:20px;background-color:#444;"/>
-					<img style="display:block;position:relative;margin:0 auto;width:260px;top:-5px;" src="{{ site.theme.link }}/images/logosocial.png">
+					<!--<hr style="display:block;position:relative;margin:0 auto;width:97%;height:1px;top:20px;background-color:#444;"/>
+					<img style="display:block;position:relative;margin:0 auto;width:260px;top:-5px;" src="{{ site.theme.link }}/images/logosocial.png">-->
 					<br>				
 				</div>				
 			</div>
@@ -107,11 +112,28 @@
 				<div class="col-lg-12">
 					<h1 style="display:block;position:relative;width:480px;left:20px;top:1px;color:#444;">#SejaFAM e mostre pra gente</h1>
 					<h2 style="display:block;position:relative;width:336px;left:20px;top:-10px;color:#aaa;">nas <span class="redsoc">redes sociais</span></h2>
-					<hr style="display:block;position:relative;margin:0 auto;width:97%;height:1px;top:20px;background-color:#444;"/>
-					<img style="display:block;position:relative;margin:0 auto;width:260px;top:-5px;" src="{{ site.theme.link }}/images/logosocial.png">
+					<!--<hr style="display:block;position:relative;margin:0 auto;width:97%;height:1px;top:20px;background-color:#444;"/>
+					<img style="display:block;position:relative;margin:0 auto;width:260px;top:-5px;" src="{{ site.theme.link }}/images/logosocial.png">-->
 					<br>
-					<img style="width:100%;" src="{{ site.theme.link }}/images/fotos_rede_social.png"><br><br>
-					<img style="display:block;position:relative;margin:0 auto;width:50%;top:7em;" src="{{ site.theme.link }}/images/inscrevase.png">		
+					<div class="facebook">
+					<!-- FACEBOOK SDK -->
+					<div id="fb-root"></div>
+					<script async defer crossorigin="anonymous" src="https://connect.facebook.net/pt_BR/sdk.js#xfbml=1&version=v8.0" nonce="pBPTxQlC"></script>
+					
+					<!-- FACEBOOK POSTS -->
+
+					<div class="fb-page" data-href="https://www.facebook.com/famamericana" 
+					data-tabs="timeline" data-width="450" data-small-header="false" 
+					data-adapt-container-width="true" data-hide-cover="true" 
+					data-show-facepile="true">
+					<blockquote cite="https://www.facebook.com/famamericana" class="fb-xfbml-parse-ignore">
+					<a href="https://www.facebook.com/famamericana">FAM - Faculdade de Americana</a>
+					</blockquote>
+					</div>
+
+					<!-- end FACEBOOK -->
+					</div>
+					<a href="https://vestibularfam.com.br" target="_blank"><img style="display:block;position:relative;margin:0 auto;width:50%;top:-2em;" src="{{ site.theme.link }}/images/inscrevase.png"></a>		
 				</div>
 			</div>
 		</div>		

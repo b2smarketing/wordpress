@@ -12,7 +12,12 @@
       width: 100%;
       height: 100vh;
       overflow: hidden;
-      background-position: center !important; }
+      background-position: center !important; 
+  }
+
+  .mobile{
+    display: none;
+  }
   
   .menu-bar{
     margin:0;
@@ -175,8 +180,20 @@
   .redesocial .redsoc{
     font-weight: bold;
   }
+
+  #rodape{
+    margin-top:-28em;
+  }
+  .facebook{
+    display: block;
+    position: relative;
+    width: 450px;
+    background-color:silver;
+    margin:0 auto !important;
+  }
   }
   /*Fim Desktop*/
+
 
 
   
@@ -191,10 +208,13 @@
     .menu-bar, .headerback, .inscreva-se, .yellow-bar{
       display: none;  } 
   
-      .slide {
+      .slide{
+        display: none;
+      }
+      .mobile {
         display: block;
         position: relative; 
-        top:-100px;     
+        top:10px;     
         width: 100%;
         height: 30em !important;
       }
@@ -208,7 +228,7 @@
       }
       .videos{
         display: block;
-        margin-top: -80px !important;
+        margin-top: 13em !important;
         background-color: #fff !important;
       }
       .download-apps{
@@ -229,5 +249,13 @@
       img.celular{
         display: none;
       } 
+      .facebook{
+        display: block;
+        position: relative;
+        width: 450px;
+        left: -3em !important;
+        background-color:silver;
+        margin:0 auto !important;
+      }
   }
   /*Fim Mobile*/
