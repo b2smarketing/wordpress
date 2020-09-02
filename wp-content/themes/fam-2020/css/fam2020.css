@@ -53,7 +53,29 @@
     font-weight: bold;
     color: #fff;
   }
-  
+
+  .menu-bar ul li span{
+    font-weight:bold;
+    letter-spacing:1px;
+  }
+
+  .menu-bar ul li .acess{
+    color:#ffcc00;
+    font-size:18px;
+    font-weight:bold;
+  }
+
+  .menu-bar ul li .a{
+    font-size:12px;
+  }
+
+  .menu-bar ul li a .fa-search{
+    width:30px;
+    height:30px;
+    background-color:#0a2971;
+    padding-top:10px;
+    border-radius:3px;
+  }
   .portaldoaluno a{
     float: right;
     margin-top:10px;
@@ -184,12 +206,23 @@
   #rodape{
     margin-top:-28em;
   }
+
+  #home-app{
+    display: block;
+    position: relative;
+    top: -23em !important;
+    width: 100%;
+  }
+
   .facebook{
     display: block;
     position: relative;
     width: 450px;
     background-color:silver;
     margin:0 auto !important;
+  }
+  .imgfim{
+    display:block;position:relative;margin:0 auto;width:50%;top:-2em;
   }
   }
   /*Fim Desktop*/
@@ -205,9 +238,62 @@
         background-color: #fff;
     }
 
-    .menu-bar, .headerback, .inscreva-se, .yellow-bar{
+    .menu-bar{
+      margin:0;
+      padding: 0;
+      display: block;
+      position: fixed;
+      top:0px;
+      width: 100%;
+      bottom: 0px;
+      background: #1141a7;
+      height: 40px; 
+      z-index: 200; 
+      text-align: center;
+      color:#fff;
+      font-size: 30px;
+      line-height: 40px;
+    }
+    .menu-bar ul{
+      list-style: none;  
+      margin-left: -0.8em;  
+    }
+    .menu-bar ul li{
+      margin-right: 12px;
+      float: left;
+      font-size: 10px;
+    }
+    .menu-bar ul li img{
+      width: 10px;
+    }
+    .menu-bar ul li a{
+      font-size: 10px;
+      letter-spacing: 1px;
+      font-weight: bold;
+      color: #fff;
+    }
+  
+    .menu-bar ul li span, .menu-bar ul li .acess, .menu-bar ul li .a{
+      display: none;
+    }
+  
+    .menu-bar ul li a .fa-search{
+      width:30px;
+      height:30px;
+      background-color:#0a2971;
+      padding-top:10px;
+      border-radius:3px;
+    }
+  
+
+    .headerback, .inscreva-se, .yellow-bar{
       display: none;  } 
   
+      .navbar-header{
+        position: relative;
+        margin-top: 1em !important;
+      }
+
       .slide{
         display: none;
       }
@@ -226,16 +312,47 @@
           height: 250px;
           background-color: #fff;
       }
-      .videos{
+      .vyoutube{   
         display: block;
         margin-top: 13em !important;
         background-color: #fff !important;
       }
+      .vyoutube h1{   
+        display:block;
+        position:relative;
+        float:left;
+        width:140px;
+        left:10px;
+      }
+      .vyoutube hr{   
+        display:block;
+        position:relative;
+        width:93%;
+        height:1px;
+        left:2px;
+        top:8px;
+        background-color:#444;
+      }
+      .blog h1, .txtredesocial h1{
+        display:block;position:relative;width:120%;left:2px;top:-30px;color:#444;
+      }
+      .blog h2, .txtredesocial h2{
+        display:block;position:relative;width:120%;left:2px;top:-30px;color:#aaa;"
+      } 
+
+      h1.txtredesocial{
+        display:block;position:relative;width:100%;left:0px;top:-40px;color:#444;
+        font-size: 22px;
+      }
+      h2.txtredesocial{
+        display:block;position:relative;width:100%;left:2px;top:-40px;color:#aaa;
+        font-size: 20px;
+      }        
       .download-apps{
         display: block;
         position: relative;
         width: 100%;
-        height: 200px;
+        height: 140px;
         margin-top: 0px;
         padding-left: 2em;
         padding-top: 1em;
@@ -246,16 +363,33 @@
       .download-apps span{
         font-weight: bold;
       }
+      img.downbtn1, img.downbtn2{
+        width: 100px;
+      }
       img.celular{
-        display: none;
+        display: block;
+        position: relative;
+        float: right;
+        margin-right: 20px;
+        margin-top: -5em;
+        width: 91px !important;
       } 
+      #home-app{
+        display: block;
+        position: relative;
+        margin-top:-10px !important;
+        width: 100%;
+      }
       .facebook{
         display: block;
         position: relative;
-        width: 450px;
-        left: -3em !important;
+        width: 100%;
+        left: -5px !important;
         background-color:silver;
         margin:0 auto !important;
+      }
+      .imgfim{
+        display:block;position:relative;margin:0 auto;width:90%;top:10px;
       }
   }
   /*Fim Mobile*/

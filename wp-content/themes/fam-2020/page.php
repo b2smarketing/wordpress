@@ -79,4 +79,9 @@ else if ($post->post_name == "megadescontofam") {
     header("Location: https://megadesconto2019.vestibularfam.com.br/");
     exit();
 }
+if(wp_is_mobile()){
+    $context['tamanho'] = 450;  
+}else{
+    $context['tamanho'] = 500;
+}
 Timber::render( array( 'page-' . $post->post_name . '.twig', 'page.twig' ), $context );

@@ -27,9 +27,9 @@
 {% block body %}	
 	<section class="socialItem videos">	
 		<div class="container">
-			<div class="row">
-				<h1 style="display:block;position:relative;float:left;width:140px;left:20px;">YouTube</h1>
-				&emsp;<hr style="display:block;position:relative;width:83%;height:1px;left:10px;top:8px;background-color:#444;"/>
+			<div class="row vyoutube">
+				<h1>YouTube</h1>
+				&emsp;<hr>
 				<br><br>				
 
 				<div class="col-lg-6">
@@ -72,12 +72,10 @@
 			<br><hr><br>
 			
 			<div class="row">
-				<div class="col-lg-12">
-					<h1 style="display:block;position:relative;width:280px;left:20px;top:1px;color:#444;">Fique por Dentro</h1>
-					<h2 style="display:block;position:relative;width:336px;left:20px;top:-10px;color:#aaa;">do que acontece na FAM</h2>
-					<!--<hr style="display:block;position:relative;margin:0 auto;width:97%;height:1px;top:20px;background-color:#444;"/>
-					<img style="display:block;position:relative;margin:0 auto;width:260px;top:-5px;" src="{{ site.theme.link }}/images/logosocial.png">-->
-					<br>				
+				<div class="col-lg-12 blog">
+					<h1>Fique por Dentro</h1>
+					<h2>do que acontece na FAM</h2>
+				<br>				
 				</div>				
 			</div>
 			<!-- Blog automático -->
@@ -98,22 +96,20 @@
 			{# App Store #}
 			<div class="down-itens">
 			<a href="https://itunes.apple.com/br/app/fam-faculdade-de-americana/id1283307075?mt=8" target="_blank" rel="noopener nofollow">				
-			<img src="{{ site.theme.link }}/images/down-01.png"></a>&emsp;
+			<img class="downbtn1" src="{{ site.theme.link }}/images/down-01.png"></a>&emsp;
 			{# Play Store #}
 			<a href="https://play.google.com/store/apps/details?id=com.PSX&hl=pt" target="_blank" rel="noopener nofollow">				
-			<img src="{{ site.theme.link }}/images/down-03.png"></a>
+			<img class="downbtn2" src="{{ site.theme.link }}/images/down-03.png"></a>
 
 			<img class="celular" src="{{ site.theme.link }}/images/celular.png">
 			</div>
 	</div>	
-	<section id="home-app" class="container redesocial">
+	<section id="home-app" class="container">
 		<div class="container">
-			<div class="row">
+			<div class="row face">
 				<div class="col-lg-12">
-					<h1 style="display:block;position:relative;width:480px;left:20px;top:1px;color:#444;">#SejaFAM e mostre pra gente</h1>
-					<h2 style="display:block;position:relative;width:336px;left:20px;top:-10px;color:#aaa;">nas <span class="redsoc">redes sociais</span></h2>
-					<!--<hr style="display:block;position:relative;margin:0 auto;width:97%;height:1px;top:20px;background-color:#444;"/>
-					<img style="display:block;position:relative;margin:0 auto;width:260px;top:-5px;" src="{{ site.theme.link }}/images/logosocial.png">-->
+					<h1 class="txtredesocial">#SejaFAM e mostre pra gente</h1>
+					<h2 class="txtredesocial">nas <span class="redsoc">redes sociais</span></h2>
 					<br>
 					<div class="facebook">
 					<!-- FACEBOOK SDK -->
@@ -123,7 +119,7 @@
 					<!-- FACEBOOK POSTS -->
 
 					<div class="fb-page" data-href="https://www.facebook.com/famamericana" 
-					data-tabs="timeline" data-width="450" data-small-header="false" 
+					data-tabs="timeline" data-width="{{ tamanho }}" data-small-header="false" 
 					data-adapt-container-width="true" data-hide-cover="true" 
 					data-show-facepile="true">
 					<blockquote cite="https://www.facebook.com/famamericana" class="fb-xfbml-parse-ignore">
@@ -133,7 +129,7 @@
 
 					<!-- end FACEBOOK -->
 					</div>
-					<a href="https://vestibularfam.com.br" target="_blank"><img style="display:block;position:relative;margin:0 auto;width:50%;top:-2em;" src="{{ site.theme.link }}/images/inscrevase.png"></a>		
+					<a href="https://vestibularfam.com.br" target="_blank"><img class="imgfim" src="{{ site.theme.link }}/images/inscrevase.png"></a>		
 				</div>
 			</div>
 		</div>		
