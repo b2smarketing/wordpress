@@ -230,14 +230,13 @@
 
 
   
-/*******************Mobile*******************/
+/******************* Mobile ******************/
 @media(max-width: 55em) {
 
     .corpo{
         display: block;
         background-color: #fff;
     }
-
     .menu-bar{
       margin:0;
       padding: 0;
