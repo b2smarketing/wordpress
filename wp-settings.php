@@ -44,6 +44,7 @@ require ABSPATH . WPINC . '/class-wp-recovery-mode-key-service.php';
 require ABSPATH . WPINC . '/class-wp-recovery-mode-link-service.php';
 require ABSPATH . WPINC . '/class-wp-recovery-mode-email-service.php';
 require ABSPATH . WPINC . '/class-wp-recovery-mode.php';
+require ABSPATH . WPINC . '/class-widget.php';
 require ABSPATH . WPINC . '/error-protection.php';
 require ABSPATH . WPINC . '/default-constants.php';
 require_once ABSPATH . WPINC . '/plugin.php';
