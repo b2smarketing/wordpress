@@ -136,7 +136,7 @@
 
 
 				<!-- FOOTER -->
-				<footer id="rodape">
+				<footer {% if fn('is_front_page') %} class="rodape" {% endif %}>
 					<div class="container">
 						<div class="row">
 							{% include 'widgets/menu-footer.twig' with { menu: menu_rodape.get_items, main: true } %}

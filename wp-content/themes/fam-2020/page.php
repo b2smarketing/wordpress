@@ -31,29 +31,30 @@ $context['dicas'] = $dicas;
 
 
 // YOUTUBE LISTA DE VIDEOS DO CANAL
-// Usuário e ApiKey do Youtube
-$username = 'famamericana';
+// Obs.: Crie uma API KEY no https://code.google.com/apis/console, não se esqueça de habilitar o Youtube Data API
 
-// Crie uma API KEY no https://code.google.com/apis/console, não se esqueça de habilitar o Youtube Data API
-$apiKey = 'AIzaSyAEtAlNZzSTAVQjy2Xmsq__WSXAoz3lYgk';
 
-$channelUrl = "https://www.googleapis.com/youtube/v3/channels?forUsername={$username}&part=contentDetails&key={$apiKey}";
-$videosUrl = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&maxResults=20&key={$apiKey}";
+$maxResults=3;
+$chaveSecreta = 'AIzaSyBVLAF6Ycmr6gjPLvoMl4InQasItbRb5zQ';
+$channelId = 'UCpk07TjMWhMr3Wv-bFnkk-A';
+$ch = curl_init();
+$options = array(
+    CURLOPT_URL => 'https://www.googleapis.com/youtube/v3/search?maxResults='.$maxResults.'&order=date&part=snippet&channelId=' . $channelId . '&key=' . $chaveSecreta . '&t=' . time(),
+    CURLOPT_HEADER => false,
+    CURLOPT_SSL_VERIFYPEER => false,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_CUSTOMREQUEST => 'GET',
+    CURLOPT_HTTPHEADER => array('Accept-Encoding: gzip,deflate')
+);
+curl_setopt_array($ch, $options);
+$arquivo = curl_exec($ch);
+curl_close($ch);
+$playListas = json_decode(gzdecode($arquivo));
 
-function request($url) {
-  $curl = curl_init($url);
-  curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
-  $body = curl_exec($curl);
-  curl_close($curl);
-
-  return json_decode($body);
+$videos = [];
+foreach ($playListas->items as $getVideo) {
+    $videos[] = $getVideo->id->videoId;
 }
-
-$channel = request($channelUrl)->items[0]->contentDetails;
-$playlistId = $channel->relatedPlaylists->uploads;
-
-$videos = request("{$videosUrl}&playlistId={$playlistId}")->items;
 
 //print_r($videos);
 

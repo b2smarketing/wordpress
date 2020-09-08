@@ -160,7 +160,7 @@
     padding: 0;
     display: block;
     position: relative; 
-    top:-4.5em; 
+    top:-4em; 
     width: 100%;
     bottom: 0px;
     background: #fff;
@@ -203,7 +203,7 @@
     font-weight: bold;
   }
 
-  #rodape{
+  .rodape{
     margin-top:-28em;
   }
 
