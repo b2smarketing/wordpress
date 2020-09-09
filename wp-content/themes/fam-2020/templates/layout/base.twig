@@ -131,6 +131,12 @@
 			{% endif %}
 
 			<!-- BODY -->
+			{% if fn('is_front_page') %} 
+			<br>
+			{% else %}
+			<h1><br>&nbsp;<br></h1>
+			{% endif %}
+			
 			<div class="corpo"> {% block body %}{% endblock %}
 				</div>
 
