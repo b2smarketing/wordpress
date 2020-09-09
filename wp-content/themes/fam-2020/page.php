@@ -35,7 +35,7 @@ $context['dicas'] = $dicas;
 
 
 $maxResults=3;
-$chaveSecreta = 'AIzaSyDkYfUT4lHJjTKEu3O40gqr5cKlwcw6Qnk';
+$chaveSecreta = 'AIzaSyA-TDeAYf3PL2jgHHibj_4024XodKWTepw';
 $channelId = 'UCpk07TjMWhMr3Wv-bFnkk-A';
 $ch = curl_init();
 $options = array(
