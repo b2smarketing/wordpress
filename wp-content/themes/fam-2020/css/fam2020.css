@@ -283,9 +283,28 @@
       padding-top:10px;
       border-radius:3px;
     }
+
+    .inscreva-se{  
+      font-size: 18px;
+      text-align: center;
+      font-weight: 800;
+      margin:0;
+      padding: 0;
+      display: block;
+      position: relative;
+      margin-left: 5px; 
+      top:-15px; 
+      width: 150px; 
+      background: #ffcc00;  
+      color: #0e2e7c;
+      border-radius: 5px;
+      line-height: 50px;
+      height: 50px;
+      float: right;  
+    }
   
 
-    .headerback, .inscreva-se, .yellow-bar{
+    .headerback, .yellow-bar{
       display: none;  } 
   
       .navbar-header{
