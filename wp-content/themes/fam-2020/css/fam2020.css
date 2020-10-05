@@ -1,84 +1,76 @@
 /*******************Desktop*******************/
-  
-  @media(min-width: 55em) {
 
- .corpo{
-     display: block;
-     margin-top:-150px;
- }
-  
-  .slide {
-      margin-top: -4em !important;
-      width: 100%;
-      height: 100vh;
-      overflow: hidden;
-      background-position: center !important; 
+@media(min-width: 55em) {
+  .corpo {
+    display: block;
+    margin-top: -150px;
   }
-
-  .mobile{
+  .slide {
+    margin-top: -4em !important;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    background-position: center !important;
+  }
+  .mobile {
     display: none;
   }
-  
-  .menu-bar{
-    margin:0;
+  .menu-bar {
+    margin: 0;
     padding: 0;
     display: block;
     position: fixed;
-    top:0px;
+    top: 0px;
     width: 100%;
     bottom: 0px;
     background: #1141a7;
-    height: 70px; 
-    z-index: 200; 
+    height: 70px;
+    z-index: 200;
     text-align: center;
-    color:#fff;
+    color: #fff;
     font-size: 30px;
     line-height: 70px;
   }
-  .menu-bar ul{
-    list-style: none;  
-    margin-left: 250px;  
+  .menu-bar ul {
+    list-style: none;
+    margin-left: 250px;
   }
-  .menu-bar ul li{
+  .menu-bar ul li {
     margin-right: 12px;
     float: left;
     font-size: 10px;
   }
-  .menu-bar ul li img{
+  .menu-bar ul li img {
     width: 10px;
   }
-  .menu-bar ul li a{
+  .menu-bar ul li a {
     font-size: 10px;
     letter-spacing: 1px;
     font-weight: bold;
     color: #fff;
   }
-
-  .menu-bar ul li span{
-    font-weight:bold;
-    letter-spacing:1px;
+  .menu-bar ul li span {
+    font-weight: bold;
+    letter-spacing: 1px;
   }
-
-  .menu-bar ul li .acess{
-    color:#ffcc00;
-    font-size:18px;
-    font-weight:bold;
+  .menu-bar ul li .acess {
+    color: #ffcc00;
+    font-size: 18px;
+    font-weight: bold;
   }
-
-  .menu-bar ul li .a{
-    font-size:12px;
+  .menu-bar ul li .a {
+    font-size: 12px;
   }
-
-  .menu-bar ul li a .fa-search{
-    width:30px;
-    height:30px;
-    background-color:#0a2971;
-    padding-top:10px;
-    border-radius:3px;
+  .menu-bar ul li a .fa-search {
+    width: 30px;
+    height: 30px;
+    background-color: #0a2971;
+    padding-top: 10px;
+    border-radius: 3px;
   }
-  .portaldoaluno a{
+  .portaldoaluno a {
     float: right;
-    margin-top:10px;
+    margin-top: 10px;
     margin-right: 290px;
     text-align: center;
     border-radius: 5px;
@@ -91,36 +83,34 @@
     font-size: 10px;
     letter-spacing: 4px;
   }
-  
-  .header { 
+  .header {
     display: block;
     position: fixed !important;
-    margin:0 auto !important;
+    margin: 0 auto !important;
     top: 60px !important;
     padding: 0;
     width: 100%;
     bottom: 0px;
     z-index: 100;
-    background: #0e2e7c;  
+    background: #0e2e7c;
     height: 90px !important;
     -o-transition: all 0.2s linear;
     -moz-transition: all 0.2s linear;
     -khtml-transition: all 0.2s linear;
     -webkit-transition: all 0.2s linear;
     -ms-transition: all 0.2s linear;
-    transition: all 0.2s linear; }
-
-   .menu-fixo {
-        transform: scale(0.9) !important; 
-        top: 40px !important;     
-   }
-  
-  .headerback{
+    transition: all 0.2s linear;
+  }
+  .menu-fixo {
+    transform: scale(0.9) !important;
+    top: 40px !important;
+  }
+  .headerback {
     display: fixed;
     position: fixed;
-    margin:0;
+    margin: 0;
     padding: 0;
-    top:68px !important;  
+    top: 68px !important;
     width: 100%;
     bottom: 0px;
     z-index: 50;
@@ -134,43 +124,42 @@
     -ms-transition: all 0.2s linear;
     transition: all 0.2s linear;
   }
-  .fundofixo{
-      height: 60px;
+  .fundofixo {
+    height: 60px;
   }
-
-  .inscreva-se{  
+  .inscreva-se {
     font-size: 18px;
     text-align: center;
     font-weight: 800;
-    margin:0;
+    margin: 0;
     padding: 0;
     display: block;
     position: relative;
-    margin-left: 5px; 
-    top:-15px; 
-    width: 150px; 
-    background: #ffcc00;  
+    margin-left: 5px;
+    top: -15px;
+    width: 150px;
+    background: #ffcc00;
     color: #0e2e7c;
     border-radius: 5px;
     line-height: 50px;
-    height: 50px;  
+    height: 50px;
   }
-  .yellow-bar{
-    margin:0;
+  .yellow-bar {
+    margin: 0;
     padding: 0;
     display: block;
-    position: relative; 
-    top:-4em; 
+    position: relative;
+    top: -4em;
     width: 100%;
     bottom: 0px;
     background: #fff;
-    height: 340px;  
+    height: 340px;
     text-align: center;
-    color:#000;
+    color: #000;
     font-size: 30px;
-    line-height: 190px;  
+    line-height: 190px;
   }
-  .download-apps{
+  .download-apps {
     display: block;
     position: relative;
     width: 100%;
@@ -178,238 +167,273 @@
     margin-top: 30px;
     padding-left: 9em;
     padding-top: 1.5em;
-    background-color: #1141a7;;
-    color:#fff;
-    font-size: 35px; 
+    background-color: #1141a7;
+    ;
+    color: #fff;
+    font-size: 35px;
   }
-  .download-apps span{
+  .download-apps span {
     font-weight: bold;
   }
-  img.celular{
+  img.celular {
     display: block;
     position: relative;
     float: right;
     margin-right: 30%;
-    top:-240px;
+    top: -240px;
     height: 380px;
   }
-  .redesocial{
+  .redesocial {
     display: block;
     position: relative;
     top: -20em !important;
-    bottom: -10em;    
+    bottom: -10em;
   }
-  .redesocial .redsoc{
+  .redesocial .redsoc {
     font-weight: bold;
   }
-
-  .rodape{
-    margin-top:-28em;
+  .rodape {
+    margin-top: -28em;
   }
-
-  #home-app{
+  #home-app {
     display: block;
     position: relative;
     top: -23em !important;
     width: 100%;
   }
-
-  .facebook{
+  .facebook {
     display: block;
     position: relative;
     width: 450px;
-    background-color:silver;
-    margin:0 auto !important;
+    background-color: silver;
+    margin: 0 auto !important;
   }
-  .imgfim{
-    display:block;position:relative;margin:0 auto;width:50%;top:-2em;
+  .imgfim {
+    display: block;
+    position: relative;
+    margin: 0 auto;
+    width: 50%;
+    top: -2em;
   }
-  }
-  /*Fim Desktop*/
+}
 
+/*Fim Desktop*/
 
-
-  
 /******************* Mobile ******************/
+
 @media(max-width: 55em) {
-
-    .corpo{
-        display: block;
-        background-color: #fff;
-    }
-    .menu-bar{
-      margin:0;
-      padding: 0;
-      display: block;
-      position: fixed;
-      top:0px;
-      width: 100%;
-      bottom: 0px;
-      background: #1141a7;
-      height: 40px; 
-      z-index: 200; 
-      text-align: center;
-      color:#fff;
-      font-size: 30px;
-      line-height: 40px;
-    }
-    .menu-bar ul{
-      list-style: none;  
-      margin-left: -0.8em;  
-    }
-    .menu-bar ul li{
-      margin-right: 12px;
-      float: left;
-      font-size: 10px;
-    }
-    .menu-bar ul li img{
-      width: 10px;
-    }
-    .menu-bar ul li a{
-      font-size: 10px;
-      letter-spacing: 1px;
-      font-weight: bold;
-      color: #fff;
-    }
-  
-    .menu-bar ul li span, .menu-bar ul li .acess, .menu-bar ul li .a{
-      display: none;
-    }
-  
-    .menu-bar ul li a .fa-search{
-      width:30px;
-      height:30px;
-      background-color:#0a2971;
-      padding-top:10px;
-      border-radius:3px;
-    }
-
-    .inscreva-se{  
-      font-size: 18px;
-      text-align: center;
-      font-weight: 800;
-      margin:0;
-      padding: 0;
-      display: block;
-      position: relative;
-      margin-left: 5px; 
-      top:-15px; 
-      width: 150px; 
-      background: #ffcc00;  
-      color: #0e2e7c;
-      border-radius: 5px;
-      line-height: 50px;
-      height: 50px;
-      float: right;  
-    }
-  
-
-    .headerback, .yellow-bar{
-      display: none;  } 
-  
-      .navbar-header{
-        position: relative;
-        margin-top: 1em !important;
-      }
-
-      .slide{
-        display: none;
-      }
-      .mobile {
-        display: block;
-        position: relative; 
-        margin-top:6em !important;     
-        width: 100%;
-        height: 30em !important;
-      }
-      
-      .prevideo{
-          display: block;
-          position: absolute;
-          margin-top: 80px !important;
-          width: 100%;
-          height: 250px;
-          background-color: #fff;
-      }
-
-      .vyoutube{   
-        display: block;
-        margin-top: 13em !important;
-        background-color: #fff !important;
-      }
-      .vyoutube h1{   
-        display:block;
-        position:relative;
-        float:left;
-        width:140px;
-        left:10px;
-      }
-      .vyoutube hr{   
-        display:block;
-        position:relative;
-        width:93%;
-        height:1px;
-        left:2px;
-        top:8px;
-        background-color:#444;
-      }
-      .blog h1, .txtredesocial h1{
-        display:block;position:relative;width:120%;left:2px;top:-30px;color:#444;
-      }
-      .blog h2, .txtredesocial h2{
-        display:block;position:relative;width:120%;left:2px;top:-30px;color:#aaa;"
-      } 
-
-      h1.txtredesocial{
-        display:block;position:relative;width:100%;left:0px;top:-40px;color:#444;
-        font-size: 22px;
-      }
-      h2.txtredesocial{
-        display:block;position:relative;width:100%;left:2px;top:-40px;color:#aaa;
-        font-size: 20px;
-      }        
-      .download-apps{
-        display: block;
-        position: relative;
-        width: 100%;
-        height: 140px;
-        margin-top: 0px;
-        padding-left: 2em;
-        padding-top: 1em;
-        background-color: #1141a7;;
-        color:#fff;
-        font-size: 15px;
-      }
-      .download-apps span{
-        font-weight: bold;
-      }
-      img.downbtn1, img.downbtn2{
-        width: 100px;
-      }
-      img.celular{
-        display: block;
-        position: relative;
-        float: right;
-        margin-right: 20px;
-        margin-top: -5em;
-        width: 91px !important;
-      } 
-      #home-app{
-        display: block;
-        position: relative;
-        margin-top:-10px !important;
-        width: 100%;
-      }
-      .facebook{
-        display: block;
-        position: relative;
-        width: 100%;
-        left: -5px !important;
-        background-color:silver;
-        margin:0 auto !important;
-      }
-      .imgfim{
-        display:block;position:relative;margin:0 auto;width:90%;top:10px;
-      }
+  .corpo {
+    display: block;
+    background-color: #fff;
   }
-  /*Fim Mobile*/
+  .menu-bar {
+    margin: 0;
+    padding: 0;
+    display: block;
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    bottom: 0px;
+    background: #1141a7;
+    height: 40px;
+    z-index: 200;
+    text-align: center;
+    color: #fff;
+    font-size: 30px;
+    line-height: 40px;
+  }
+  .menu-bar ul {
+    list-style: none;
+    margin-left: -0.8em;
+  }
+  .menu-bar ul li {
+    margin-right: 12px;
+    float: left;
+    font-size: 10px;
+  }
+  .menu-bar ul li img {
+    width: 10px;
+  }
+  .menu-bar ul li a {
+    font-size: 10px;
+    letter-spacing: 1px;
+    font-weight: bold;
+    color: #fff;
+  }
+  .menu-bar ul li span, .menu-bar ul li .acess, .menu-bar ul li .a {
+    display: none;
+  }
+  .menu-bar ul li a .fa-search {
+    width: 30px;
+    height: 30px;
+    background-color: #0a2971;
+    padding-top: 10px;
+    border-radius: 3px;
+  }
+  .inscreva-se {
+    font-size: 18px;
+    text-align: center;
+    font-weight: 800;
+    margin: 0;
+    padding: 0;
+    display: block;
+    position: relative;
+    margin-left: 5px;
+    top: -15px;
+    width: 150px;
+    background: #ffcc00;
+    color: #0e2e7c;
+    border-radius: 5px;
+    line-height: 50px;
+    height: 50px;
+    float: right;
+  }
+  .yellow-bar {
+    margin: 0;
+    padding: 0;
+    display: block;
+    position: absolute;
+    top: 24em !important;
+    width: 100%;    
+    background: #fff;
+    height: 340px;
+    text-align: center;
+    color: #000;
+    font-size: 30px;
+    line-height: 190px;
+  }
+  .yellow-bar img{
+    transform: scale(1.5);
+  }
+
+  .headerback {
+    display: none;
+  }
+  .navbar-header {
+    position: relative;
+    margin-top: 1em !important;
+  }
+  .slide {
+    display: none;
+  }
+  .mobile {
+    display: block;
+    position: relative;
+    margin-top: 4em !important;
+    width: 100%;
+    height: 30em !important;
+  }
+  .prevideo {
+    display: block;
+    position: absolute;
+    margin-top: 80px !important;
+    width: 100%;
+    height: 250px;
+    background-color: #fff;
+  }
+  .vyoutube {
+    display: block;
+    margin-top: 17em !important;
+    background-color: #fff !important;
+  }
+  .vyoutube h1 {
+    display: block;
+    position: relative;
+    float: left;
+    width: 140px;
+    left: 10px;
+  }
+  .vyoutube hr {
+    display: block;
+    position: relative;
+    width: 93%;
+    height: 1px;
+    left: 2px;
+    top: 8px;
+    background-color: #444;
+  }
+  .blog h1, .txtredesocial h1 {
+    display: block;
+    position: relative;
+    width: 120%;
+    left: 2px;
+    top: -30px;
+    color: #444;
+  }
+  .blog h2, .txtredesocial h2 {
+    display: block;
+    position: relative;
+    width: 120%;
+    left: 2px;
+    top: -30px;
+    color: #aaa;
+  }
+  h1.txtredesocial {
+    display: block;
+    position: relative;
+    width: 100%;
+    left: 0px;
+    top: -40px;
+    color: #444;
+    font-size: 22px;
+  }
+  h2.txtredesocial {
+    display: block;
+    position: relative;
+    width: 100%;
+    left: 2px;
+    top: -40px;
+    color: #aaa;
+    font-size: 20px;
+  }
+  .download-apps {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 140px;
+    margin-top: 0px;
+    padding-left: 2em;
+    padding-top: 1em;
+    background-color: #1141a7;
+    ;
+    color: #fff;
+    font-size: 15px;
+  }
+  .download-apps span {
+    font-weight: bold;
+  }
+  img.downbtn1, img.downbtn2 {
+    width: 100px;
+  }
+  img.celular {
+    display: block;
+    position: relative;
+    float: right;
+    margin-right: 20px;
+    margin-top: -5em;
+    width: 91px !important;
+  }
+  #home-app {
+    display: block;
+    position: relative;
+    margin-top: -10px !important;
+    width: 100%;
+  }
+  .facebook {
+    display: block;
+    position: relative;
+    width: 100%;
+    left: -5px !important;
+    background-color: silver;
+    margin: 0 auto !important;
+  }
+  .imgfim {
+    display: block;
+    position: relative;
+    margin: 0 auto;
+    width: 90%;
+    top: 10px;
+  }
+}
+
+/*Fim Mobile*/
