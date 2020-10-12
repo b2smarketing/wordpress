@@ -34,8 +34,8 @@ $context['dicas'] = $dicas;
 // Obs.: Crie uma API KEY no https://code.google.com/apis/console, não se esqueça de habilitar o Youtube Data API
 
 
-$maxResults=3;
-$chaveSecreta = 'AIzaSyA-TDeAYf3PL2jgHHibj_4024XodKWTepw';
+$maxResults=30;
+$chaveSecreta = 'AIzaSyA7i-_5Y-Hsg7dtPx1fM6eEzpdvrKtEpzw';
 $channelId = 'UCpk07TjMWhMr3Wv-bFnkk-A';
 $ch = curl_init();
 $options = array(
@@ -53,7 +53,9 @@ $playListas = json_decode(gzdecode($arquivo));
 
 $videos = [];
 foreach ($playListas->items as $getVideo) {
+    if($getVideo->id->videoId){
     $videos[] = $getVideo->id->videoId;
+    }
 }
 
 //print_r($videos);
