@@ -26,42 +26,15 @@ $post = new TimberPost();
 
 $cat = 27; //dicas
 $dicas = Timber::get_posts('cat='.$cat);
-//print_r($dicas[0]);
+
 $context['dicas'] = $dicas;
 
+$listavideos = json_decode(file_get_contents('./wp-content/themes/fam-2020/listavideos.json'));
 
-// YOUTUBE LISTA DE VIDEOS DO CANAL
-// Obs.: Crie uma API KEY no https://code.google.com/apis/console, não se esqueça de habilitar o Youtube Data API
-
-
-$maxResults=30;
-$chaveSecreta = 'AIzaSyA7i-_5Y-Hsg7dtPx1fM6eEzpdvrKtEpzw';
-$channelId = 'UCpk07TjMWhMr3Wv-bFnkk-A';
-$ch = curl_init();
-$options = array(
-    CURLOPT_URL => 'https://www.googleapis.com/youtube/v3/search?maxResults='.$maxResults.'&order=date&part=snippet&channelId=' . $channelId . '&key=' . $chaveSecreta . '&t=' . time(),
-    CURLOPT_HEADER => false,
-    CURLOPT_SSL_VERIFYPEER => false,
-    CURLOPT_RETURNTRANSFER => true,
-    CURLOPT_CUSTOMREQUEST => 'GET',
-    CURLOPT_HTTPHEADER => array('Accept-Encoding: gzip,deflate')
-);
-curl_setopt_array($ch, $options);
-$arquivo = curl_exec($ch);
-curl_close($ch);
-$playListas = json_decode(gzdecode($arquivo));
-
-$videos = [];
-foreach ($playListas->items as $getVideo) {
-    if($getVideo->id->videoId){
-    $videos[] = $getVideo->id->videoId;
-    }
-}
-
-//print_r($videos);
+//print_r($listavideos);
 
 $context['post'] = $post;
-$context['videos'] = $videos;
+$context['videos'] = $listavideos;
 if ($post->post_name == "clube-de-vantagens-fam") {
     $args = array(
         // Get post type project
