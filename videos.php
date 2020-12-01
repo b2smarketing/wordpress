@@ -1,12 +1,14 @@
 <?php
 
-if ($_SERVER['REMOTE_ADDR'] == "201.82.195.100"){
+if ($_SERVER['REMOTE_ADDR'] == "201.82.50.57"){
 
 // YOUTUBE LISTA DE VIDEOS DO CANAL
 // Obs.: Crie uma API KEY no https://code.google.com/apis/console, não se esqueça de habilitar o Youtube Data API
 
-$maxResults = 20;
-$chaveSecreta = 'AIzaSyB_iaL-908vVstuO7NdHs9GaXA5vSmDrdg';
+$maxResults = 4;
+//$chaveSecreta = 'AIzaSyB_iaL-908vVstuO7NdHs9GaXA5vSmDrdg';
+$chaveSecreta = 'AIzaSyDJvav9CM-ABImowiUXoXV2eLHa6cXtWJA';
+
 $channelId = 'UCpk07TjMWhMr3Wv-bFnkk-A';
 $ch = curl_init();
 $options = array(
@@ -38,11 +40,13 @@ function escrever($path, $texto, $modo)
 
 $pathlistavideos = './wp-content/themes/fam-2020/listavideos.json';
 
-escrever($pathlistavideos, json_encode($videos), 'w');
-
-echo "<h3>Lista de Vídeos Atualizada !</h3>";
-
-echo json_encode($videos);
+if($videos != null) {
+	escrever($pathlistavideos, json_encode($videos), 'w');
+	echo "<h3>Lista de Vídeos Atualizada !</h3>";
+	echo json_encode($videos);
+}else {
+	echo "<h3>Lista Vazia !!!</h3>";
+}
 
 }else{
     echo "<h3>Você não tem permissão para acessar essa pagina !</h3>";

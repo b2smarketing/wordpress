@@ -44,7 +44,6 @@ require ABSPATH . WPINC . '/class-wp-recovery-mode-key-service.php';
 require ABSPATH . WPINC . '/class-wp-recovery-mode-link-service.php';
 require ABSPATH . WPINC . '/class-wp-recovery-mode-email-service.php';
 require ABSPATH . WPINC . '/class-wp-recovery-mode.php';
-require ABSPATH . WPINC . '/class-widget.php';
 require ABSPATH . WPINC . '/error-protection.php';
 require ABSPATH . WPINC . '/default-constants.php';
 require_once ABSPATH . WPINC . '/plugin.php';
@@ -107,6 +106,7 @@ wp_set_lang_dir();
 // Load early WordPress files.
 require ABSPATH . WPINC . '/compat.php';
 require ABSPATH . WPINC . '/class-wp-list-util.php';
+require ABSPATH . WPINC . '/class-widget.php';
 require ABSPATH . WPINC . '/formatting.php';
 require ABSPATH . WPINC . '/meta.php';
 require ABSPATH . WPINC . '/functions.php';
